@@ -1,0 +1,14 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[dev]
+  command = "npm run dev"
+  port = 3000
+  targetPort = 3000
+
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+
+[build.environment]
+  NODE_VERSION = "20"

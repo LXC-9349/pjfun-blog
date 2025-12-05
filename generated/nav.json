@@ -1,0 +1,45 @@
+[
+  {
+    "type": "post",
+    "title": "Hello pjfun-blog！2025 最强纯前端博客",
+    "path": "/2025/hello",
+    "date": "2025-12-05T00:00:00.000Z",
+    "cover": "/img/pbsh.jpg",
+    "tags": [
+      "Vite",
+      "Vue3",
+      "UnoCSS",
+      "Lenis"
+    ],
+    "excerpt": "零后端、纯静态、顶级动效、全球秒开的个人博客",
+    "sticky": true
+  },
+  {
+    "type": "post",
+    "title": "Vite 高级配置",
+    "path": "/学习/Vite构建工具/vite",
+    "date": "2025-12-05T00:00:00.000Z",
+    "cover": "https://img0.baidu.com/it/u=899788717,490343799&fm=253&fmt=auto&app=138&f=JPEG",
+    "tags": [
+      "Vite",
+      "构建工具",
+      "性能优化"
+    ],
+    "excerpt": "深入了解 Vite 构建工具的各种高级配置选项",
+    "sticky": false
+  },
+  {
+    "type": "post",
+    "title": "Vue 3 简介",
+    "path": "/学习/Vue框架/vue3",
+    "date": "2025-12-05T00:00:00.000Z",
+    "cover": "https://img1.baidu.com/it/u=2738382553,2853559896&fm=253&fmt=auto&app=138&f=JPEG",
+    "tags": [
+      "Vue",
+      "JavaScript",
+      "前端"
+    ],
+    "excerpt": "探索现代前端框架 Vue 3 的核心特性",
+    "sticky": false
+  }
+]

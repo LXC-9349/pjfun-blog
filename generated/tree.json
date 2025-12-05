@@ -1,0 +1,82 @@
+{
+  "type": "folder",
+  "title": "根目录",
+  "path": "/",
+  "children": [
+    {
+      "type": "folder",
+      "title": "2025",
+      "path": "/2025",
+      "children": [
+        {
+          "type": "post",
+          "title": "Hello pjfun-blog！2025 最强纯前端博客",
+          "path": "/2025/hello"
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "title": "学习",
+      "path": "/学习",
+      "children": [
+        {
+          "type": "folder",
+          "title": "Vite构建工具",
+          "path": "/学习/Vite构建工具",
+          "children": [
+            {
+              "type": "post",
+              "title": "Vite 高级配置",
+              "path": "/学习/Vite构建工具/vite"
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "title": "Vue框架",
+          "path": "/学习/Vue框架",
+          "children": [
+            {
+              "type": "post",
+              "title": "Vue 3 简介",
+              "path": "/学习/Vue框架/vue3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "title": "教程",
+      "path": "/教程",
+      "children": []
+    },
+    {
+      "type": "folder",
+      "title": "笔记",
+      "path": "/笔记",
+      "children": [
+        {
+          "type": "folder",
+          "title": "个人思考",
+          "path": "/笔记/个人思考",
+          "children": []
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "title": "项目",
+      "path": "/项目",
+      "children": [
+        {
+          "type": "folder",
+          "title": "博客项目",
+          "path": "/项目/博客项目",
+          "children": []
+        }
+      ]
+    }
+  ]
+}
