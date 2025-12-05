@@ -228,13 +228,23 @@ export const I18N_CONFIG = {
 <a href="https://app.netlify.com/start/deploy?repository=https://github.com/LXC-9349/pjfun-blog" target="_blank">
   <img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify">
 </a>
+
 **注意**：请将按钮链接中的 `https://github.com/LXC-9349/pjfun-blog` 替换为你的实际 Git 仓库地址。
 
-#### 腾讯云 edgeone pages
+#### 腾讯云(国内) edgeone pages
 
 <a href="https://console.cloud.tencent.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog&project-name=pjfun-blog&root-directory=.%2F" target="_blank">
   <img src="https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg" alt="使用 EdgeOne Pages 部署">
 </a>
+
+**注意**：请将按钮链接中的 `https://github.com/LXC-9349/pjfun-blog` 替换为你的实际 Git 仓库地址。
+
+#### 腾讯云(国际) edgeone pages
+
+<a href="https://console.tencentcloud.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog&project-name=pjfun-blog&root-directory=.%2F" target="_blank">
+  <img src="https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg" alt="使用 EdgeOne Pages 部署">
+</a>
+
 **注意**：请将按钮链接中的 `https://github.com/LXC-9349/pjfun-blog` 替换为你的实际 Git 仓库地址。
 
 
@@ -243,6 +253,7 @@ export const I18N_CONFIG = {
 <a href="https://deploy.workers.cloudflare.com/?url=https://github.com/LXC-9349/pjfun-blog" target="_blank">
   <img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare Workers">
 </a>
+
 **注意**：请将按钮链接中的 `https://github.com/LXC-9349/pjfun-blog` 替换为你的实际 Git 仓库地址。
 
 
