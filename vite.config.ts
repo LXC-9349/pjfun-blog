@@ -24,6 +24,7 @@ export default defineConfig((config) => {
     const isProduction = config.mode === 'production';
     // 获取 VITE_BASE 环境变量，如果未设置则根据是否为生产环境决定默认值
     const base = process.env.VITE_BASE || '/';
+    console.log('base:', base)
     //开启cdn打包
     const openCdn = isProduction;
     const cdnConfig = getCDN(!isProduction)

@@ -18,7 +18,7 @@ async function check(): Promise<void> {
         latestVersion = newV
         const oldV: string | null = localStorage.getItem(key_name)
         if (oldV && oldV+'' !== newV+'') {
-            if (timer) clearInterval(timer)
+            // if (timer) clearInterval(timer)
             onNewVersion?.()
         } else {
             localStorage.setItem(key_name, newV)
