@@ -365,7 +365,7 @@ import GiscusComment from '@/components/GiscusComment.vue'
 import { GISCUS_CONFIG } from '@/constants'
 import {addFavorite, isFavorite, removeFavorite} from "@/utils/favorites";
 import type {FavoriteItem} from "@/utils/favorites"
-import {getEnvVariable} from "@/utils/tool";
+import {formatDate, getEnvVariable} from "@/utils/tool";
 
 // 创建 marked 实例并配置一次
 const renderer = new Renderer()
@@ -870,8 +870,9 @@ const loadArticle = async (filePath: string) => {
       if (fmMatch) {
         content = contentText.replace(/^---\n[\s\S]*?\n---\n/, '')
         articleMeta.value.title = articleInfo.title || t('noArticles')
-        articleMeta.value.date = articleInfo.date || ''
+        articleMeta.value.date = formatDate(articleInfo.date|| '')
         articleMeta.value.cover = articleInfo.cover || ''
+        articleMeta.value.excerpt = articleInfo.excerpt || ''
         //@ts-ignore
         articleMeta.value.tags = articleInfo.tags||[]
         const words = content.trim().split(/\s+/).length
@@ -880,9 +881,10 @@ const loadArticle = async (filePath: string) => {
     } else {
       // 使用导航数据中的信息填充 articleMeta
       articleMeta.value.title = articleInfo.title || t('noArticles');
-      articleMeta.value.date = articleInfo.date || new Date().toISOString();
+      articleMeta.value.date = formatDate(articleInfo.date|| '') ;
       articleMeta.value.cover = articleInfo.cover || '';
       articleMeta.value.tags = articleInfo.tags || [];
+      articleMeta.value.excerpt = articleInfo.excerpt || ''
       
       if (actualFilePath.endsWith('.html')) {
         // 对于 HTML 文件，直接使用内容
