@@ -1,6 +1,6 @@
 # PJ Blog - 现代化个人博客系统
 
-<div style="display: flex;gap: 2px; justify-content: center; align-items: center;">
+<div align="center" style="display: flex;gap: 2px; justify-content: center; align-items: center;">
 
   <img src="https://img.shields.io/badge/Vue-3.x-brightgreen" alt="Vue Version">
   <img src="https://img.shields.io/badge/TypeScript-Support-blue" alt="TypeScript">

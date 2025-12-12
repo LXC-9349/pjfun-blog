@@ -57,7 +57,7 @@ export default function vitePluginCdn(base:string): Plugin {
         });
 
         // ========== STEP 2: 注入自定义加载逻辑 ==========
-        const pjJsResources = injectedBundleFiles.map((file: any) => `'/${file.fileName}'`).join(',');
+        const pjJsResources = injectedBundleFiles.map((file: any) => `'${base}${file.fileName}'`).join(',');
         const originalScriptTag = `
         <script>
             const pjJsResources=[${pjJsResources}]
