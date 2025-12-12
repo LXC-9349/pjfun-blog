@@ -16,8 +16,8 @@ export default function vitePluginCdn(base:string): Plugin {
         const bundle = ctx.bundle || {};
         const injectedFiles: string[] = [];
 
-        // 提取 JS 文件路径
-        const jsFiles = html.match(/<script[^>]+src="([^"]+)"/g)?.map(match => {
+        // 提取 JS 文件路径，改进正则表达式以匹配带有各种属性的script标签
+        const jsFiles = html.match(/<script[^>]*src="([^"]+)"/g)?.map(match => {
           return match.match(/src="([^"]+)"/)![1];
         }) || [];
 
@@ -38,12 +38,13 @@ export default function vitePluginCdn(base:string): Plugin {
         // ========== STEP 1: 移除所有 injectedBundleFiles 对应的标签 ==========
         injectedBundleFiles.forEach((file: any) => {
           const fileName = file.fileName;
-          const scriptRegex = new RegExp(`<script[^>]+src=["']\\/?${fileName}["'][^>]*>`, 'g');
+          // 更新正则表达式以匹配带有各种属性的script标签
+          const scriptRegex = new RegExp(`<script[^>]*src=["']\\/?${fileName}["'][^>]*>`, 'g');
           html = html.replace(scriptRegex, ''); // 移除 script 标签
         });
-
         // ========== STEP 2: 注入自定义加载逻辑 ==========
         const pjJsResources = injectedBundleFiles.map((file: any) => `'/${file.fileName}'`).join(',');
+        console.log('pjJsResources:',pjJsResources)
         const originalScriptTag = `
         <script>
             const pjJsResources=[${pjJsResources}]
