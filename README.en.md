@@ -68,13 +68,38 @@ VITE_BLOG_PASSWORD_HASH=your_sha256_password_hash_here
 
 ### Generate Password Hash
 
-For security, passwords are stored as SHA-256 hashes:
+### Generate SHA256 Password Hash Using Online Tools
+
+In addition to using the built-in `generate-password-hash.js` script provided by the project, you can also use online tools to generate a SHA256 hash for your blog's password protection feature.
+
+#### Recommended Online Tool
+
+- [https://www.convertstring.com/zh_CN/Hash/SHA256](https://www.convertstring.com/zh_CN/Hash/SHA256)
+
+#### Usage Steps
+
+1. Visit the website above.
+2. Enter your password in the input field.
+3. Click the "Hash" button to generate the SHA256 hash.
+4. Copy the generated hash value.
+
+#### Configure in Your Blog
+
+Add the generated SHA256 hash to your environment variables:
+
+```env
+VITE_BLOG_PASSWORD_HASH=your_generated_sha256_hash_here
+```
+
+#### Security Warning
+
+⚠️ **Important**: Using online tools poses security risks, as your password will be transmitted over the network. It is recommended to use online tools only in development or testing environments. In production, always generate the hash locally using the provided script:
 
 ```bash
 node scripts/generate-password-hash.js your_password_here
 ```
 
-Copy the output hash into your `.env` file.
+This command will output the SHA256 hash of your password. You should then add this hash value to your `.env` file.
 
 ### Usage
 
