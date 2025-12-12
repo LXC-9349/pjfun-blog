@@ -16,7 +16,7 @@
         </div>
 
         <div class="flex items-center space-x-4">
-          <button @click="toggleLanguage" class="hidden bg-white dark:text-gray-300 sm:flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm hover:bg-gray-50 dark:hover:bg-gray-700">
+          <button @click="toggleLanguage" class="hidden dark:text-gray-300 sm:flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm hover:bg-gray-50 dark:hover:bg-gray-700">
             <IconCarbonLanguage class="w-4 h-4" />
             {{ currentLang === 'zh' ? 'EN' : '中文' }}
           </button>

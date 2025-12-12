@@ -126,7 +126,7 @@ pjfun-blog/
 
 ### Requirements
 
-- Node.js >= 20.0.0
+- Node.js >= 20.18.1
 - pnpm >= 7
 
 ### Install Dependencies
