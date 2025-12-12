@@ -1,3 +1,5 @@
+import {getEnvVariable} from "@/utils/tool";
+
 let timer: number | null = null
 let onNewVersion: (() => void) | null = null
 const key_name: string = 'pj_blog_web_version'
@@ -10,7 +12,8 @@ interface VersionData {
 async function check(): Promise<void> {
     try {
         const fiveMinuteTimestamp = Math.floor(Date.now() / (5 * 60 * 1000))
-        const res = await fetch(`/version.json?_=${fiveMinuteTimestamp}`, {
+        const base=getEnvVariable('VITE_BASE')||'/'
+        const res = await fetch(`${base}version.json?_=${fiveMinuteTimestamp}`, {
             cache: 'no-cache'
         })
         const data: VersionData = await res.json()

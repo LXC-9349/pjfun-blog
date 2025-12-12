@@ -138,7 +138,7 @@ import { ref, onMounted, computed, onUnmounted } from 'vue'
 import { t, getLanguage } from '@/utils/i18n'
 import ThemeToggle from '@/components/ui/ThemeToggle.vue'
 import { SITE_CONFIG } from '@/constants'
-import { getEnvVariable } from '@/utils/tool'
+import {formatDate, getEnvVariable} from '@/utils/tool'
 
 const allPosts = ref<any[]>([])
 const currentLang = ref(getLanguage())
@@ -302,20 +302,6 @@ const formatMonth = (month: string | number) => {
   return monthNames[monthIndex] || month
 }
 
-const formatDate = (dateString: string) => {
-  if (!dateString) return t('unknownDate') || '未知日期'
-  try {
-    const date = new Date(dateString)
-    if (isNaN(date.getTime())) return dateString
-    
-    return currentLang.value === 'zh'
-      ? date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
-      : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-  } catch {
-    return dateString
-  }
-}
-
 const toggleLanguage = () => {
   const newLang = currentLang.value === 'zh' ? 'en' : 'zh'
   currentLang.value = newLang
@@ -344,7 +330,8 @@ const handleScroll = () => {
 onMounted(async () => {
   try {
     const navName = getEnvVariable('PJ_BLOG_NAV_NAME')
-    const res = await fetch(`/generated/${navName}`)
+    const base=getEnvVariable('VITE_BASE')||'/'
+    const res = await fetch(`${base}generated/${navName}`)
     const posts = await res.json()
     
     // 按日期排序

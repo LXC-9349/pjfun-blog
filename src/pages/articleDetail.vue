@@ -491,10 +491,56 @@ async function renderFromHtml() {
     let dirty;
     if (isMarkdownContent && !newHtml.startsWith('<!DOCTYPE html>')) {
       // 处理 Markdown 内容
-      dirty = marked.parse(newHtml)
+      dirty = await marked.parse(newHtml)
     } else {
       // 直接使用 HTML 内容
       dirty = newHtml
+    }
+// 处理相对路径的图片和视频资源
+    const base = getEnvVariable('VITE_BASE') || '/'
+    // 创建临时容器来解析 HTML
+    if (base !== '/') {
+      const tempDiv = document.createElement('div')
+      tempDiv.innerHTML = dirty
+
+      // 处理图片资源
+      const images = tempDiv.querySelectorAll('img[src]')
+      images.forEach(img => {
+        const src = img.getAttribute('src')
+        if (src && !src.startsWith('http') && !src.startsWith('//')) {
+          // 为相对路径添加 base 前缀
+          const normalizedBase = base.endsWith('/') ? base : base + '/'
+          const normalizedSrc = src.startsWith('/') ? src.substring(1) : src
+          img.setAttribute('src', normalizedBase + normalizedSrc)
+        }
+      })
+
+      // 处理视频资源
+      const videos = tempDiv.querySelectorAll('video[src]')
+      videos.forEach(video => {
+        const src = video.getAttribute('src')
+        if (src && !src.startsWith('http') && !src.startsWith('//')) {
+          // 为相对路径添加 base 前缀
+          const normalizedBase = base.endsWith('/') ? base : base + '/'
+          const normalizedSrc = src.startsWith('/') ? src.substring(1) : src
+          video.setAttribute('src', normalizedBase + normalizedSrc)
+        }
+      })
+
+      // 处理 source 标签（用于视频和音频）
+      const sources = tempDiv.querySelectorAll('source[src]')
+      sources.forEach(source => {
+        const src = source.getAttribute('src')
+        if (src && !src.startsWith('http') && !src.startsWith('//')) {
+          // 为相对路径添加 base 前缀
+          const normalizedBase = base.endsWith('/') ? base : base + '/'
+          const normalizedSrc = src.startsWith('/') ? src.substring(1) : src
+          source.setAttribute('src', normalizedBase + normalizedSrc)
+        }
+      })
+
+      // 更新 dirty 内容
+      dirty = tempDiv.innerHTML
     }
 
     // 注意：移除了对 onclick 的允许，避免潜在 XSS
@@ -785,8 +831,8 @@ const loadArticle = async (filePath: string) => {
   window.scrollTo(0, 0)
   activeHeadingId.value = ''
   if (observer) observer.disconnect() // 在加载新文章前断开旧 observer
-
-  if (!filePath) {
+  const decodedPath = decodeURIComponent(filePath);
+  if (!decodedPath) {
     loading.value = false
     return
   }
@@ -796,11 +842,12 @@ const loadArticle = async (filePath: string) => {
     
     // 先获取导航数据，避免多次网络请求尝试不同扩展名
     const navName = getEnvVariable('PJ_BLOG_NAV_NAME')
-    const navRes = await fetch(`/generated/${navName}`);
+    const base=getEnvVariable('VITE_BASE')||'/'
+    const navRes = await fetch(`${base}generated/${navName}`);
     const navData = await navRes.json();
     
     // 根据路径查找文章信息
-    const articleInfo = navData.find((item: any) => item.path === filePath || item.path === filePath.slice(0, -3));
+    const articleInfo = navData.find((item: any) => item.path === decodedPath || item.path === decodedPath.slice(0, -3));
     if (!articleInfo) {
       throw new Error('Not Found');
     }
@@ -808,7 +855,8 @@ const loadArticle = async (filePath: string) => {
     const actualFilePath=articleInfo.url
     // 添加时间戳避免缓存
     const fiveMinuteTimestamp = Math.floor(Date.now() / (5 * 60 * 1000))
-    const res = await fetch(`${actualFilePath}?t=${fiveMinuteTimestamp}`);
+    const baseUrl=getEnvVariable('VITE_BASE')||''
+    const res = await fetch(`${baseUrl}${actualFilePath}?t=${fiveMinuteTimestamp}`.replace('//','/'));
     
     if (!res.ok) throw new Error('Not Found');
 
@@ -820,13 +868,12 @@ const loadArticle = async (filePath: string) => {
       const fmMatch = contentText.match(/^---\n([\s\S]*?)\n---\n/)
       
       if (fmMatch) {
-        const fm = fmMatch[1]
         content = contentText.replace(/^---\n[\s\S]*?\n---\n/, '')
-        articleMeta.value.title = fm?.match(/title:\s*["']?([^"'\n]+)["']?/)?.[1] || t('noArticles')
-        articleMeta.value.date = fm?.match(/date:\s*["']?([^"'\n]+)["']?/)?.[1] || ''
-        articleMeta.value.cover = fm?.match(/cover:\s*["']?([^"'\n]+)["']?/)?.[1] || ''
-        const tagsStr = fm?.match(/tags:\s*\[([^\]]+)\]/)?.[1]
-        articleMeta.value.tags = tagsStr ? tagsStr.split(',').map(t => t.trim().replace(/["']/g, '')) : []
+        articleMeta.value.title = articleInfo.title || t('noArticles')
+        articleMeta.value.date = articleInfo.date || ''
+        articleMeta.value.cover = articleInfo.cover || ''
+        //@ts-ignore
+        articleMeta.value.tags = articleInfo.tags||[]
         const words = content.trim().split(/\s+/).length
         readingTime.value = Math.ceil(words / 200) + ' ' + t('readingTime')
       }

@@ -157,7 +157,8 @@ watch(query, async (q) => {
   }
   try {
     const nvName=getEnvVariable('PJ_BLOG_NAV_NAME')
-    const res = await fetch(`/generated/${nvName}`)
+    const base=getEnvVariable('VITE_BASE')||'/'
+    const res = await fetch(`${base}generated/${nvName}`)
     const all = await res.json()
     results.value = all
         .filter((p: any) =>

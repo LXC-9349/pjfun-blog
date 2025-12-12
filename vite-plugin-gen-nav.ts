@@ -3,7 +3,7 @@ import { readdir, readFile, stat, mkdir, writeFile,rm } from 'fs/promises'
 import matter from 'gray-matter'
 import type { Plugin } from 'vite'
 
-export function genNavPlugin(navName:string,treeName:string): Plugin {
+export function genNavPlugin(navName:string,treeName:string,baseUrl:string): Plugin {
     return {
         name: 'gen-nav',
         async buildStart() {
@@ -116,7 +116,12 @@ export function genNavPlugin(navName:string,treeName:string): Plugin {
                                 sticky: false
                             }
                         }
-                        
+                        let coverPath = itemData.cover;
+                        if (coverPath && !coverPath.startsWith('http') && baseUrl!=='/') {
+                            // 如果 cover 不以 http 开头，并且存在基础路径，则加上基础路径
+                            coverPath = `${baseUrl}/${coverPath}`.replace(/\/+/g, '/'); // 避免重复的斜杠
+                            itemData.cover=coverPath
+                        }
                         nav.push(itemData)
                         parent.children.push({ type: 'post', title: itemData.title, path: route })
                     }

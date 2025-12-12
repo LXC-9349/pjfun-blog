@@ -302,7 +302,7 @@ import NavTree from '@/components/NavTree.vue'
 import Footer from '@/components/Footer.vue'
 import { t, getLanguage } from '@/utils/i18n'
 import {HOT_TAGS, SITE_CONFIG} from '@/constants'
-import {getEnvVariable} from "@/utils/tool";
+import {formatDate, getEnvVariable} from "@/utils/tool";
 
 const allPosts = ref<any[]>([])
 const latestPosts = ref<any[]>([])
@@ -384,20 +384,6 @@ const setupObserver = () => {
   })
 }
 
-// 格式化日期
-const formatDate = (dateString: string) => {
-  if (!dateString) return t('unknownDate') || '未知日期'
-  try {
-    const date = new Date(dateString)
-    if (isNaN(date.getTime())) return dateString
-    return currentLang.value === 'zh'
-        ? date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
-        : date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
-  } catch {
-    return dateString
-  }
-}
-
 const toggleLanguage = () => {
   const newLang = currentLang.value === 'zh' ? 'en' : 'zh'
   currentLang.value = newLang
@@ -421,9 +407,10 @@ onMounted(async () => {
     window.addEventListener('scroll', handleScroll);
     const nvName=getEnvVariable('PJ_BLOG_NAV_NAME')
     const treeName=getEnvVariable('PJ_BLOG_TREE_NAME')
+    const base=getEnvVariable('VITE_BASE')||'/'
     const [navRes, treeRes] = await Promise.all([
-      fetch(`/generated/${nvName}`),
-      fetch(`/generated/${treeName}`)
+      fetch(`${base}generated/${nvName}`),
+      fetch(`${base}generated/${treeName}`)
     ])
 
     const posts = await navRes.json()

@@ -24,6 +24,7 @@ export default defineConfig((config) => {
     const isProduction = config.mode === 'production';
     // 获取 VITE_BASE 环境变量，如果未设置则根据是否为生产环境决定默认值
     const base = process.env.VITE_BASE || '/';
+    // const base = '/pjfun-blog/';
     console.log('base:', base)
     //开启cdn打包
     const openCdn = isProduction;
@@ -59,7 +60,7 @@ export default defineConfig((config) => {
             }),
             UnoCSS(),
             Icons({compiler: 'vue3', autoInstall: true}),  // 新增：自动按需加载所有 iconify-icon
-            genNavPlugin(PJ_BLOG_NAV_NAME,PJ_BLOG_TREE_NAME),
+            genNavPlugin(PJ_BLOG_NAV_NAME,PJ_BLOG_TREE_NAME,base),
             VitePWA({
                 registerType: 'autoUpdate',
                 workbox: {

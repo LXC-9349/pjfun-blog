@@ -1,3 +1,5 @@
+import {getLanguage, t} from "@/utils/i18n";
+
 /**
  * 获取环境变量值
  * 优先级顺序：
@@ -23,6 +25,8 @@ export function getEnvVariable(key: string, defaultValue?: string): string | und
     // 2. 检查 import.meta.env（Vite 环境变量）
     try {
         switch (key) {
+            case 'VITE_BASE':
+                return import.meta.env.VITE_BASE || defaultValue;
             case 'VITE_TITLE':
                 return import.meta.env.VITE_TITLE || defaultValue;
             case 'VITE_BLOG_PASSWORD_HASH':
@@ -616,4 +620,18 @@ export function dismissToast(toastId: Id): void {
  */
 export function dismissAllToasts(): void {
     (toast as any).dismiss();
+}
+
+export const formatDate = (dateString: string) => {
+    if (!dateString) return t('unknownDate')
+    try {
+        const date = new Date(dateString)
+        const currentLang=getLanguage()
+        if (isNaN(date.getTime())) return dateString
+        return currentLang === 'zh'
+            ? date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
+            : date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+    } catch {
+        return dateString
+    }
 }

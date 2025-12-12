@@ -127,8 +127,11 @@ async function mountApp() {
       routes.push(passwordRoute)
     }
 
+    // 获取 Vite 配置的基础路径
+    const base = import.meta.env.BASE_URL || '/';
+
     const router = createRouter({
-        history: createWebHistory(),
+        history: createWebHistory(base),
         routes
     })
 

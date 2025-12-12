@@ -148,7 +148,7 @@ import { ref, onMounted } from 'vue'
 import { getFavorites, removeFavorite as removeFavoriteUtil } from '@/utils/favorites'
 import { t, getLanguage } from '@/utils/i18n'
 import { SITE_CONFIG } from '@/constants'
-import {confirmDialog} from "@/utils/tool";
+import {confirmDialog, formatDate} from "@/utils/tool";
 
 const favorites = ref<any[]>([])
 const loading = ref(true)
@@ -177,19 +177,6 @@ const clearAllFavorites = () => {
       loadFavorites()
     }
   });
-}
-
-const formatDate = (dateString: string) => {
-  if (!dateString) return t('unknownDate')
-  try {
-    const date = new Date(dateString)
-    if (isNaN(date.getTime())) return dateString
-    return currentLang.value === 'zh'
-      ? date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
-      : date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
-  } catch {
-    return dateString
-  }
 }
 
 const toggleLanguage = () => {
