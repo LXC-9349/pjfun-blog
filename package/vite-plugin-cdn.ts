@@ -26,13 +26,26 @@ export default function vitePluginCdn(base:string): Plugin {
 
         // 过滤 bundle，只保留注入到 index.html 的文件
         const injectedBundleFiles = Object.values(bundle).filter((file: any) => {
-          return injectedFiles.some(injected =>
-              file.fileName === injected.replace(/^\/+/g, '') // 移除路径前缀
-          );
+          // 从完整路径中提取文件名部分进行比较
+          return injectedFiles.some(injected => {
+            // 移除查询参数和hash
+            const cleanInjected = injected.split(/[?#]/)[0];
+            // 移除base路径前缀
+            const relativePath = cleanInjected.replace(new RegExp(`^${base.replace(/\/$/, '')}/?`), '');
+            // 移除开头的斜杠
+            const normalizedPath = relativePath.replace(/^\/+/, '');
+            return file.fileName === normalizedPath;
+          });
         });
 
         if (config.command === 'build') {
-          console.log('Files injected into index.html:', injectedBundleFiles.map((file: any) => file.fileName));
+          console.log('======= DEBUG INFO =======');
+          console.log('Base path:', base);
+          console.log('All bundle files:', Object.values(bundle).map((file: any) => file.fileName));
+          console.log('JS files found in HTML:', jsFiles);
+          console.log('Injected files:', injectedFiles);
+          console.log('Injected bundle files:', injectedBundleFiles.map((file: any) => file.fileName));
+          console.log('=========================');
         }
 
         // ========== STEP 1: 移除所有 injectedBundleFiles 对应的标签 ==========
@@ -42,9 +55,9 @@ export default function vitePluginCdn(base:string): Plugin {
           const scriptRegex = new RegExp(`<script[^>]*src=["']\\/?${fileName}["'][^>]*>`, 'g');
           html = html.replace(scriptRegex, ''); // 移除 script 标签
         });
+
         // ========== STEP 2: 注入自定义加载逻辑 ==========
         const pjJsResources = injectedBundleFiles.map((file: any) => `'/${file.fileName}'`).join(',');
-        console.log('pjJsResources:',pjJsResources)
         const originalScriptTag = `
         <script>
             const pjJsResources=[${pjJsResources}]

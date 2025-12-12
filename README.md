@@ -6,6 +6,11 @@
   <img src="https://img.shields.io/badge/TypeScript-Support-blue" alt="TypeScript">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
 </div>
+<div align="center">
+    <p>
+        <a href="https://github.com/LXC-9349/pjfun-blog/blob/main/README.md">简体中文</a> | <a href="https://github.com/LXC-9349/pjfun-blog/blob/main/README.en.md">English</a> | <a href="https://pjfun.top">主页</a>
+    </p>
+</div>
 
 ## 🌟 简介
 

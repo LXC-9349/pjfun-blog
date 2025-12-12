@@ -15,6 +15,12 @@ sticky: true
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
 </div>
 
+<div align="center">
+    <p>
+        <a target="_blank" href="https://github.com/LXC-9349/pjfun-blog/blob/main/README.md">简体中文</a> | <a target="_blank"  href="https://github.com/LXC-9349/pjfun-blog/blob/main/README.en.md">English</a> | <a target="_blank"  href="https://pjfun.top">主页</a>
+    </p>
+</div>
+
 ## 🌟 简介
 
 PJ Blog 是一个零后端、纯静态、顶级动效、全球秒开的现代化个人博客系统。它采用最新的前端技术栈构建，具有响应式设计、暗黑模式、平滑滚动、动画效果等特性，让你轻松拥有一个高性能的技术博客。
