@@ -1,0 +1,8 @@
+{
+  "name": "pjfun-blog",
+  "compatibility_date": "2024-09-25",
+  "main": "worker.js",
+  "assets": {
+    "directory": "./dist"
+  }
+}

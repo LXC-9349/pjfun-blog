@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/icon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pjfun-blog</title>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "PJ Blog",
+      "url": "https://pjfun.top/"
+    }
+    </script>
+    
+    <!-- PWA Manifest -->
+    <% if (process.env.NODE_ENV === 'production') { %>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <% } %>
+    <meta name="theme-color" content="#ffffff"/>
+  </head>
+    <style>
+      :root {
+        --primary-color: #3b82f6;
+        --secondary-color: #8b5cf6;
+        --background-color: #f8fafc;
+        --text-color: #0f172a;
+        --loader-size: 80px;
+        --transition-duration: 0.3s;
+      }
+
+      html, body, #app {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+      }
+
+      .loading-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: var(--background-color);
+        flex-direction: column;
+      }
+
+      .logo {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+      }
+
+      .logo span {
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      .loader {
+        width: var(--loader-size);
+        height: var(--loader-size);
+        border: 5px solid #e2e8f0;
+        border-top: 5px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .loading-text {
+        margin-top: 20px;
+        font-size: 16px;
+        color: var(--text-color);
+        font-weight: 500;
+        letter-spacing: 0.5px;
+      }
+
+      .dots {
+        display: inline-block;
+        width: 20px;
+      }
+
+      .dots::after {
+        content: '.';
+        animation: dots 1.5s infinite;
+      }
+
+      @keyframes dots {
+        0%, 20% { content: '.'; }
+        40% { content: '..'; }
+        60%, 100% { content: '...'; }
+      }
+
+      /* 响应式适配 */
+      @media (max-width: 768px) {
+        .logo {
+          width: 50px;
+          height: 50px;
+          margin-bottom: 20px;
+        }
+        
+        .logo span {
+          font-size: 20px;
+        }
+        
+        .loading-text {
+          font-size: 14px;
+        }
+      }
+    </style>
+  <body>
+      <div id="app">
+          <div class="loading-container">
+              <div class="logo">
+                  <span>P</span>
+              </div>
+              <div class="loader"></div>
+              <div class="loading-text">Loading<span class="dots"></span></div>
+          </div>
+      </div>
+      <noscript>
+          <div style="text-align: center">请开启 JavaScript</div>
+      </noscript>
+    <script type="module" src="/src/main.ts"></script>
+  <script>  window.PJ_BLOG_NAV_NAME = '<%= PJ_BLOG_NAV_NAME %>';
+  window.PJ_BLOG_TREE_NAME = '<%= PJ_BLOG_TREE_NAME %>';
+  </script>
+  <script>
+  window.console && window.console.log && console.log(
+    '%c pjfun.top \n%c有些事，琢磨来琢磨去只会头痛，悟透了又心疼。\n' +
+    '所以，搁下纠结，不求所不得，何苦自寻烦恼。\n' +
+    '轻装上阵，放飞心情，尽情享受每个当下。',
+    'font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;font-size:64px;color:#00bbee;-webkit-text-fill-color:#00bbee;-webkit-text-stroke: 1px #00bbee;',
+    'color:#5961f9;background:#f0f2ff;font-size:14px;line-height:22px;padding:8px 12px;border-radius:4px;font-family:"PingFang SC",Arial,sans-serif;box-shadow:0 2px 4px rgba(0,0,0,0.1);margin: 8px 0;'
+  );
+  </script>
+  <% if (cdn) { %>
+  <script>
+  <% for (const item of global_cdn) { %><%- item %>
+  <% } %>
+  // 定义资源列表
+  const mainJs = [<% for (const item of mainJsList) { %>`<%= item %>`,<% } %>];
+  const cssResources = [<% for (const item of cssList) { %>`<%= item %>`,<% } %>];
+  const jsResources = [<% for (const item of jsList) { %>`<%= item %>`,<% } %>];
+  </script>
+  <script replace />
+  <% } %>
+  <script>
+  (function() {
+    let progress = 0;
+    const loadingText = document.querySelector('.loading-text');
+    const loadingTexts = ['Loading.', 'Loading..', 'Loading...'];
+    let textIndex = 0;
+    
+    if (loadingText) {
+      const updateText = () => {
+        textIndex = (textIndex + 1) % loadingTexts.length;
+        // We'll keep the animated dots but update for variety
+        setTimeout(updateText, 1500);
+      };
+      updateText();
+    }
+  })();
+
+  </script>
+  </body>
+</html>

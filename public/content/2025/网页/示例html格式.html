@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>现代化网页设计示例</title>
+    <meta name="description" content="这是一个展示现代化网页设计技巧的示例页面，包括响应式布局、动画效果和良好的用户体验设计">
+    <meta name="keywords" content="网页设计, CSS特效, 响应式布局, 动画效果">
+    <meta name="cover" content="/img/d4.webp">
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #8b5cf6;
+            --accent-color: #06b6d4;
+            --background-color: #f8fafc;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .dark-mode {
+            --primary-color: #60a5fa;
+            --secondary-color: #a78bfa;
+            --accent-color: #22d3ee;
+            --background-color: #0f172a;
+            --text-color: #f1f5f9;
+            --border-color: #334155;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+            --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        header {
+            padding: 4rem 0;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            position: relative;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: "";
+            display: block;
+            width: 50px;
+            height: 4px;
+            background: var(--primary-color);
+            margin: 0.5rem auto;
+            border-radius: 2px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .card {
+            background: var(--background-color);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .card p {
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+
+        .code-section {
+            padding: 4rem 0;
+            background-color: #1e293b;
+            color: #f8fafc;
+        }
+
+        .code-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #0f172a;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .code-header {
+            background: #334155;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .code-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #eab308; }
+        .dot-green { background: #22c55e; }
+
+        .code-title {
+            margin-left: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        pre {
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .code-keyword {
+            color: #f97316;
+        }
+
+        .code-function {
+            color: #60a5fa;
+        }
+
+        .code-string {
+            color: #34d399;
+        }
+
+        .code-comment {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        footer {
+            padding: 4rem 0 3rem;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1>现代化网页设计</h1>
+            <p class="subtitle">探索现代Web设计的最佳实践，包括响应式布局、动画效果和用户体验优化</p>
+            <!-- 添加视频播放器 -->
+            <div class="video-container" style="margin-top: 2rem; text-align: center;">
+                <video controls preload="metadata"
+                    style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: var(--card-shadow);">
+                    <source src="https://img-baofun.zhhainiao.com/pcwallpaper_ugc/preview/19c9694b289f936f3841ccbcfaa269e3_preview.mp4" type="video/mp4">
+                    <source src="https://img-baofun.zhhainiao.com/pcwallpaper_ugc/preview/8ded43cfacffefec1c681f99859543cd_preview.mp4" type="video/mp4">
+                    <source src="https://img-baofun.zhhainiao.com/pcwallpaper_ugc/preview/fd39802e5f1c034fb556b29b3f5c329b_preview.mp4" type="video/mp4">
+                    您的浏览器不支持视频播放。
+                </video>
+            </div>
+        </div>
+    </header>
+
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">核心特性</h2>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <h3>响应式设计</h3>
+                    <p>采用Flexbox和Grid布局，完美适配各种屏幕尺寸，从手机到桌面显示器都能提供最佳浏览体验。</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                    </div>
+                    <h3>流畅动画</h3>
+                    <p>运用CSS3过渡和动画效果，创造自然流畅的交互体验，让界面元素生动有趣而不失优雅。</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                        </svg>
+                    </div>
+                    <h3>安全可靠</h3>
+                    <p>遵循Web安全最佳实践，防止XSS攻击，确保用户数据安全，建立信任可靠的用户体验。</p>
+                </div>
+            </div>
+
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z"/>
+                        </svg>
+                    </div>
+                    <h3>性能优化</h3>
+                    <p>通过代码分割、懒加载和缓存策略，显著提升页面加载速度，减少用户等待时间。</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <h3>无障碍访问</h3>
+                    <p>遵循WCAG标准，确保残障用户也能顺畅使用，体现包容性设计理念。</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.5 6L12 10.5 8.5 8 12 5.5 15.5 8zM12 19c-3.87 0-7-3.13-7-7 0-.84.16-1.64.42-2.39L12 13.5l6.58-3.89c.26.75.42 1.55.42 2.39 0 3.87-3.13 7-7 7z"/>
+                        </svg>
+                    </div>
+                    <h3>跨平台兼容</h3>
+                    <p>兼容主流浏览器和操作系统，确保在各种环境下都能稳定运行，提供一致体验。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-section">
+        <div class="container">
+            <h2 class="section-title" style="color: white;">示例代码</h2>
+            
+            <div class="code-container">
+                <div class="code-header">
+                    <div class="code-dots">
+                        <div class="dot dot-red"></div>
+                        <div class="dot dot-yellow"></div>
+                        <div class="dot dot-green"></div>
+                    </div>
+                    <div class="code-title">modern-design.js</div>
+                </div>
+                <pre><code><span class="code-comment">// 创建现代化网页交互效果</span>
+<span class="code-keyword">function</span> <span class="code-function">initModernDesign</span>() {
+  <span class="code-keyword">const</span> themeToggle = document.<span class="code-function">getElementById</span>(<span class="code-string">'themeToggle'</span>);
+  
+  <span class="code-comment">// 主题切换功能</span>
+  themeToggle.<span class="code-function">addEventListener</span>(<span class="code-string">'click'</span>, () => {
+    document.body.<span class="code-function">classList</span>.<span class="code-function">toggle</span>(<span class="code-string">'dark-mode'</span>);
+    
+    <span class="code-keyword">const</span> isDarkMode = document.body.<span class="code-function">classList</span>.<span class="code-function">contains</span>(<span class="code-string">'dark-mode'</span>);
+    localStorage.<span class="code-function">setItem</span>(<span class="code-string">'theme'</span>, isDarkMode ? <span class="code-string">'dark'</span> : <span class="code-string">'light'</span>);
+  });
+
+  <span class="code-comment">// 恢复保存的主题</span>
+  <span class="code-keyword">const</span> savedTheme = localStorage.<span class="code-function">getItem</span>(<span class="code-string">'theme'</span>);
+  <span class="code-keyword">if</span> (savedTheme === <span class="code-string">'dark'</span>) {
+    document.body.<span class="code-function">classList</span>.<span class="code-function">add</span>(<span class="code-string">'dark-mode'</span>);
+  }
+}
+
+<span class="code-comment">// 页面加载完成后初始化</span>
+document.<span class="code-function">addEventListener</span>(<span class="code-string">'DOMContentLoaded'</span>, initModernDesign);</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <button class="cta-button" onclick="alert('感谢体验现代化网页设计示例！')">开始使用</button>
+            <p style="margin-top: 2rem; opacity: 0.7;">© 2025 现代化网页设计示例. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 创建现代化网页交互效果
+        function initModernDesign() {
+            const themeToggle = document.getElementById('themeToggle');
+            
+            // 主题切换功能
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+            });
+
+            // 恢复保存的主题
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initModernDesign);
+    </script>
+</body>
+</html>
