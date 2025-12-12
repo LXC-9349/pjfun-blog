@@ -333,25 +333,14 @@ export const I18N_CONFIG = {
 
 [示例网站：https://pjfun-blog.vercel.app/](https://pjfun-blog.vercel.app/)
 访问密码：123456
-####  Netlify
-点击以下按钮即可将项目快速部署到 Netlify：
-
-<a href="https://app.netlify.com/start/deploy?repository=https://github.com/LXC-9349/pjfun-blog" target="_blank">
-  <img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify">
-</a>
-
-**注意**：请将按钮链接中的 `https://github.com/LXC-9349/pjfun-blog` 替换为你的实际 Git 仓库地址。
-
-
-[示例网站：https://stately-crisp-a560ad.netlify.app/](https://stately-crisp-a560ad.netlify.app/)
-
+ 
 #### 腾讯云(国内) edgeone pages
 
 <a href="https://console.cloud.tencent.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog&project-name=pjfun-blog&root-directory=.%2F" target="_blank">
   <img src="https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg" alt="使用 EdgeOne Pages 部署">
 </a>
 
-[示例网站：https://cdlog.pjfun.top/](https://cdlog.pjfun.top/)
+[示例网站：https://cnblog.pjfun.top/](https://cnblog.pjfun.top/)
 
 
 
@@ -410,6 +399,19 @@ export const I18N_CONFIG = {
 5. 选择 `gh-pages` 分支并保存
 
 **注意**：请将 `<username>` 替换为您的 GitHub 用户名，将 `<repository>` 替换为您的仓库名称。
+
+####  Netlify(免费的不推荐)
+点击以下按钮即可将项目快速部署到 Netlify：
+
+<a href="https://app.netlify.com/start/deploy?repository=https://github.com/LXC-9349/pjfun-blog" target="_blank">
+  <img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify">
+</a>
+
+**注意**：请将按钮链接中的 `https://github.com/LXC-9349/pjfun-blog` 替换为你的实际 Git 仓库地址。
+
+
+[//]: # ([示例网站：https://stately-crisp-a560ad.netlify.app/]&#40;https://stately-crisp-a560ad.netlify.app/&#41;)
+
 
 #### Firebase Hosting
 
