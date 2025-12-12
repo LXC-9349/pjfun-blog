@@ -15,7 +15,7 @@
               spellcheck="false"
               @keydown="handleInputKeydown"
           />
-          <kbd class="kbd kbd-xs hidden sm:block text-gray-500 dark:text-gray-400">Esc</kbd>
+          <kbd @click="isOpen=false" class="kbd kbd-xs hidden sm:block text-gray-500 dark:text-gray-400">Esc</kbd>
         </div>
         <div class="max-h-80 overflow-y-auto">
           <template v-if="results.length">
