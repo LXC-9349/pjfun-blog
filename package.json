@@ -9,9 +9,6 @@
     "preview": "vite preview",
     "gen:encrypt-key": "node scripts/generate-encryption-key.cjs"
   },
-  "engines": {
-    "node": ">=20.18.1"
-  },
   "dependencies": {
     "@vueuse/core": "^14.1.0",
     "@vueuse/motion": "^3.0.3",
