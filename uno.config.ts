@@ -1,15 +1,16 @@
-import { defineConfig } from 'unocss'
-import { presetWind3, presetIcons, transformerVariantGroup, transformerDirectives } from 'unocss'
+import {defineConfig} from 'unocss'
+import {presetWind3, presetIcons, transformerVariantGroup, transformerDirectives} from 'unocss'
 
 export default defineConfig({
     presets: [
         presetWind3(),
-        presetIcons({ 
-          scale: 1.2,
-          extraProperties: {
-            'display': 'inline-block',
-            'vertical-align': 'middle',
-          }
+        presetIcons({
+            scale: 1.2,
+            extraProperties: {
+                'display': 'inline-block',
+                'vertical-align': 'middle',
+                // cdn: 'https://esm.sh/',
+            }
         }),
     ],
     transformers: [transformerVariantGroup(), transformerDirectives()],
@@ -25,14 +26,14 @@ export default defineConfig({
             primary: '#3b82f6',
         },
         animation: {
-          keyframes: {
-            'fade-in': '{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}',
-            'fade-out': '{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(10px)}}',
-          },
-          durations: {
-            'fade-in': '0.3s',
-            'fade-out': '0.3s',
-          }
+            keyframes: {
+                'fade-in': '{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}',
+                'fade-out': '{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(10px)}}',
+            },
+            durations: {
+                'fade-in': '0.3s',
+                'fade-out': '0.3s',
+            }
         }
     },
 })

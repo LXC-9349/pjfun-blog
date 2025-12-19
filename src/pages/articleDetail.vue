@@ -1,8 +1,8 @@
 <template>
-  <Transition name="fade">
+  <Transition name="fade" mode="out-in">
     <div v-if="showLightbox" class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-4 cursor-zoom-out" @click="showLightbox = false">
-      <img :src="lightboxImg" class="max-w-full max-h-screen object-contain rounded-sm shadow-2xl scale-in" :alt="t('lightboxImage')" @click.stop />
-      <button class="absolute top-6 right-6 text-white/50 hover:text-white p-2 transition-colors" @click="showLightbox = false" aria-label="Close Lightbox">
+      <img :src="lightboxImg" class="max-w-full max-h-screen object-contain rounded-sm shadow-2xl scale-in animate-zoom-in" :alt="t('lightboxImage')" @click.stop />
+      <button class="absolute top-6 right-6 text-white/50 hover:text-white p-2 transition-colors transform hover:scale-110 hover:rotate-90" @click="showLightbox = false" aria-label="Close Lightbox">
         <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
         </svg>
@@ -12,21 +12,22 @@
 
   <!-- 现代化水平进度条：位于底部 -->
   <div
-      class="fixed bottom-0 left-0 w-full h-1 bg-transparent z-50 transition-opacity duration-300"
+      v-if="!isOfficeFile"
+      class="fixed bottom-0 left-0 w-full h-1 bg-transparent z-50 transition-all duration-500 ease-out-expo"
       :class="{ 'opacity-0': !showProgress, 'opacity-100': showProgress }"
   >
     <div
-        class="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 rounded-r-full shadow-lg transition-all duration-200 ease-out"
+        class="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 rounded-r-full shadow-lg transition-all duration-300 ease-out"
         :style="{ width: progress + '%' }"
     >
     </div>
   </div>
 
   <!-- 将返回按钮和主题切换按钮放在一起 -->
-  <div class="fixed top-4 left-4 z-[60]">
+  <div class="fixed lg:hidden top-4 left-4 z-[60]">
     <router-link
         to="/"
-        class="flex items-center gap-2 px-3 py-3 bg-black/20 dark:bg-white/20 backdrop-blur-md rounded-full hover:bg-black/30 dark:hover:bg-white/30 transition border border-white/20 dark:border-white/30 group text-white"
+        class="flex items-center gap-2 px-3 py-3 bg-black/20 dark:bg-white/20 backdrop-blur-md rounded-full hover:bg-black/30 dark:hover:bg-white/30 transition-all duration-300 border border-white/20 dark:border-white/30 group text-white transform hover:scale-110"
     >
       <svg class="w-4 h-4 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -35,7 +36,7 @@
   </div>
 
   <!-- 主题切换按钮 -->
-  <div class="fixed top-4 right-4 z-[60]">
+  <div class="fixed top-4 right-4 z-[9999] transform hover:scale-110 transition-all duration-300 hover:rotate-12">
     <ThemeToggle />
   </div>
 
@@ -48,11 +49,11 @@
       <!-- 封面中的标题信息 -->
       <div class="absolute bottom-0 left-0 w-full p-8 md:p-16 text-white z-10 max-w-7xl mx-auto">
         <div class="flex flex-wrap gap-3 mb-6 opacity-0 animate-slide-up" style="animation-delay: 0.1s">
-          <span v-for="tag in articleMeta.tags" :key="tag" class="px-4 py-1.5 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/30 backdrop-blur-md rounded-full text-xs font-semibold tracking-wide transition-colors">
+          <span v-for="tag in articleMeta.tags" :key="tag" class="px-4 py-1.5 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/30 backdrop-blur-md rounded-full text-xs font-semibold tracking-wide transition-all duration-300 hover:scale-110">
             #{{ tag }}
           </span>
         </div>
-        <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-8 opacity-0 animate-slide-up tracking-tight" style="animation-delay: 0.2s">
+        <h1 class="text-3xl md:text-4xl font-extrabold leading-tight mb-8 opacity-0 animate-slide-up tracking-tight" style="animation-delay: 0.2s">
           {{ articleMeta.title }}
         </h1>
         <div class="flex items-center gap-6 text-sm md:text-base font-medium opacity-0 animate-slide-up text-gray-300" style="animation-delay: 0.3s">
@@ -62,7 +63,8 @@
             </svg>
             {{ articleMeta.date }}
           </time>
-          <span class="w-1 h-1 bg-gray-500 rounded-full"></span> <span class="flex items-center gap-2">
+          <span v-if="readingTime.length>0" class="w-1 h-1 bg-gray-500 rounded-full"></span>
+          <span v-if="readingTime.length>0" class="flex items-center gap-2">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             {{ readingTime }}
           </span>
@@ -72,14 +74,14 @@
 
     <!-- 无封面时显示的标题 -->
     <div v-else class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8 text-center">
-      <div class="flex flex-wrap justify-center gap-3 mb-6">
-        <span v-for="tag in articleMeta.tags" :key="tag" class="px-4 py-1.5 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/30 backdrop-blur-md rounded-full text-xs font-semibold tracking-wide transition-colors text-blue-600 dark:text-blue-400">
+      <h1 class="text-3xl md:text-3xl font-extrabold leading-tight mb-8 tracking-tight text-gray-900 dark:text-white animate-fade-in-down">
+        {{ articleMeta.title }}
+      </h1>
+      <div class="flex dark:text-white dark:text-warmGray flex-wrap justify-center gap-3 mb-2 opacity-0 animate-slide-up" style="animation-delay: 0.1s">
+        <span v-for="tag in articleMeta.tags" :key="tag" class="px-4 py-1.5 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/30 backdrop-blur-md rounded-full text-xs font-semibold tracking-wide transition-all duration-300 hover:scale-110">
           #{{ tag }}
         </span>
       </div>
-      <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-8 tracking-tight text-gray-900 dark:text-white">
-        {{ articleMeta.title }}
-      </h1>
       <div class="flex items-center justify-center gap-6 text-base font-medium text-gray-500 dark:text-gray-400">
         <time class="flex items-center gap-2">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -87,18 +89,31 @@
           </svg>
           {{ articleMeta.date }}
         </time>
-        <span class="w-1 h-1 bg-gray-500 rounded-full"></span> <span class="flex items-center gap-2">
+        <span v-if="readingTime.length>0" class="w-1 h-1 bg-gray-500 rounded-full"></span>
+        <span v-if="readingTime.length>0" class="flex items-center gap-2">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           {{ readingTime }}
         </span>
       </div>
     </div>
 
-    <div class="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-5">
       <div class="flex flex-col lg:flex-row gap-5 relative">
 
         <div class="hidden lg:flex flex-col gap-4 sticky top-32 h-fit items-end w-16 shrink-0 order-first">
           <div class="flex flex-col gap-4 p-2 bg-white/80 dark:bg-[#161b22]/80 backdrop-blur-lg rounded-full border border-gray-200 dark:border-gray-700 shadow-xl">
+            <div class="tooltip tooltip-right" :data-tip="t('backToHome')">
+              <router-link
+                  to="/"
+                  class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all duration-300 transform hover:scale-110"
+                  :aria-label="t('backToHome')"
+              >
+                <svg class="w-5 h-5 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+              </router-link>
+            </div>
+            <div class="h-px w-6 bg-gray-200 dark:bg-gray-700 mx-auto"></div>
             <div class="tooltip tooltip-right" :data-tip="t('share')">
               <button @click="openShareModal" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-all duration-300 group" :aria-label="t('share')">
                 <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -110,7 +125,7 @@
             <div class="h-px w-6 bg-gray-200 dark:bg-gray-700 mx-auto"></div>
 
             <div class="tooltip tooltip-right" :data-tip="t('print')">
-              <button @click="handlePrint" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all duration-300 group" :aria-label="t('print')">
+              <button @click="handlePrint" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all duration-300 group transform hover:scale-110" :aria-label="t('print')">
                 <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                 </svg>
@@ -127,7 +142,7 @@
               >
                 <svg 
                   class="w-5 h-5 group-hover:scale-110 transition-transform" 
-                  :class="{ 'fill-current': isFavorited }"
+                  :class="{ 'fill-current animate-heartbeat': isFavorited }"
                   viewBox="0 0 24 24" 
                   stroke="currentColor" 
                   fill="none"
@@ -142,29 +157,22 @@
               </button>
             </div>
 
+            <div class="h-px w-6 bg-gray-200 dark:bg-gray-700 mx-auto"></div>
+
             <div class="tooltip tooltip-right" :data-tip="fontSizeLabels[fontSizeLevel]">
-              <button @click="fontSizeLevel = (fontSizeLevel + 1) % 3" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all duration-300" :aria-label="t('adjustFontSize')">
+              <button @click="fontSizeLevel = (fontSizeLevel + 1) % 3" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all duration-300 transform hover:scale-110 hover:rotate-12" :aria-label="t('adjustFontSize')">
                 <span class="font-serif font-bold transition-all" :class="fontSizeClasses[fontSizeLevel]">T</span>
               </button>
-            </div>
-            <div v-show="showBackToTop" class="transition-all duration-1000 ease-in-out">
-              <div class="h-px w-6 bg-gray-200 dark:bg-gray-700 mx-auto"></div>
-              <div class="tooltip tooltip-right" :data-tip="t('backToHome')">
-                <router-link
-                    to="/"
-                    class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all duration-300 transform hover:scale-110"
-                    :aria-label="t('backToHome')"
-                >
-                  <svg class="w-5 h-5 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                  </svg>
-                </router-link>
-              </div>
             </div>
           </div>
         </div>
 
-        <main class="flex-1 w-full max-w-4xl mx-auto min-w-0">
+        <main 
+            class="flex-1 w-full" 
+            :class="currentFileExtension && ['pdf', 'doc', 'docx', 'xls', 'xlsx'].includes(currentFileExtension) 
+              ? 'max-w-full mx-auto' 
+              : 'max-w-4xl mx-auto min-w-0'"
+          >
           <div v-if="loading" class="space-y-12 animate-pulse max-w-3xl mx-auto">
             <div v-for="i in 3" :key="i">
               <div class="h-8 bg-gray-200 dark:bg-gray-800 rounded w-1/3 mb-6"></div>
@@ -175,11 +183,18 @@
               </div>
             </div>
           </div>
-
+          <div v-else-if="isOfficeFile" class="document-viewer w-full">
+            <DocumentViewer 
+              :url="documentUrl"
+              :path="artPath"
+              :extension="currentFileExtension" 
+              :title="articleMeta.title"
+            />
+          </div>
           <div
               v-else
               :key="componentKey"
-              class="prose dark:prose-invert max-w-none prose-headings:scroll-mt-28 prose-img:rounded-xl prose-a:text-blue-600 dark:prose-a:text-blue-400 hover:prose-a:underline prose-pre:bg-transparent prose-pre:p-0 prose-pre:m-0 markdown-body"
+              class="prose dark:prose-invert max-w-none prose-headings:scroll-mt-28 prose-img:rounded-xl prose-a:text-blue-600 dark:prose-a:text-blue-400 hover:prose-a:underline prose-pre:bg-transparent prose-pre:p-0 prose-pre:m-0 markdown-body animate-fade-in"
               :class="fontSizeClasses[fontSizeLevel]"
               @click="handleContentClick"
               v-html="renderedMarkdown"
@@ -200,7 +215,6 @@
             :reactions-enabled="GISCUS_CONFIG.reactionsEnabled"
             :emit-metadata="GISCUS_CONFIG.emitMetadata"
             :input-position="GISCUS_CONFIG.inputPosition"
-            :theme="GISCUS_CONFIG.theme"
             :lang="GISCUS_CONFIG.lang"
           />
 
@@ -250,7 +264,7 @@
           </div>
         </main>
 
-        <aside class="hidden xl:block w-72 shrink-0">
+        <aside class="hidden xl:block w-72 shrink-0" v-if="headings.length > 0">
           <div class="sticky top-16 max-h-[calc(100vh-8rem)] overflow-y-auto custom-scrollbar pl-4 border-l border-gray-200 dark:border-gray-800 z-100" style="pointer-events: auto; overscroll-behavior: contain;" @wheel.stop>
             <h4 class="font-bold text-gray-900 dark:text-white mb-4 text-xs uppercase tracking-wider opacity-60">{{ t('articleDirectory') }}</h4>
             <div v-if="headings.length === 0" class="text-gray-500 dark:text-gray-400 text-sm">
@@ -306,7 +320,7 @@
   </div>
 
   <Transition name="slide-fade">
-    <div v-if="showMobileToc" class="fixed inset-0 z-[60] lg:hidden">
+    <div v-if="showMobileToc&&headings.length > 0" class="fixed inset-0 z-[60] lg:hidden">
       <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="showMobileToc = false"></div>
       <div class="absolute right-0 top-0 bottom-0 w-3/4 max-w-sm bg-white dark:bg-[#161b22] shadow-2xl p-6 overflow-y-auto">
         <div class="flex justify-between items-center mb-6">
@@ -361,11 +375,13 @@ import DOMPurify from 'dompurify'
 import hljs from 'highlight.js'
 import '@/github-markdown.css'
 import ShareModal from '@/components/ui/ShareModal.vue'
+import DocumentViewer from '@/components/DocumentViewer.vue'
 import GiscusComment from '@/components/GiscusComment.vue'
 import { GISCUS_CONFIG } from '@/constants'
 import {addFavorite, isFavorite, removeFavorite} from "@/utils/favorites";
 import type {FavoriteItem} from "@/utils/favorites"
 import {formatDate, getEnvVariable} from "@/utils/tool";
+import { addRecentArticle, getReadingProgress, saveReadingProgress } from '@/utils/reading-progress';
 
 // 创建 marked 实例并配置一次
 const renderer = new Renderer()
@@ -405,11 +421,19 @@ const articleMeta = ref({
   desc: '',
   tags: [] as string[],
   excerpt: '',
-  cover: ''
+  cover: '',
+  extension: '' // 添加扩展字段
 })
+const documentUrl = ref('')
+const currentFileExtension = ref('')
+
+// 阅读进度自动保存定时器
+let saveProgressTimer: number | null = null
 
 // 当前页面URL，供分享使用
 const windowLocation = computed(() => window.location.href)
+
+const isOfficeFile = computed(() => currentFileExtension.value && ['pdf', 'doc', 'docx', 'xls', 'xlsx'].includes(currentFileExtension.value))
 
 // 收藏状态
 const isFavorited = ref(false)
@@ -820,19 +844,14 @@ const handlePrint = () => {
   window.print()
 }
 
-// const copyLink = () => {
-//   navigator.clipboard.writeText(window.location.href).then(() => {
-//     showSuccess(t('linkCopied'))
-//   })
-// }
-
+const artPath=ref<string>('')
 // ==================== 加载文章逻辑 ====================
 const loadArticle = async (filePath: string) => {
   window.scrollTo(0, 0)
   activeHeadingId.value = ''
   if (observer) observer.disconnect() // 在加载新文章前断开旧 observer
-  const decodedPath = decodeURIComponent(filePath);
-  if (!decodedPath) {
+  artPath.value = decodeURIComponent(filePath);
+  if (!artPath.value) {
     loading.value = false
     return
   }
@@ -847,16 +866,55 @@ const loadArticle = async (filePath: string) => {
     const navData = await navRes.json();
     
     // 根据路径查找文章信息
-    const articleInfo = navData.find((item: any) => item.path === decodedPath || item.path === decodedPath.slice(0, -3));
+    const articleInfo = navData.find((item: any) => item.path === artPath.value || item.path === artPath.value.slice(0, -3));
+    console.log('articleInfo',articleInfo)
     if (!articleInfo) {
       throw new Error('Not Found');
     }
-    console.log(articleInfo)
-    const actualFilePath=articleInfo.url
+    
+    // 添加到最近浏览的文章
+    addRecentArticle({
+      path: articleInfo.path,
+      title: articleInfo.title,
+      date: articleInfo.date,
+      cover: articleInfo.cover,
+      tags: articleInfo.tags,
+      excerpt: articleInfo.excerpt
+    });
+    
+    const actualFilePath=decodeURIComponent(articleInfo.url)
+    console.log('actualFilePath',actualFilePath)
     // 添加时间戳避免缓存
     const fiveMinuteTimestamp = Math.floor(Date.now() / (5 * 60 * 1000))
     const baseUrl=getEnvVariable('VITE_BASE')||''
-    const res = await fetch(`${baseUrl}${actualFilePath}?t=${fiveMinuteTimestamp}`.replace('//','/'));
+    
+    // 修复URL编码问题 - 确保中文路径被正确处理
+    // 从 nav.json 中可以看到 URL 已经是正确编码的，所以我们直接使用
+    const filePathWithTimestamp = `${baseUrl}${actualFilePath}?t=${fiveMinuteTimestamp}`.replace('//','/');
+
+    // 处理其他文档类型 (Word, Excel)
+    const docExtensions = ['pdf','doc', 'docx', 'xls', 'xlsx'];
+    const fileExtension = articleInfo.extension || actualFilePath.split('.').pop()?.toLowerCase() || '';
+    if (docExtensions.includes(fileExtension)) {
+      articleMeta.value.title = articleInfo.title || t('noArticles');
+      articleMeta.value.date = formatDate(articleInfo.date || '');
+      articleMeta.value.cover = articleInfo.cover || '';
+      articleMeta.value.tags = articleInfo.tags || [];
+      articleMeta.value.excerpt = articleInfo.excerpt || '';
+      articleMeta.value.extension = fileExtension;
+
+      // 设置文档 URL - 直接使用已经编码好的URL
+      documentUrl.value = filePathWithTimestamp;
+      currentFileExtension.value = fileExtension;
+
+      // 设置标题和其他元信息
+      document.title = `${articleInfo.title} - ${SITE_CONFIG.title}`
+      loading.value = false;
+      // await loadDocument(filePathWithTimestamp,fileExtension)
+      return;
+    }
+
+    const res = await fetch(filePathWithTimestamp);
     
     if (!res.ok) throw new Error('Not Found');
 
@@ -913,7 +971,13 @@ const loadArticle = async (filePath: string) => {
     generateTOC()
     setupScrollSpy()
     document.title = `${articleMeta.value.title} - ${SITE_CONFIG.title}`
-
+    // 页面加载完成后恢复阅读进度
+    setTimeout(() => {
+      const progress = getReadingProgress(route.path);
+      if (progress) {
+        window.scrollTo(0, progress.scrollTop);
+      }
+    },300);
   } catch (err) {
     console.error(err)
     html.value = `# 404\n${t('error')}`
@@ -936,6 +1000,16 @@ onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
   // 监听主题变化事件
   window.addEventListener('theme-change', handleThemeChange as EventListener)
+  
+  // 设置定时保存阅读进度（每5秒保存一次）
+  saveProgressTimer = window.setInterval(() => {
+    saveReadingProgress({
+      path: route.path,
+      title: articleMeta.value.title,
+      scrollTop: window.scrollY,
+      timestamp: Date.now()
+    });
+  }, 5000);
 })
 
 onUnmounted(() => {
@@ -946,6 +1020,20 @@ onUnmounted(() => {
   if (observer) observer.disconnect()
   // 移除主题变化事件监听
   window.removeEventListener('theme-change', handleThemeChange as EventListener)
+  
+  // 清除定时保存阅读进度的定时器
+  if (saveProgressTimer) {
+    clearInterval(saveProgressTimer);
+    saveProgressTimer = null;
+  }
+  
+  // 保存阅读进度（页面卸载时最后一次保存）
+  saveReadingProgress({
+    path: route.path,
+    title: articleMeta.value.title,
+    scrollTop: window.scrollY,
+    timestamp: Date.now()
+  });
 })
 
 const scrollToHeading = (id: string) => {
@@ -969,7 +1057,6 @@ const scrollToHeading = (id: string) => {
 </script>
 
 <style scoped>
-/* 动画与过渡 */
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.3s ease;
 }
@@ -1044,7 +1131,6 @@ const scrollToHeading = (id: string) => {
   background-color: rgba(156, 163, 175, 0.4);
 }
 
-/* Tooltip 简单实现 (Tailwind daisyUI 风格, 如果没装 daisyUI 也可以生效因为是原生 CSS) */
 .tooltip {
   position: relative;
   display: inline-block;

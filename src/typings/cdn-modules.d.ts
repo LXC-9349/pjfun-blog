@@ -6,6 +6,7 @@ declare global {
     markedGfmHeadingId: typeof import('marked-gfm-heading-id');
     DOMPurify: typeof import('dompurify');
     hljs: typeof import('highlight.js');
+    pdfjsLib: typeof import('pdfjs-dist');
   }
 }
 

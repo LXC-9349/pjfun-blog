@@ -1,7 +1,11 @@
 <template>
   <Teleport to="body">
     <div v-if="isOpen" class="fixed inset-0 z-[9999] flex items-start justify-center pt-16 bg-black/50 backdrop-blur-sm" @click="isOpen = false">
-      <div @click.stop class="w-full max-w-2xl mx-4 bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden" v-motion :initial="{ y: -80, opacity: 0 }" :enter="{ y: 0, opacity: 1 }">
+      <div @click.stop class="w-full max-w-2xl mx-4 bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden transform transition-all duration-300 ease-out-expo" 
+           v-motion 
+           :initial="{ y: -80, opacity: 0, scale: 0.9 }" 
+           :enter="{ y: 0, opacity: 1, scale: 1, transition: { duration: 400 } }"
+           :leave="{ y: -80, opacity: 0, scale: 0.9, transition: { duration: 300 } }">
         <div class="flex items-center gap-3 p-4 border-b border-gray-200 dark:border-gray-700">
           <IconCarbonSearch class="w-5 h-5 text-blue-500 dark:text-blue-400 flex-shrink-0" />
           <input
@@ -15,7 +19,7 @@
               spellcheck="false"
               @keydown="handleInputKeydown"
           />
-          <kbd @click="isOpen=false" class="kbd kbd-xs hidden sm:block text-gray-500 dark:text-gray-400">Esc</kbd>
+          <kbd @click="isOpen=false" class="kbd kbd-xs hidden sm:block text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer">Esc</kbd>
         </div>
         <div class="max-h-80 overflow-y-auto">
           <template v-if="results.length">
@@ -24,18 +28,18 @@
                 :key="post.path"
                 :to="post.path"
                 @click="isOpen = false"
-                class="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0"
-                :class="{ 'bg-blue-50 dark:bg-blue-900/20': index === selectedIndex }"
+                class="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transform transition-all duration-200"
+                :class="{ 'bg-blue-50 dark:bg-blue-900/20 scale-[1.02]': index === selectedIndex }"
                 @mouseenter="selectedIndex = index"
             >
-              <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-base font-bold text-white flex-shrink-0">
+              <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-base font-bold text-white flex-shrink-0 transform transition-all duration-300 hover:scale-110">
                 {{ post.title[0] }}
               </div>
               <div class="flex-1 min-w-0">
-                <h3 class="font-semibold text-gray-900 dark:text-white truncate text-sm">{{ post.title }}</h3>
+                <h3 class="font-semibold text-gray-900 dark:text-white truncate text-sm transform transition-all duration-200 hover:text-blue-600">{{ post.title }}</h3>
                 <p class="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">{{ post.excerpt || t('excerpt') }}</p>
                 <div v-if="post.tags && post.tags.length" class="flex flex-wrap gap-1 mt-1.5">
-                  <div v-for="tag in post.tags.slice(0, 3)" :key="tag" class="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-xs rounded">
+                  <div v-for="tag in post.tags.slice(0, 3)" :key="tag" class="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-xs rounded transform transition-all hover:scale-110">
                     {{ tag }}
                   </div>
                   <div v-if="post.tags.length > 3" class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs rounded">
@@ -45,11 +49,11 @@
               </div>
             </router-link>
           </template>
-          <div v-else-if="query" class="p-8 text-center text-gray-500 dark:text-gray-400">
-            <IconCarbonSearch class="w-10 h-10 mx-auto mb-3" />
+          <div v-else-if="query" class="p-8 text-center text-gray-500 dark:text-gray-400 animate-fade-in">
+            <IconCarbonSearch class="w-10 h-10 mx-auto mb-3 animate-shake" />
             <p class="text-base">{{ t('noResults') }}</p>
           </div>
-          <div v-else class="p-8 text-center text-gray-500 dark:text-gray-400">
+          <div v-else class="p-8 text-center text-gray-500 dark:text-gray-400 animate-fade-in">
             <IconCarbonSearch class="w-10 h-10 mx-auto mb-3" />
             <p class="text-base">{{ t('startSearching') }}</p>
           </div>
@@ -226,3 +230,40 @@ if (ctrlK) {
 
 
 </script>
+
+<style scoped>
+.ease-out-expo {
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-shake {
+  animation: shake 0.8s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-3px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(3px);
+  }
+}
+</style>

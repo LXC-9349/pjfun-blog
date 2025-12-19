@@ -2,6 +2,7 @@ import { resolve } from 'path'
 import { readdir, readFile, stat, mkdir, writeFile,rm } from 'fs/promises'
 import matter from 'gray-matter'
 import type { Plugin } from 'vite'
+import yaml from 'yaml'
 
 export function genNavPlugin(navName:string,treeName:string,baseUrl:string): Plugin {
     return {
@@ -26,32 +27,75 @@ export function genNavPlugin(navName:string,treeName:string,baseUrl:string): Plu
                         const node = { type: 'folder', title: e, path: `${base}/${e}`, children: [] }
                         parent.children.push(node)
                         await scan(fp, node, `${base}/${e}`)
-                    } else if (/\.(md|html|txt)$/.test(e)) {
-                        const raw = await readFile(fp, 'utf-8')
+                    } else if (/\.(md|html|txt|pdf|docx?|xlsx?)$/.test(e)) {
                         const extension = e.split('.').pop() || 'md'
-                        const slug = e.replace(/\.(md|html|txt)$/, '')
+                        const slug = e.replace(/\.(md|html|txt|pdf|docx?|xlsx?)$/, '')
                         const route = base ? `${base}/${slug}` : `/${slug}`
+                        
+                        // 检查是否存在描述配置文件 (.desc.json 或 .desc.yaml)
+                        let descData: any = null;
+                        try {
+                            const jsonDescPath = fp + '.desc.json';
+                            const yamlDescPath = fp + '.desc.yaml';
+                            
+                            if (await stat(jsonDescPath).catch(() => false)) {
+                                const descRaw = await readFile(jsonDescPath, 'utf-8');
+                                descData = JSON.parse(descRaw);
+                            } else if (await stat(yamlDescPath).catch(() => false)) {
+                                const descRaw = await readFile(yamlDescPath, 'utf-8');
+                                descData = yaml.parse(descRaw);
+                            }
+                        } catch (err) {
+                            console.warn(`读取描述文件失败: ${fp}`, err);
+                        }
+                        
+                        // 对于二进制文件（如PDF、Word、Excel），我们不需要读取内容
+                        let raw = ''
+                        if (['pdf', 'doc', 'docx', 'xls', 'xlsx'].includes(extension)) {
+                            // 对于二进制文件不读取内容
+                        } else {
+                            raw = await readFile(fp, 'utf-8')
+                        }
+                        const lastModifyTime=s.mtime.toISOString()
+                        // 正确处理文件URL，确保中文字符被正确编码
+                        const fileUrl = `/content${route}.${extension}`;
                         
                         let itemData = {
                             type: 'post',
                             title: slug,
                             path: route,
-                            url: `/content${route}.${extension}`,
-                            date: new Date().toISOString(),
+                            url: fileUrl,
+                            date: lastModifyTime,
                             cover: '',
                             tags: [],
                             excerpt: '',
-                            sticky: false
+                            sticky: false,
+                            extension: extension
                         }
                         
-                        if (extension === 'md') {
+                        // 如果存在描述配置文件，则优先使用其中的数据
+                        if (descData) {
+                            itemData = {
+                                type: 'post',
+                                title: descData.title || slug,
+                                path: route,
+                                url: fileUrl,
+                                date: descData.date || lastModifyTime,
+                                cover: descData.cover || '',
+                                tags: descData.tags || [],
+                                excerpt: descData.excerpt || '',
+                                sticky: descData.sticky || false,
+                                extension: extension
+                            };
+                        } else if (extension === 'md') {
                             // 只有 Markdown 文件才解析 frontmatter
                             const { data, content } = matter(raw)
+                            //@ts-ignore
                             itemData = {
                                 type: 'post',
                                 title: data.title || slug,
                                 path: route,
-                                url: `/content${route}.${extension}`,
+                                url: fileUrl,
                                 date: data.date,
                                 cover: data.cover,
                                 tags: data.tags || [],
@@ -89,8 +133,8 @@ export function genNavPlugin(navName:string,treeName:string,baseUrl:string): Plu
                                 type: 'post',
                                 title: title,
                                 path: route,
-                                url: `/content${route}.${extension}`,
-                                date: new Date().toISOString(),
+                                url: fileUrl,
+                                date: lastModifyTime,
                                 cover: cover||'/img/d2.webp',
                                 //@ts-ignore
                                 tags: ['网页'],
@@ -107,13 +151,29 @@ export function genNavPlugin(navName:string,treeName:string,baseUrl:string): Plu
                                 type: 'post',
                                 title: title || slug,
                                 path: route,
-                                url: `/content${route}.${extension}`,
-                                date: new Date().toISOString(),
+                                url: fileUrl,
+                                date: lastModifyTime,
                                 cover: '/img/d3.webp',
                                 //@ts-ignore
                                 tags: ['文本'],
                                 excerpt: excerpt,
-                                sticky: false
+                                sticky: false,
+                                extension: extension
+                            }
+                        } else if (['pdf', 'doc', 'docx', 'xls', 'xlsx'].includes(extension)) {
+                            // 处理 PDF、Word 和 Excel 文件
+                            itemData = {
+                                type: 'post',
+                                title: slug,
+                                path: route,
+                                url: fileUrl,
+                                date: lastModifyTime,
+                                cover: '/img/d7.webp',
+                                //@ts-ignore
+                                tags: extension === 'pdf' ? ['PDF'] : (extension.includes('doc') ? ['Word'] : ['Excel']),
+                                excerpt: `${extension.toUpperCase()}`,
+                                sticky: false,
+                                extension: extension
                             }
                         }
                         let coverPath = itemData.cover;

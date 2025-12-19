@@ -4,7 +4,7 @@
   <transition name="slide-up">
     <div v-if="showUpdate" class="update-notification">
       <div class="update-content">
-        <div class="update-icon">
+        <div class="update-icon animate-bounce">
           <IconComponent name="update" :size="24" />
         </div>
         <div class="update-text">
@@ -44,6 +44,19 @@ startVersionCheck(() => {
 button{
   background: transparent;
 }
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
 </style>
 <style scoped>
 .update-notification {
@@ -65,6 +78,13 @@ button{
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(10px);
   position: relative;
+  transform: translateZ(0); /* 触发硬件加速 */
+  transition: all 0.3s ease;
+}
+
+.update-content:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
 .update-icon {
@@ -104,6 +124,7 @@ button{
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  transform: translateZ(0); /* 触发硬件加速 */
 }
 
 .btn-update {
@@ -112,7 +133,7 @@ button{
 }
 
 .btn-update:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.05);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -123,6 +144,7 @@ button{
 
 .btn-later:hover {
   background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
 }
 
 .btn-close {
@@ -140,10 +162,12 @@ button{
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
 }
 
 .btn-close:hover {
   background: rgba(255, 255, 255, 0.2);
+  transform: rotate(90deg);
 }
 
 .slide-up-enter-active,

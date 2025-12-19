@@ -16,7 +16,7 @@
 
 PJ Blog is a zero-backend, purely static, top-tier animated, globally instant-loading modern personal blog system. Built with the latest front-end technology stack, it features responsive design, dark mode, smooth scrolling, rich animations, and many other modern characteristics, allowing you to easily own a high-performance technical blog.
 
-Simply place `.md`, `.html`, or `.txt` files in the `public/content` directory → run `pnpm build` → deploy to any static site hosting service, and you’ll have your own top-tier technical blog.
+Simply place `.md`, `.html`, `.txt`, PDF, Word, or Excel files in the `public/content` directory → run `pnpm build` → deploy to any static site hosting service, and you’ll have your own top-tier technical blog.
 
 ## 🚀 Tech Stack
 
@@ -53,7 +53,7 @@ Simply place `.md`, `.html`, or `.txt` files in the `public/content` directory �
 - ⚙️ **SEO Optimized** – Structured data, Open Graph, and Twitter Cards
 - 📡 **RSS Support** – Auto-generates RSS, Atom, and JSON Feed
 - 📱 **PWA Support** – Can be installed as a desktop app
-- 🌐 **Multi-format Support** – Supports Markdown, HTML, and TXT articles
+- 🌐 **Multi-format Support** – Supports Markdown, HTML, TXT, PDF, Word, and Excel documents
 
 ## 🔐 Password Protection
 
@@ -111,7 +111,7 @@ Once enabled, visitors will be redirected to a password entry page. After enteri
 ```
 pjfun-blog/
 ├── public/
-│   └── content/           # Article directory (supports Markdown, HTML, TXT)
+│   └── content/           # Article directory (supports Markdown, HTML, TXT, PDF, Word, Excel)
 │       ├── 2025/
 │       ├── 学习/
 │       ├── 教程/
@@ -181,8 +181,8 @@ pnpm preview
 
 ### Create a New Article
 
-1. Create a Markdown, HTML, or TXT file under `public/content/`
-2. For Markdown files, use the following Frontmatter format:
+1. Create a Markdown, HTML, TXT, PDF, Word, or Excel file under `public/content/`
+2. For Markdown files, use the following Frontmatter format (other formats use `.desc.json` or `.desc.yaml` config files):
 
 ```markdown
 ---
@@ -204,7 +204,13 @@ Article content...
 ```
 public/content/
 ├── 2025/                 # By year
-│   └── hello.md
+│   ├── hello.md
+│   ├── excel/
+│   │   └── sample-excel-file.xlsx
+│   ├── pdf/
+│   │   └── sample-pdf-file.pdf
+│   └── word/
+│       └── sample-word-file.docx
 ├── Study/                # By topic
 │   ├── Vite/
 │   │   └── advanced-configurations.md
@@ -216,6 +222,21 @@ public/content/
     └── Personal/
         └── on-writing.md
 ```
+
+> For non-Markdown files (like PDF, Word, Excel), you can create a corresponding `.desc.json` or `.desc.yaml` config file to set metadata.
+>
+> For example: for a `sample.pdf` file, you can create a `sample.pdf.desc.json` config file:
+>
+> ```json
+> {
+>   "title": "Sample PDF Document",
+>   "date": "2025-12-05",
+>   "cover": "/image/sample-pdf-cover.jpg",
+>   "desc": "This is a sample PDF document",
+>   "tags": ["PDF", "Document", "Sample"],
+>   "sticky": false
+> }
+> ```
 
 ## 🎨 Customization
 

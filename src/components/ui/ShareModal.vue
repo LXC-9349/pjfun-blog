@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div v-if="isOpen" class="fixed inset-0 z-[9999] flex items-start justify-center pt-16 bg-black/50 backdrop-blur-sm" @click="closeModal">
+    <div v-if="isOpen" class="fixed inset-0 z-[9999] flex items-start justify-center pt-16 bg-black/50" @click="closeModal">
       <div 
         @click.stop 
         class="w-full max-w-md mx-4 bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden"
@@ -68,6 +68,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { t } from '@/utils/i18n'
+import {showSuccess} from "@/utils/tool";
 
 const props = defineProps<{
   isOpen: boolean
@@ -159,6 +160,7 @@ const copyLink = () => {
     setTimeout(() => {
       copied.value = false
     }, 2000)
+    showSuccess(t('linkCopied'))
   }
 }
 </script>

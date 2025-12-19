@@ -84,6 +84,22 @@ export function getCDN(LOCAL_DEBUG: boolean): CdnResult {
                 `${cdnSources.esm}/@highlightjs/cdn-assets@11.11.1/highlight.min.js`
             ]
         },
+        'pdfjs-dist': {
+            externals: 'pdfjsLib',
+            js: [
+                `${cdnSources.jsdelivr}/pdfjs-dist@5.4.449/legacy/build/pdf.min.mjs`,
+                `${cdnSources.unpkg}/pdfjs-dist@5.4.449/legacy/build/pdf.min.mjs`,
+                `${cdnSources.esm}/pdfjs-dist@5.4.449/legacy/build/pdf.min.mjs`
+            ]
+        },
+        mammoth: {
+            externals: 'mammoth',
+            js: [
+                `${cdnSources.jsdelivr}/mammoth@1.11.0/mammoth.browser.min.js`,
+                `${cdnSources.unpkg}/mammoth@1.11.0/mammoth.browser.min.js`,
+                `${cdnSources.esm}/mammoth@1.11.0/mammoth.browser.min.js`
+            ]
+        },
     };
 
     // 为 vite-plugin-externals 生成配置
@@ -187,7 +203,6 @@ export function getCDN(LOCAL_DEBUG: boolean): CdnResult {
         global = {};
         mainJs = [];
     }
-
     console.log('global', global);
     console.log('external', external);
 

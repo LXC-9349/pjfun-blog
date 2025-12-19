@@ -1,4 +1,3 @@
-<!-- src/components/nav-tree.vue -->
 <script setup lang="ts">
 defineProps<{
   tree: any
@@ -10,7 +9,7 @@ defineProps<{
   <nav class="nav-tree">
     <template v-for="item in tree.children" :key="item.path">
       <!-- 文件夹 -->
-      <details v-if="item.type === 'folder'" class="nav-folder">
+      <details v-if="item.type === 'folder' && item.children && item.children.length > 0" class="nav-folder">
         <summary 
           class="nav-folder-summary"
           :title="item.title"
@@ -30,7 +29,7 @@ defineProps<{
 
       <!-- 单篇文章 -->
       <router-link
-          v-else
+          v-else-if="item.type !== 'folder'"
           :to="item.path"
           class="nav-item"
           active-class="nav-item-active"
@@ -39,6 +38,15 @@ defineProps<{
         <IconCarbonDocument class="nav-item-icon" />
         <span class="nav-item-title truncate">{{ item.title }}</span>
       </router-link>
+      
+      <!-- 空文件夹 -->
+      <div v-else class="nav-folder-empty">
+        <div class="nav-folder-summary opacity-50">
+          <IconCarbonFolder class="folder-icon closed opacity-50" />
+          <span class="folder-title truncate">{{ item.title }}</span>
+          <span class="folder-count">0</span>
+        </div>
+      </div>
     </template>
   </nav>
 </template>
@@ -53,7 +61,7 @@ defineProps<{
 }
 
 .nav-folder-summary {
-  @apply flex items-center gap-2 py-1.5 px-2 rounded-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150 list-none select-none;
+  @apply flex items-center gap-2 py-1.5 px-2 rounded-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 list-none select-none;
 }
 
 .nav-folder-summary::-webkit-details-marker {
@@ -65,7 +73,7 @@ defineProps<{
 }
 
 .chevron-icon {
-  @apply w-3.5 h-3.5 text-gray-500 dark:text-gray-400 transition-transform duration-200 flex-shrink-0;
+  @apply w-3.5 h-3.5 text-gray-500 dark:text-gray-400 transition-transform duration-300 flex-shrink-0;
 }
 
 .nav-folder[open] .chevron-icon {
@@ -73,7 +81,7 @@ defineProps<{
 }
 
 .folder-icon {
-  @apply w-3.5 h-3.5 text-blue-500 flex-shrink-0;
+  @apply w-3.5 h-3.5 text-blue-500 flex-shrink-0 transition-all duration-300;
 }
 
 .folder-icon.closed {
@@ -105,15 +113,21 @@ defineProps<{
 }
 
 .folder-count {
-  @apply flex-shrink-0 text-xs bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-full w-5 h-5 flex items-center justify-center;
+  @apply flex-shrink-0 text-xs bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-full w-5 h-5 flex items-center justify-center transition-all duration-200;
 }
 
 .folder-children {
-  @apply ml-3 pl-2 border-l border-gray-200 dark:border-gray-600 space-y-0.5 mt-0.5;
+  @apply ml-3 pl-2 border-l border-gray-200 dark:border-gray-600 space-y-0.5 mt-0.5 overflow-hidden;
+  max-height: 0;
+  transition: max-height 0.3s ease-out;
+}
+
+.nav-folder[open] > .folder-children {
+  max-height: 1000px; /* 足够大的值以适应内容 */
 }
 
 .nav-item {
-  @apply flex items-center gap-2 py-1.5 px-2 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150 text-sm;
+  @apply flex items-center gap-2 py-1.5 px-2 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 text-sm transform hover:scale-[1.02];
 }
 
 .nav-item-active {
@@ -121,7 +135,7 @@ defineProps<{
 }
 
 .nav-item-icon {
-  @apply w-3.5 h-3.5 text-gray-500 dark:text-gray-400 flex-shrink-0;
+  @apply w-3.5 h-3.5 text-gray-500 dark:text-gray-400 flex-shrink-0 transition-all duration-200;
 }
 
 .nav-item-active .nav-item-icon {
@@ -138,5 +152,9 @@ defineProps<{
 
 .truncate {
   @apply whitespace-nowrap overflow-hidden text-ellipsis;
+}
+
+.nav-folder-empty .nav-folder-summary {
+  @apply cursor-not-allowed;
 }
 </style>

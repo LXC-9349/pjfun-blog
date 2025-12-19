@@ -63,7 +63,7 @@ function loadResourceMain (url, isJs) {
       element.src = url
       // 对于所有非CDN的JS文件，都设置为module类型
       // 因为构建后的代码使用了ES模块语法
-      if (!url.startsWith('http')) {
+      if (!url.startsWith('http')|| !url.includes('.js')) {
         element.type = 'module'
       } else if (url.includes('esm.sh')) {
         element.type = 'module'

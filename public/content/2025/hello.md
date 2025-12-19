@@ -14,10 +14,9 @@ sticky: true
   <img src="https://img.shields.io/badge/TypeScript-Support-blue" alt="TypeScript">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
 </div>
-
 <div align="center">
     <p>
-        <a target="_blank" href="https://github.com/LXC-9349/pjfun-blog/blob/main/README.md">简体中文</a> | <a target="_blank"  href="https://github.com/LXC-9349/pjfun-blog/blob/main/README.en.md">English</a> | <a target="_blank"  href="https://pjfun.top">主页</a>
+        <a href="https://github.com/LXC-9349/pjfun-blog/blob/main/README.md">简体中文</a> | <a href="https://github.com/LXC-9349/pjfun-blog/blob/main/README.en.md">English</a> | <a href="https://pjfun.top">主页</a>
     </p>
 </div>
 
@@ -25,7 +24,7 @@ sticky: true
 
 PJ Blog 是一个零后端、纯静态、顶级动效、全球秒开的现代化个人博客系统。它采用最新的前端技术栈构建，具有响应式设计、暗黑模式、平滑滚动、动画效果等特性，让你轻松拥有一个高性能的技术博客。
 
-只需在 `public/content` 目录下放置 [.md](file://E:\3.0\pjfun-blog\public\content\2025\hello.md)、[.html](file://E:\3.0\pjfun-blog\index.html) 或 [.txt](file://E:\3.0\pjfun-blog\public\content\2025\文本\示例文本格式.txt) 文件 → 运行 `pnpm build` → 部署到任何静态网站托管服务即可拥有属于自己的顶级技术站。
+只需在 `public/content` 目录下放置 [.md](file://E:\3.0\pjfun-blog\public\content\2025\hello.md)、[.html](file://E:\3.0\pjfun-blog\index.html)、[.txt](file://E:\3.0\pjfun-blog\public\content\2025\文本\示例文本格式.txt)、PDF、Word 或 Excel 文件 → 运行 `pnpm build` → 部署到任何静态网站托管服务即可拥有属于自己的顶级技术站。
 
 ## 🚀 技术栈
 
@@ -62,7 +61,7 @@ PJ Blog 是一个零后端、纯静态、顶级动效、全球秒开的现代化
 - ⚙️ **SEO优化** - 支持结构化数据、Open Graph和Twitter Cards
 - 📡 **RSS支持** - 自动生成RSS、Atom和JSON Feed
 - 📱 **PWA支持** - 可安装为桌面应用
-- 🌐 **多格式支持** - 支持 Markdown、HTML 和 TXT 格式文章
+- 🌐 **多格式支持** - 支持 Markdown、HTML、TXT、PDF、Word 和 Excel 文档
 
 ## 🔐 密码保护功能
 
@@ -106,8 +105,11 @@ node scripts/generate-password-hash.js your_password_here
 这将输出密码的 SHA256 哈希值，您需要将该值添加到 `.env` 文件中。
 
 ### 使用密码保护
+
 启用密码保护后，访问博客时会跳转到密码输入页面。输入正确的密码后即可访问博客内容。
+
 ### 安全注意事项
+
 - 我们现在使用 SHA256 哈希算法来存储密码，比以前的明文存储更加安全
 - 生产环境中请使用强密码
 - 密码保护仅适用于简单场景，对于高安全性需求建议使用专业解决方案
@@ -117,7 +119,7 @@ node scripts/generate-password-hash.js your_password_here
 ```
 pjfun-blog/
 ├── public/
-│   └── content/           # 文章目录 (支持 Markdown, HTML, TXT)
+│   └── content/           # 文章目录 (支持 Markdown, HTML, TXT, PDF, Word, Excel)
 │       ├── 2025/
 │       ├── 学习/
 │       ├── 教程/
@@ -187,8 +189,23 @@ pnpm preview
 
 ### 创建新文章
 
-1. 在 `public/content/` 目录下创建 Markdown、HTML 或 TXT 文件
-2. 使用以下格式编写文章元数据（仅 Markdown 支持元数据）：
+1. 在 `public/content/` 目录下创建 Markdown、HTML、TXT、PDF、Word 或 Excel 文件
+2. 使用以下格式编写文章元数据（仅 Markdown 支持元数据，其他格式使用 `.desc.json` 或 `.desc.yaml` 配置文件）：
+
+> 对于非 Markdown 文件（如 PDF、Word、Excel），可以创建同名的 `.desc.json` 或 `.desc.yaml` 配置文件来设置元数据。
+>
+> 例如：对于 `sample.pdf` 文件，可以创建 `sample.pdf.desc.json` 配置文件：
+>
+> ```json
+> {
+>   "title": "示例PDF文档",
+>   "date": "2025-12-05",
+>   "cover": "/image/sample-pdf-cover.jpg",
+>   "desc": "这是一个示例PDF文档",
+>   "tags": ["PDF", "文档", "示例"],
+>   "sticky": false
+> }
+> ```
 
 ```
 ---
@@ -213,7 +230,13 @@ sticky: true # 可选，设置为置顶文章
 ```
 public/content/
 ├── 2025/                 # 按年份分类
-│   └── hello.md
+│   ├── hello.md
+│   ├── excel/
+│   │   └── 示例Excel文件.xlsx
+│   ├── pdf/
+│   │   └── 示例PDF文件.pdf
+│   └── word/
+│       └── 示例Word文件.docx
 ├── 学习/                 # 按主题分类
 │   ├── Vite构建工具/
 │   │   └── advanced-configurations.md
@@ -333,7 +356,7 @@ export const I18N_CONFIG = {
 
 [示例网站：https://pjfun-blog.vercel.app/](https://pjfun-blog.vercel.app/)
 访问密码：123456
- 
+
 #### 腾讯云(国内) edgeone pages
 
 <a href="https://console.cloud.tencent.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog&project-name=pjfun-blog&root-directory=.%2F" target="_blank">
@@ -400,6 +423,7 @@ export const I18N_CONFIG = {
 
 **注意**：请将 `<username>` 替换为您的 GitHub 用户名，将 `<repository>` 替换为您的仓库名称。
 
+
 ####  Netlify(免费的不推荐)
 点击以下按钮即可将项目快速部署到 Netlify：
 
@@ -457,7 +481,7 @@ surge dist/
 
 此项目采用 MIT 许可证。详见 [LICENSE](LICENSE) 文件。
 
-<video controls preload="metadata" style="width: 100%; height: auto; border-radius: 8px;">
+<video controls preload="metadata" autoplay muted playsinline style="width: 100%; height: auto; border-radius: 8px;">
   <source src="https://img-baofun.zhhainiao.com/pcwallpaper_ugc/preview/8ded43cfacffefec1c681f99859543cd_preview.mp4" type="video/mp4">
   <source src="https://img-baofun.zhhainiao.com/pcwallpaper_ugc/preview/fd39802e5f1c034fb556b29b3f5c329b_preview.mp4" type="video/mp4">
   您的浏览器不支持视频播放。

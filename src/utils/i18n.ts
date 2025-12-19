@@ -16,7 +16,7 @@ export function getLanguage(): Language {
   if (savedLang) {
     return savedLang
   }
-  
+
   // 根据浏览器语言设置默认语言
   const browserLang = navigator.language.toLowerCase()
   if (browserLang.startsWith('en')) {
@@ -28,14 +28,14 @@ export function getLanguage(): Language {
 export function t(key: TranslationKey, params?: Record<string, string | number>): string {
   const translations = I18N_CONFIG[currentLang as keyof typeof I18N_CONFIG]
   let translation = translations[key as keyof typeof translations] || key
-  
+
   // 处理参数替换
   if (params) {
     Object.keys(params).forEach(param => {
       translation = translation.replace(`{${param}}`, String(params[param]))
     })
   }
-  
+
   return translation
 }
 

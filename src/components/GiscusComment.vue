@@ -17,7 +17,6 @@ const props = defineProps<{
   reactionsEnabled?: boolean
   emitMetadata?: boolean
   inputPosition?: 'top' | 'bottom'| string
-  theme?: string
   lang?: string
   loading?: 'lazy' | 'eager'
   term?: string
@@ -46,14 +45,19 @@ const initGiscus = () => {
   if (props.term) {
     script.setAttribute('data-term', props.term)
   }
-  
   script.setAttribute('data-strict', String(props.strict !== false))
   script.setAttribute('data-reactions-enabled', String(props.reactionsEnabled !== false))
   script.setAttribute('data-emit-metadata', String(props.emitMetadata === true))
   script.setAttribute('data-input-position', props.inputPosition || 'top')
-  script.setAttribute('data-theme', props.theme || 'preferred_color_scheme')
+  let  theme=typeof localStorage !== 'undefined' && localStorage.getItem('theme') === 'dark' ? 'dark_high_contrast' : 'preferred_color_scheme'
+  script.setAttribute('data-theme', theme || 'preferred_color_scheme')
   script.setAttribute('data-lang', props.lang || 'zh-CN')
   script.setAttribute('data-loading', props.loading || 'lazy')
+
+  // 添加错误处理
+  script.onerror = () => {
+    console.warn('Giscus failed to load. This is expected for pages without existing comments.')
+  }
 
   commentsContainer.value.appendChild(script)
 }
@@ -64,7 +68,7 @@ const handleThemeChange = (event: CustomEvent) => {
   const iframe = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame')
   if (iframe?.contentWindow) {
     iframe.contentWindow.postMessage(
-      { giscus: { setConfig: { theme: theme === 'dark' ? 'dark' : 'light' } } },
+      { giscus: { setConfig: { theme: theme === 'dark' ? 'dark_high_contrast' : 'preferred_color_scheme' } } },
       'https://giscus.app'
     )
   }

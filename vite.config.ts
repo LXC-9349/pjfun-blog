@@ -134,6 +134,7 @@ export default defineConfig((config) => {
             isProduction&&versionPlugin (),
             // rssPlugin(),
         ].filter(Boolean),
+        assetsInclude: ['**/*.pdf', '**/*.doc', '**/*.docx', '**/*.xls', '**/*.xlsx'],
         server: {
             host: '0.0.0.0',
             port: 1022, // 修改端口为3000
@@ -145,6 +146,13 @@ export default defineConfig((config) => {
             },
             fs: {
                 allow: ['..']  // 允许访问项目根目录外的文件（包括 content）
+            },
+            mimeTypes: {
+                '.pdf': 'application/pdf',
+                '.doc': 'application/msword',
+                '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                '.xls': 'application/vnd.ms-excel',
+                '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             }
         },
         resolve: {

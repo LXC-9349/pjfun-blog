@@ -635,3 +635,278 @@ export const formatDate = (dateString: string) => {
         return dateString
     }
 }
+
+/**
+ * 显示输入对话框选项
+ */
+interface PromptDialogOptions {
+  confirmText?: string;
+  cancelText?: string;
+  inputType?: string;
+  placeholder?: string;
+}
+
+/**
+ * 显示输入对话框
+ * @param title - 对话框标题
+ * @param message - 对话框内容
+ * @param options - 对话框选项
+ * @returns 用户输入的值，取消返回null
+ */
+export function promptDialog(title: string, message: string, options: PromptDialogOptions = {}): Promise<string | null> {
+    const defaultOptions = {
+        confirmText: '确定',
+        cancelText: '取消',
+        inputType: 'text',
+        placeholder: ''
+    };
+    
+    const opts = Object.assign(defaultOptions, options);
+    
+    return new Promise((resolve) => {
+        // 创建对话框容器
+        const dialogWrapper = document.createElement('div');
+        dialogWrapper.className = 'prompt-dialog-wrapper';
+        dialogWrapper.innerHTML = `
+          <div class="dialog-overlay"></div>
+          <div class="dialog-container">
+            <div class="dialog-content">
+              <div class="dialog-header">
+                <h3>${title}</h3>
+              </div>
+              <div class="dialog-body">
+                <p>${message}</p>
+                <input type="${opts.inputType}" class="prompt-input" placeholder="${opts.placeholder}" />
+              </div>
+              <div class="dialog-footer">
+                <button class="dialog-btn dialog-btn-cancel">${opts.cancelText}</button>
+                <button class="dialog-btn dialog-btn-confirm">${opts.confirmText}</button>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        // 添加样式
+        const style = document.createElement('style');
+        style.textContent = `
+          .prompt-dialog-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+          }
+          
+          .dialog-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(2px);
+            animation: dialogOverlayFadeIn 0.2s ease-out;
+          }
+          
+          .dialog-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            min-width: 320px;
+            max-width: 480px;
+            width: 90%;
+            animation: dialogFadeIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          }
+          
+          @media (prefers-color-scheme: dark) {
+            .dialog-container {
+              background: #1f2937;
+            }
+          }
+          
+          @keyframes dialogOverlayFadeIn {
+            from {
+              opacity: 0;
+            }
+            to {
+              opacity: 1;
+            }
+          }
+          
+          @keyframes dialogFadeIn {
+            from {
+              opacity: 0;
+              transform: translate(-50%, -50%) scale(0.9);
+            }
+            to {
+              opacity: 1;
+              transform: translate(-50%, -50%) scale(1);
+            }
+          }
+          
+          .dialog-header {
+            padding: 24px 24px 8px;
+          }
+          
+          .dialog-header h3 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            text-align: center;
+          }
+          
+          @media (prefers-color-scheme: dark) {
+            .dialog-header h3 {
+              color: #f9fafb;
+            }
+          }
+          
+          .dialog-body {
+            padding: 8px 24px 24px;
+          }
+          
+          .dialog-body p {
+            margin: 0 0 16px 0;
+            color: #4b5563;
+            line-height: 1.6;
+            font-size: 16px;
+            text-align: center;
+          }
+          
+          @media (prefers-color-scheme: dark) {
+            .dialog-body p {
+              color: #d1d5db;
+            }
+          }
+          
+          .prompt-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            background: #fff;
+            font-size: 16px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+          }
+          
+          @media (prefers-color-scheme: dark) {
+            .prompt-input {
+              background: #111827;
+              border-color: #4b5563;
+              color: #f9fafb;
+            }
+          }
+          
+          .dialog-footer {
+            padding: 16px 24px 24px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+          }
+          
+          .dialog-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          
+          .dialog-btn-cancel {
+            background: linear-gradient(to right, #f3f4f6, #e5e7eb);
+            color: #4b5563;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+          }
+          
+          @media (prefers-color-scheme: dark) {
+            .dialog-btn-cancel {
+              background: linear-gradient(to right, #374151, #4b5563);
+              color: #d1d5db;
+            }
+          }
+          
+          .dialog-btn-cancel:hover {
+            background: linear-gradient(to right, #e5e7eb, #d1d5db);
+          }
+          
+          @media (prefers-color-scheme: dark) {
+            .dialog-btn-cancel:hover {
+              background: linear-gradient(to right, #4b5563, #6b7280);
+            }
+          }
+          
+          .dialog-btn-confirm {
+            background: linear-gradient(to right, #3b82f6, #2563eb);
+            color: white;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+          }
+          
+          .dialog-btn-confirm:hover {
+            background: linear-gradient(to right, #2563eb, #1d4ed8);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+          }
+          
+          .dialog-btn:active {
+            transform: translateY(0);
+          }
+        `;
+        
+        // 添加到页面
+        document.body.appendChild(dialogWrapper);
+        document.head.appendChild(style);
+        
+        // 获取元素并绑定事件
+        const confirmBtn = dialogWrapper.querySelector('.dialog-btn-confirm') as HTMLButtonElement;
+        const cancelBtn = dialogWrapper.querySelector('.dialog-btn-cancel') as HTMLButtonElement;
+        const overlay = dialogWrapper.querySelector('.dialog-overlay') as HTMLDivElement;
+        const promptInput = dialogWrapper.querySelector('.prompt-input') as HTMLInputElement;
+        
+        const closeDialog = (result: string | null) => {
+            // 添加关闭动画
+            dialogWrapper.style.opacity = '0';
+            dialogWrapper.style.transition = 'opacity 0.2s ease';
+            
+            setTimeout(() => {
+                dialogWrapper.remove();
+                style.remove();
+                resolve(result);
+            }, 200);
+        };
+        
+        confirmBtn.addEventListener('click', () => {
+            const value = promptInput.value.trim();
+            closeDialog(value || null);
+        });
+        
+        cancelBtn.addEventListener('click', () => closeDialog(null));
+        overlay.addEventListener('click', () => closeDialog(null));
+        
+        // ESC键关闭对话框
+        const handleEsc = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                closeDialog(null);
+                document.removeEventListener('keydown', handleEsc);
+            }
+        };
+        
+        document.addEventListener('keydown', handleEsc);
+        
+        // 自动聚焦到输入框
+        promptInput.focus();
+    });
+}
