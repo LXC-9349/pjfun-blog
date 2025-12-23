@@ -14,15 +14,21 @@
           <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
             {{ t('footerDescription') }}
           </p>
+          <button @click="toDev"
+              class="dark:text-gray-400 flex items-center p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 hover:scale-110 hover:-rotate-3"
+              :aria-label="t('dataManager')">
+            <IconCarbonLogoGithub class="w-6 h-6 dark:text-gray-300" />
+            {{ t('dataManager') }}
+          </button>
         </div>
-        
+
         <div class="flex flex-col items-center md:items-end">
           <div class="flex space-x-6 mb-4">
             <a target="_blank" :href="SITE_CONFIG.socialLinks.github" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
               <IconCarbonLogoGithub class="w-5 h-5" />
             </a>
             <a target="_blank" :href="SITE_CONFIG.socialLinks.Telegram" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-              <IconComponent name="telegram"  class="w-5 h-5" />
+              <IconComponent name="telegram" class="w-5 h-5" />
             </a>
             <a target="_blank" :href="'mailto:'+SITE_CONFIG.email" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
               <IconCarbonEmail class="w-5 h-5" />
@@ -41,9 +47,10 @@
 </template>
 
 <script setup lang="ts">
-import { t } from '@/utils/i18n'
+import {t} from '@/utils/i18n'
 import {SITE_CONFIG} from "@/constants";
-import { ref, onMounted } from 'vue'
+import {ref, onMounted} from 'vue'
+import {toDev} from "@/utils/tool";
 
 const showStats = ref(false)
 const sitePV = ref(0)
@@ -54,7 +61,7 @@ const siteUV = ref(0)
 const loadBusuanzi = () => {
   // 创建唯一回调函数名
   const callbackName = 'BusuanziCallback_' +
-    Math.floor(1099511627776 * Math.random())
+      Math.floor(1099511627776 * Math.random())
 
   // 创建 script 标签
   const script = document.createElement('script')
@@ -88,7 +95,7 @@ const loadBusuanzi = () => {
     pagePV.value = 0
     siteUV.value = 0
     showStats.value = true
-    
+
     // @ts-ignore
     delete window[callbackName]
     if (script && script.parentNode) {

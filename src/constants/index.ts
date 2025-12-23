@@ -10,6 +10,8 @@ export const SITE_CONFIG = {
     Telegram: 'https://t.me/pjfun_top',
   }
 }
+//仓库地址
+export const GIT_REPO=SITE_CONFIG.socialLinks.github
 
 // Giscus 评论系统配置 https://giscus.app/zh-CN
 export const GISCUS_CONFIG = {
@@ -233,7 +235,11 @@ export const I18N_CONFIG = {
     newName: '新名称',
     create: '创建',
     rename: '重命名',
-    delete: '删除'
+    delete: '删除',
+    dataManager:'数据管理',
+    noRepoInfo:'未配置仓库',
+    chooseEditor:'选择编辑器',
+    selectEditorToOpenRepo:'请选择要打开仓库的在线编辑器',
   },
   en: {
     siteTitle: SITE_CONFIG.title,
@@ -422,6 +428,14 @@ export const I18N_CONFIG = {
     newName: 'New name',
     create: 'Create',
     rename: 'Rename',
-    delete: 'Delete'
+    delete: 'Delete',
+    dataManager:'Data Manager',
+    noRepoInfo:'Repo not configured',
+    chooseEditor:'Choose Editor',
+    selectEditorToOpenRepo:'Please select an online editor to open the repository',
   }
 }
+
+
+
+

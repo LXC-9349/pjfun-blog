@@ -9,11 +9,14 @@ interface VersionData {
     v: string
 }
 
+export function getRounded5Minutes() {
+    return Math.floor(Date.now() / (5 * 60 * 1000));
+}
+
 async function check(): Promise<void> {
     try {
-        const fiveMinuteTimestamp = Math.floor(Date.now() / (5 * 60 * 1000))
         const base=getEnvVariable('VITE_BASE')||'/'
-        const res = await fetch(`${base}version.json?_=${fiveMinuteTimestamp}`, {
+        const res = await fetch(`${base}version.json?_=${getRounded5Minutes()}`, {
             cache: 'no-cache'
         })
         const data: VersionData = await res.json()

@@ -24,25 +24,9 @@
             >
             <IconCarbonSearch class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           </div>
-
-<!--          <button
-              v-if="isEditModeAvailable"
-              @click="openEditor"
-              class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 hover:scale-105 bg-blue-500 text-white border-blue-600"
-          >
-            <IconCarbonEdit class="w-4 h-4" />
-            {{ t('editArticles') }}
+          <button @click="toDev" class="flex items-center p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 hover:scale-110 hover:rotate-3">
+            <IconCarbonLogoGithub class="w-6 h-6" />
           </button>
-          
-          <button 
-              v-if="isEditModeAvailable && localStorage.getItem('git-token')"
-              @click="clearStoredToken"
-              class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 hover:scale-105 bg-red-500 text-white border-red-600"
-          >
-            <IconCarbonTrashCan class="w-4 h-4" />
-            清除Token
-          </button>-->
-
           <button @click="toggleLanguage" class="hidden dark:text-gray-300 sm:flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 hover:scale-105">
             <IconCarbonLanguage class="w-4 h-4" />
             {{ currentLang === 'zh' ? 'EN' : '中文' }}
@@ -123,19 +107,11 @@
                   <IconCarbonBook class="w-5 h-5 text-blue-500" />
                   {{ t('articleDirectory') }}
                 </h2>
-<!--                <button
-                    v-if="isEditModeAvailable"
-                    @click="openEditor"
-                    class="flex items-center gap-1 text-xs px-2 py-1 rounded bg-blue-500 text-white hover:bg-blue-600 transition-colors"
-                >
-                  <IconCarbonEdit class="w-3 h-3" />
-                  {{ t('edit') }}
-                </button>-->
               </div>
             </div>
 
             <!-- 目录树 -->
-            <div class="pb-4 flex-1 overflow-y-auto px-6 lg:max-h-[calc(100vh-4rem)]"> <!-- 限制最大高度，但允许滚动 -->
+            <div class="pb-4 flex-1  px-6 lg:max-h-[calc(100vh-2rem)]"> <!-- 限制最大高度，但允许滚动 -->
               <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 transition-all duration-300 hover:shadow-lg">
                 <NavTree :tree="tree" />
               </div>
@@ -331,9 +307,7 @@ import Footer from '@/components/Footer.vue'
 import RecentArticles from '@/components/RecentArticles.vue'
 import { t, getLanguage } from '@/utils/i18n'
 import {HOT_TAGS, SITE_CONFIG} from '@/constants'
-import {formatDate, getEnvVariable} from "@/utils/tool";
-// import { useRouter } from 'vue-router'
-// import { showSuccess } from '@/utils/tool'
+import {formatDate, getEnvVariable, toDev} from "@/utils/tool";
 
 const allPosts = ref<any[]>([])
 const latestPosts = ref<any[]>([])
@@ -341,7 +315,6 @@ const tree = ref<any>({})
 const loading = ref(true)
 const currentLang = ref(getLanguage())
 const isMobileMenuOpen = ref(false)
-// const router = useRouter()
 
 // 无限滚动 + 标签筛选
 const pageSize = 12
@@ -359,11 +332,6 @@ const scrollToTop = () => {
 
 // 热门标签（从常量中导入）
 const hotTags = ref(HOT_TAGS)
-
-// 检查编辑模式是否可用
-// const isEditModeAvailable = computed(() => {
-//   return !!localStorage.getItem('git-token');
-// });
 
 const displayedPosts = computed(() => {
   let list = selectedTag.value
@@ -435,60 +403,6 @@ const toggleMobileMenu = () => {
 const openSearch = () => {
   window.dispatchEvent(new CustomEvent('open-search-modal'))
 }
-
-// 打开编辑器
-// const openEditor = () => {
-//   // 检查是否有有效的Git Token
-//   const storedToken = localStorage.getItem('git-token');
-//   if (storedToken) {
-//     // 如果已有token，直接跳转到编辑器
-//     router.push('/editor');
-//   } else {
-//     // 否则显示Token输入对话框
-//     showTokenInputDialog();
-//   }
-// };
-
-// 显示Token输入对话框
-// const showTokenInputDialog = async () => {
-//   const token = await promptForToken();
-//   if (token) {
-//     // 保存token到localStorage
-//     localStorage.setItem('git-token', btoa(token)); // 简单的Base64编码
-//     router.push('/editor');
-//   }
-// };
-
-// 弹出Token输入框
-// const promptForToken = async (): Promise<string | null> => {
-//   const token = await promptDialog(
-//     'Git 访问令牌',
-//     '请输入您的 Git 访问令牌以启用编辑功能：',
-//     {
-//       inputType: 'password',
-//       placeholder: '输入访问令牌'
-//     }
-//   );
-//
-//   if (token) {
-//     const shouldStore = await confirmDialog(
-//       '存储令牌',
-//       '是否记住令牌（加密存储）？'
-//     );
-//
-//     if (shouldStore) {
-//       localStorage.setItem('git-token', btoa(token)); // Base64编码存储
-//     }
-//   }
-//
-//   return token;
-// };
-
-// 添加清除Token的方法
-// const clearStoredToken = () => {
-//   localStorage.removeItem('git-token');
-//   showSuccess('已清除存储的Git令牌');
-// };
 
 onMounted(() => {
   window.removeEventListener('scroll', handleScroll);

@@ -112,8 +112,8 @@ async function mountApp() {
     const pages = (await import('virtual:generated-pages')).default
     const { articleRoutes } = await import('virtual:article-routes')
     // const editorRoute = {
-    //     path: '/editor',
-    //     component: () => import('@/pages/editor.vue')
+    //     path: '/file-manager',
+    //     component: () => import('@/pages/fileManager.vue')
     // }
     const routes = [
         ...pages,
