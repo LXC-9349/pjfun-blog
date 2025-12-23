@@ -151,7 +151,7 @@ defineProps<{
 }
 
 .truncate {
-  @apply whitespace-nowrap overflow-hidden text-ellipsis;
+  @apply line-clamp-2;
 }
 
 .nav-folder-empty .nav-folder-summary {

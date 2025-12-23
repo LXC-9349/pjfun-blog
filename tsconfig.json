@@ -11,6 +11,7 @@
     },
     "types": ["vite-plugin-svg-icons/client"],
     "moduleResolution": "node",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   }
 }

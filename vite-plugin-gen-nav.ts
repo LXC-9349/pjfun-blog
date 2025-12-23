@@ -128,7 +128,7 @@ export function genNavPlugin(navName:string,treeName:string,baseUrl:string): Plu
                             if (descCoverMatch) {
                                 cover = descCoverMatch[1]
                             }
-                            
+                            //@ts-ignore
                             itemData = {
                                 type: 'post',
                                 title: title,
