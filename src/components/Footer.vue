@@ -15,9 +15,9 @@
             {{ t('footerDescription') }}
           </p>
           <button @click="toDev"
-              class="dark:text-gray-400 flex items-center p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 hover:scale-110 hover:-rotate-3"
+              class="dark:text-gray-400 flex items-center p-1 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 hover:scale-110 hover:-rotate-3"
               :aria-label="t('dataManager')">
-            <IconCarbonLogoGithub class="w-6 h-6 dark:text-gray-300" />
+            <IconCarbonLogoGithub class="w-4 h-4 dark:text-gray-300" />
             {{ t('dataManager') }}
           </button>
         </div>
@@ -39,6 +39,9 @@
           </div>
           <p class="text-sm text-gray-500 dark:text-gray-400">
             &copy; {{ new Date().getFullYear() }} {{ t('siteTitle') }}. {{ t('allRightsReserved') }}
+          </p>
+          <p class="text-sm">
+             <a href="https://pjfun.top" target="_blank" class="text-orange-500 hover:text-orange-700 dark:text-gray-300">pjfun.top</a>
           </p>
         </div>
       </div>

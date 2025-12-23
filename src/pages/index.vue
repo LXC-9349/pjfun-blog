@@ -25,7 +25,7 @@
             <IconCarbonSearch class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           </div>
           <button @click="toDev" class="flex items-center p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 hover:scale-110 hover:rotate-3">
-            <IconCarbonLogoGithub class="w-6 h-6" />
+            <IconCarbonLogoGithub class="w-6 h-6 dark:text-gray-300" />
           </button>
           <button @click="toggleLanguage" class="hidden dark:text-gray-300 sm:flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 hover:scale-105">
             <IconCarbonLanguage class="w-4 h-4" />
@@ -179,9 +179,9 @@
               <router-link :to="post.path" class="flex flex-col h-full">
                 <div class="relative aspect-[16/9] overflow-hidden bg-gray-100 dark:bg-gray-700">
                   <!-- 置顶标记 -->
-                  <div v-if="post.sticky" class="absolute top-4 left-4 z-10 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded flex items-center animate-heartbeat">
+                  <div v-if="post.sticky" class="absolute top-4 left-4 z-10 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded flex items-center">
                     <IconCarbonPinFilled class="w-3 h-3 mr-1" />
-                    置顶
+                    {{t('top')}}
                   </div>
                   <img
                       v-if="post.cover"

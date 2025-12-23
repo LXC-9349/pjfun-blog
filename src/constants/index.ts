@@ -240,6 +240,7 @@ export const I18N_CONFIG = {
     noRepoInfo:'未配置仓库',
     chooseEditor:'选择编辑器',
     selectEditorToOpenRepo:'请选择要打开仓库的在线编辑器',
+    top:'置顶',
   },
   en: {
     siteTitle: SITE_CONFIG.title,
@@ -433,6 +434,7 @@ export const I18N_CONFIG = {
     noRepoInfo:'Repo not configured',
     chooseEditor:'Choose Editor',
     selectEditorToOpenRepo:'Please select an online editor to open the repository',
+    top:'Sticky',
   }
 }
 
