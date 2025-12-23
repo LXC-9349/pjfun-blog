@@ -915,35 +915,22 @@ const loadArticle = async (filePath: string) => {
     }
 
     const res = await fetch(filePathWithTimestamp);
-    
+
     if (!res.ok) throw new Error('Not Found');
 
     const contentText = await res.text();
     let content = contentText;
     let isMarkdown = actualFilePath.endsWith('.md');
+    // 使用导航数据中的信息填充 articleMeta
+    articleMeta.value.title = articleInfo.title || t('noArticles');
+    articleMeta.value.date = formatDate(articleInfo.date|| '') ;
+    articleMeta.value.cover = articleInfo.cover || '';
+    articleMeta.value.tags = articleInfo.tags || [];
+    articleMeta.value.excerpt = articleInfo.excerpt || ''
+    const words = content.trim().split(/\s+/).length
+    readingTime.value = Math.ceil(words / 200) + ' ' + t('readingTime')
 
-    if (isMarkdown) {
-      const fmMatch = contentText.match(/^---\n([\s\S]*?)\n---\n/)
-      
-      if (fmMatch) {
-        content = contentText.replace(/^---\n[\s\S]*?\n---\n/, '')
-        articleMeta.value.title = articleInfo.title || t('noArticles')
-        articleMeta.value.date = formatDate(articleInfo.date|| '')
-        articleMeta.value.cover = articleInfo.cover || ''
-        articleMeta.value.excerpt = articleInfo.excerpt || ''
-        //@ts-ignore
-        articleMeta.value.tags = articleInfo.tags||[]
-        const words = content.trim().split(/\s+/).length
-        readingTime.value = Math.ceil(words / 200) + ' ' + t('readingTime')
-      }
-    } else {
-      // 使用导航数据中的信息填充 articleMeta
-      articleMeta.value.title = articleInfo.title || t('noArticles');
-      articleMeta.value.date = formatDate(articleInfo.date|| '') ;
-      articleMeta.value.cover = articleInfo.cover || '';
-      articleMeta.value.tags = articleInfo.tags || [];
-      articleMeta.value.excerpt = articleInfo.excerpt || ''
-      
+    if (!isMarkdown) {
       if (actualFilePath.endsWith('.html')) {
         // 对于 HTML 文件，直接使用内容
         content = contentText;
@@ -953,7 +940,7 @@ const loadArticle = async (filePath: string) => {
         content = `<pre class="text-content">${contentText}</pre>`;
         isMarkdown = false;
       }
-      
+
       // 计算 TXT 和 HTML 文件的阅读时间
       const words = contentText.trim().split(/\s+/).length;
       readingTime.value = Math.ceil(words / 200) + ' ' + t('readingTime');
