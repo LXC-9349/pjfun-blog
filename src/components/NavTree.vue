@@ -150,10 +150,6 @@ defineProps<{
   @apply text-blue-600 dark:text-blue-300;
 }
 
-.truncate {
-  @apply line-clamp-2;
-}
-
 .nav-folder-empty .nav-folder-summary {
   @apply cursor-not-allowed;
 }

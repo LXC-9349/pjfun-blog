@@ -944,6 +944,11 @@ const loadArticle = async (filePath: string) => {
       // 计算 TXT 和 HTML 文件的阅读时间
       const words = contentText.trim().split(/\s+/).length;
       readingTime.value = Math.ceil(words / 200) + ' ' + t('readingTime');
+    }else{
+      const fmMatch = contentText.trim().match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/m)
+      if (fmMatch) {
+        content = contentText.replace(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/m, '')
+      }
     }
 
     html.value = content
