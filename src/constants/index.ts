@@ -8,6 +8,9 @@ export const SITE_CONFIG = {
   socialLinks: {
     github: 'https://github.com/LXC-9349/pjfun-blog',
     Telegram: 'https://t.me/pjfun_top',
+  },
+  foot:{
+    github:'https://github.com/LXC-9349/pjfun-blog',
   }
 }
 //仓库地址
