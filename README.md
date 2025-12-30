@@ -177,6 +177,60 @@ pnpm build
 pnpm preview
 ```
 
+## 🐳 Docker 部署
+
+### 使用 Docker 运行
+
+如果您更喜欢使用 Docker 来部署，可以使用以下命令：
+
+```bash
+# 构建并运行 Docker 容器
+docker build -t pjfun-blog .
+docker run -d --restart=always --name blog -p 1022:80 pjfun-blog
+```
+
+### 使用 Docker Compose 运行
+
+项目还提供了 docker-compose.yml 配置文件，可以使用以下命令运行：
+
+```bash
+# 构建并启动服务
+docker-compose up -d
+
+# 查看服务状态
+docker-compose ps
+
+# 停止服务
+docker-compose down
+```
+
+### 自定义配置
+
+您可以通过环境变量来配置应用，创建 `.env` 文件来配置密码保护等功能：
+
+```bash
+# 复制 .env.example 为 .env 并根据需要修改配置
+VITE_BLOG_PASSWORD_HASH=your_sha256_password_hash_here
+VITE_BASE=/
+```
+
+在 Docker 中使用自定义环境变量：
+
+```bash
+# 使用环境变量文件
+docker run -d --restart=always --name blog -p 1022:80 --env-file .env pjfun-blog
+```
+
+或者在 docker-compose 中使用环境变量：
+
+```bash
+# 编辑 .env 文件以配置您的设置
+vim .env  # 或使用您喜欢的编辑器
+
+# 使用 docker-compose 启动服务
+docker-compose up -d
+```
+
 ## 📝 写作指南
 
 ### 创建新文章
