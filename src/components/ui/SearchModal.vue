@@ -36,7 +36,7 @@
                 {{ post.title[0] }}
               </div>
               <div class="flex-1 min-w-0">
-                <h3 class="font-semibold text-gray-900 dark:text-white truncate text-sm transform transition-all duration-200 hover:text-blue-600">{{ post.title }}</h3>
+                <h3 class="font-semibold text-gray-800 dark:text-white truncate text-sm transform transition-all duration-200 hover:text-blue-600">{{ post.title }}</h3>
                 <p class="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">{{ post.excerpt || t('excerpt') }}</p>
                 <div v-if="post.tags && post.tags.length" class="flex flex-wrap gap-1 mt-1.5">
                   <div v-for="tag in post.tags.slice(0, 3)" :key="tag" class="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-xs rounded transform transition-all hover:scale-110">

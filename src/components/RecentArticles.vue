@@ -36,7 +36,7 @@
           >
         </div>
         <div class="flex-1 min-w-0">
-          <h4 class="font-medium text-gray-900 dark:text-white line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors text-sm">
+          <h4 class="font-medium text-gray-800 dark:text-white line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors text-sm">
             {{ article.title }}
           </h4>
           <p v-if="article.excerpt" class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">

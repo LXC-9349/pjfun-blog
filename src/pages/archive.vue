@@ -92,7 +92,7 @@
                     class="block py-2 group transition-colors"
                   >
                     <div class="flex justify-between items-start">
-                      <h5 class="font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                      <h5 class="font-medium text-gray-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         {{ post.title }}
                       </h5>
                       <span class="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap ml-4">

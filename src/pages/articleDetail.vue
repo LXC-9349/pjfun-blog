@@ -74,7 +74,7 @@
 
     <!-- 无封面时显示的标题 -->
     <div v-else class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8 text-center">
-      <h1 class="text-3xl md:text-3xl font-extrabold leading-tight mb-8 tracking-tight text-gray-900 dark:text-white animate-fade-in-down">
+      <h1 class="text-3xl md:text-3xl font-extrabold leading-tight mb-8 tracking-tight text-gray-800 dark:text-white animate-fade-in-down">
         {{ articleMeta.title }}
       </h1>
       <div class="flex dark:text-white dark:text-warmGray flex-wrap justify-center gap-3 mb-2 opacity-0 animate-slide-up" style="animation-delay: 0.1s">
@@ -266,7 +266,7 @@
 
         <aside class="hidden xl:block w-72 shrink-0" v-if="headings.length > 0">
           <div class="sticky top-16 max-h-[calc(100vh-8rem)] overflow-y-auto custom-scrollbar pl-4 border-l border-gray-200 dark:border-gray-800 z-100" style="pointer-events: auto; overscroll-behavior: contain;" @wheel.stop>
-            <h4 class="font-bold text-gray-900 dark:text-white mb-4 text-xs uppercase tracking-wider opacity-60">{{ t('articleDirectory') }}</h4>
+            <h4 class="font-bold text-gray-800 dark:text-white mb-4 text-xs uppercase tracking-wider opacity-60">{{ t('articleDirectory') }}</h4>
             <div v-if="headings.length === 0" class="text-gray-500 dark:text-gray-400 text-sm">
               {{ t('noExcerpt') }}
             </div>
@@ -382,6 +382,7 @@ import {addFavorite, isFavorite, removeFavorite} from "@/utils/favorites";
 import type {FavoriteItem} from "@/utils/favorites"
 import {formatDate, getEnvVariable} from "@/utils/tool";
 import { addRecentArticle, getReadingProgress, saveReadingProgress } from '@/utils/reading-progress';
+import {setupSEO, updateArticleSEO} from '@/plugins/seo';
 
 // 创建 marked 实例并配置一次
 const renderer = new Renderer()
@@ -882,7 +883,7 @@ const loadArticle = async (filePath: string) => {
       excerpt: articleInfo.excerpt
     });
     
-    const actualFilePath=decodeURIComponent(articleInfo.url)
+    const actualFilePath=decodeURIComponent(articleInfo.url)||''
     console.log('actualFilePath',actualFilePath)
     // 添加时间戳避免缓存
     const fiveMinuteTimestamp = Math.floor(Date.now() / (5 * 60 * 1000))
@@ -909,6 +910,14 @@ const loadArticle = async (filePath: string) => {
 
       // 设置标题和其他元信息
       document.title = `${articleInfo.title} - ${SITE_CONFIG.title}`
+      
+      // 更新SEO标签
+      updateArticleSEO({
+        title: `${articleInfo.title} - ${SITE_CONFIG.title}`,
+        description: articleInfo.excerpt || SITE_CONFIG.description,
+        path: route.path
+      })
+      
       loading.value = false;
       // await loadDocument(filePathWithTimestamp,fileExtension)
       return;
@@ -963,6 +972,14 @@ const loadArticle = async (filePath: string) => {
     generateTOC()
     setupScrollSpy()
     document.title = `${articleMeta.value.title} - ${SITE_CONFIG.title}`
+    
+    // 更新SEO标签
+    updateArticleSEO({
+      title: `${articleMeta.value.title} - ${SITE_CONFIG.title}`,
+      description: articleMeta.value.excerpt || SITE_CONFIG.description,
+      path: route.path
+    })
+    
     // 页面加载完成后恢复阅读进度
     setTimeout(() => {
       const progress = getReadingProgress(route.path);
@@ -1018,6 +1035,9 @@ onUnmounted(() => {
     clearInterval(saveProgressTimer);
     saveProgressTimer = null;
   }
+  
+  // 恢复默认SEO标签
+  setupSEO()
   
   // 保存阅读进度（页面卸载时最后一次保存）
   saveReadingProgress({

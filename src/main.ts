@@ -141,11 +141,19 @@ async function mountApp() {
 
     // 添加路由守卫以处理SEO和密码保护
     router.beforeEach((to, _from, next) => {
-        // 动态设置页面标题
+        // 动态设置页面标题和SEO
         if (to.meta.title) {
             document.title = `${to.meta.title} - ${SITE_CONFIG.title}`
+            // 更新SEO标签
+            setupSEO({
+                title: `${to.meta.title} - ${SITE_CONFIG.title}`,
+                description: typeof to.meta.description === 'string' ? to.meta.description : SITE_CONFIG.description,
+                path: to.path
+            })
         } else {
             document.title = SITE_CONFIG.title
+            // 设置默认SEO标签
+            setupSEO()
         }
 
         // 检查是否需要密码保护

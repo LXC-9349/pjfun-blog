@@ -135,7 +135,7 @@
                     {{ i + 1 }}
                   </div>
                   <div class="flex-1 min-w-0">
-                    <h4 class="text-sm font-medium text-gray-900 dark:text-white truncate group-hover:text-blue-600 transition-colors">{{ post.title }}</h4>
+                    <h4 class="text-sm font-medium  dark:text-white truncate group-hover:text-blue-600 transition-colors">{{ post.title }}</h4>
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center">
                       <IconCarbonTime class="w-3 h-3 mr-1" />
                       {{ formatDate(post.date) }}
@@ -210,7 +210,7 @@
                     <span
                         v-for="tag in (post.tags || []).slice(0, 3)"
                         :key="tag"
-                        class="px-3 py-1 text-xs rounded-full bg-blue-100 dark:bg-blue-900/40 text-gray-800 dark:text-blue-300 transform transition-all hover:scale-110"
+                        class="px-3 py-1 text-xs rounded-full bg-blue-100 dark:bg-blue-900/40 text-gray-700 dark:text-blue-300 transform transition-all hover:scale-110"
                     >
                       {{ tag }}
                     </span>
@@ -221,7 +221,7 @@
                       <IconCarbonTime class="w-4 h-4 mr-1" />
                       {{ formatDate(post.date) }}
                     </time>
-                    <span class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-800 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 rounded-full group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-all duration-300 transform group-hover:scale-105">
+                    <span class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 rounded-full group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-all duration-300 transform group-hover:scale-105">
                       {{ t('readMore') }}
                       <IconCarbonArrowRight class="w-4 h-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" />
                     </span>
@@ -269,7 +269,8 @@
                   </span>
                 </div>
                 <div class="flex-1 min-w-0">
-                  <h4 class="font-medium text-gray-900 dark:text-white line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors"
+                  <h4
+                      class="font-medium dark:text-white line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors"
                       :title="post.title">
                     {{ post.title }}
                   </h4>

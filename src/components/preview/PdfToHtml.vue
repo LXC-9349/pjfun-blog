@@ -19,7 +19,7 @@
             :max="totalPages" 
             :placeholder="t('pageNumber')"
             @keyup.enter="jumpToPage"
-            class="w-20 px-2 py-1 border border-gray-300 dark:border-dark-600 rounded-1.5 text-sm text-center bg-white dark:bg-dark-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(59,130,246,0.1)] dark:focus:shadow-[0_0_0_3px_rgba(31,111,235,0.2)]"
+            class="w-20 px-2 py-1 border border-gray-300 dark:border-dark-600 rounded-1.5 text-sm text-center bg-white dark:bg-dark-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(59,130,246,0.1)] dark:focus:shadow-[0_0_0_3px_rgba(31,111,235,0.2)]"
           />
           <button @click="jumpToPage" :title="t('jumpToPage')" class="flex items-center justify-center w-9 h-9 border-none bg-transparent text-gray-700 dark:text-gray-300 rounded-2 cursor-pointer transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/10 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">{{ t('jump') }}</button>
         </div>

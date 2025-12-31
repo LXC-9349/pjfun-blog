@@ -30,7 +30,7 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="flex justify-between items-center mb-8">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+        <h2 class="text-2xl font-bold  dark:text-white">
           {{ t('yourFavorites') }}
           <span class="text-blue-600">({{ favorites.length }})</span>
         </h2>
@@ -129,7 +129,7 @@
       <!-- 空状态 -->
       <div v-else class="text-center py-20">
         <IconCarbonStar class="w-20 h-20 mx-auto text-gray-400" />
-        <h3 class="mt-4 text-xl font-medium text-gray-900 dark:text-white">{{ t('noFavorites') }}</h3>
+        <h3 class="mt-4 text-xl font-medium  dark:text-white">{{ t('noFavorites') }}</h3>
         <p class="mt-2 text-gray-500 dark:text-gray-400">{{ t('noFavoritesDesc') }}</p>
         <router-link 
           to="/" 

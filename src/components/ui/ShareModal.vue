@@ -9,7 +9,7 @@
         :enter="{ y: 0, opacity: 1 }"
       >
         <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-          <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ t('share') }}</h2>
+          <h2 class="text-lg font-bold text-gray-800 dark:text-white">{{ t('share') }}</h2>
           <button @click="closeModal" class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400" :aria-label="t('close')">
             <IconCarbonClose class="w-6 h-6" />
           </button>
@@ -48,7 +48,7 @@
                 ref="urlInput"
                 :value="url" 
                 readonly
-                class="flex-1 px-4 py-2 border border-r-0 border-gray-300 dark:border-gray-600 rounded-l-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                class="flex-1 px-4 py-2 border border-r-0 border-gray-300 dark:border-gray-600 rounded-l-lg bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white text-sm"
               />
               <button 
                 @click="copyLink"

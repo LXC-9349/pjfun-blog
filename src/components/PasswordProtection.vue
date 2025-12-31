@@ -6,7 +6,7 @@
           <div class="mx-auto w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center mb-4">
             <IconCarbonLocked class="w-8 h-8 text-white" />
           </div>
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">{{ t('passwordProtected') }}</h1>
+          <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">{{ t('passwordProtected') }}</h1>
           <p class="text-gray-600 dark:text-gray-300">{{ t('enterPasswordToAccess') }}</p>
         </div>
 
@@ -20,7 +20,7 @@
               v-model="password"
               type="password"
               :placeholder="t('enterPassword')"
-              class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
           </div>
