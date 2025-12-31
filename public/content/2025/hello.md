@@ -185,6 +185,18 @@ pnpm build
 pnpm preview
 ```
 
+## 🐳 Docker 部署
+
+### 使用 Docker 运行
+
+如果您更喜欢使用 Docker 来部署，可以使用以下命令：
+
+```bash
+# 构建并运行 Docker 容器
+docker build -t pjfun-blog .
+docker run -d --restart=always --name blog -p 1022:80 pjfun-blog
+```
+
 ### 使用 Docker Compose 运行
 
 项目还提供了 docker-compose.yml 配置文件，可以使用以下命令运行：
