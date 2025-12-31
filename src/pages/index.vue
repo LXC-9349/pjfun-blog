@@ -308,7 +308,7 @@ import Footer from '@/components/Footer.vue'
 import RecentArticles from '@/components/RecentArticles.vue'
 import { t, getLanguage } from '@/utils/i18n'
 import {HOT_TAGS, SITE_CONFIG} from '@/constants'
-import {formatDate, getEnvVariable, toDev} from "@/utils/tool";
+import {fetchWithFallback, formatDate, getEnvVariable, toDev} from "@/utils/tool";
 
 const allPosts = ref<any[]>([])
 const latestPosts = ref<any[]>([])
@@ -412,12 +412,12 @@ onMounted(() => {
 onMounted(async () => {
   try {
     window.addEventListener('scroll', handleScroll);
-    const nvName=getEnvVariable('PJ_BLOG_NAV_NAME')
+    const navName=getEnvVariable('PJ_BLOG_NAV_NAME')
     const treeName=getEnvVariable('PJ_BLOG_TREE_NAME')
     const base=getEnvVariable('VITE_BASE')||'/'
     const [navRes, treeRes] = await Promise.all([
-      fetch(`${base}generated/${nvName}`),
-      fetch(`${base}generated/${treeName}`)
+      fetchWithFallback([`${base}generated/${navName}`,`${base}generated/nav.json`],'导航数据'),
+      fetchWithFallback([`${base}generated/${treeName}`,`${base}generated/tree.json`],'树级数据')
     ])
 
     const posts = await navRes.json()

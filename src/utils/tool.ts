@@ -734,3 +734,26 @@ export const toDev = async () => {
         window.open(url)
     }
 }
+
+export const fetchWithFallback = async (urls: string[], dataType: string) => {
+    let lastError: Error | null = null;
+
+    for (const url of urls) {
+        try {
+            console.log(`尝试请求 ${dataType}: ${url}`);
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            return response;
+        } catch (error) {
+            console.warn(`请求失败 ${url}:`, error);
+            lastError = error as Error;
+            // 继续尝试下一个URL
+        }
+    }
+
+    // 所有URL都失败
+    throw new Error(`${dataType} 所有请求都失败了: ${lastError?.message}`);
+};

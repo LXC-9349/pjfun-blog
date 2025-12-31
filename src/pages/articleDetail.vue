@@ -380,7 +380,7 @@ import GiscusComment from '@/components/GiscusComment.vue'
 import { GISCUS_CONFIG } from '@/constants'
 import {addFavorite, isFavorite, removeFavorite} from "@/utils/favorites";
 import type {FavoriteItem} from "@/utils/favorites"
-import {formatDate, getEnvVariable} from "@/utils/tool";
+import {fetchWithFallback, formatDate, getEnvVariable} from "@/utils/tool";
 import { addRecentArticle, getReadingProgress, saveReadingProgress } from '@/utils/reading-progress';
 import {setupSEO, updateArticleSEO} from '@/plugins/seo';
 
@@ -863,7 +863,7 @@ const loadArticle = async (filePath: string) => {
     // 先获取导航数据，避免多次网络请求尝试不同扩展名
     const navName = getEnvVariable('PJ_BLOG_NAV_NAME')
     const base=getEnvVariable('VITE_BASE')||'/'
-    const navRes = await fetch(`${base}generated/${navName}`);
+    const navRes = await fetchWithFallback([`${base}generated/${navName}`,`${base}generated/nav.json`],'导航数据');
     const navData = await navRes.json();
     
     // 根据路径查找文章信息

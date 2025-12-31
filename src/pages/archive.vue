@@ -138,7 +138,7 @@ import { ref, onMounted, computed, onUnmounted } from 'vue'
 import { t, getLanguage } from '@/utils/i18n'
 import ThemeToggle from '@/components/ui/ThemeToggle.vue'
 import { SITE_CONFIG } from '@/constants'
-import {formatDate, getEnvVariable} from '@/utils/tool'
+import {fetchWithFallback, formatDate, getEnvVariable} from '@/utils/tool'
 
 const allPosts = ref<any[]>([])
 const currentLang = ref(getLanguage())
@@ -331,7 +331,7 @@ onMounted(async () => {
   try {
     const navName = getEnvVariable('PJ_BLOG_NAV_NAME')
     const base=getEnvVariable('VITE_BASE')||'/'
-    const res = await fetch(`${base}generated/${navName}`)
+    const res = await fetchWithFallback([`${base}generated/${navName}`,`${base}generated/nav.json`],'导航数据')
     const posts = await res.json()
     
     // 按日期排序

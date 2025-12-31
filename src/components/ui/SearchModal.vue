@@ -80,7 +80,7 @@ import { ref, watch, onMounted, onUnmounted,nextTick } from 'vue'
 import { useMagicKeys, whenever } from '@vueuse/core'
 import { t } from '@/utils/i18n'
 import { useRouter } from 'vue-router'
-import {getEnvVariable} from "@/utils/tool";
+import {fetchWithFallback, getEnvVariable} from "@/utils/tool";
 
 const router = useRouter()
 const isOpen = ref(false)
@@ -160,9 +160,9 @@ watch(query, async (q) => {
     return
   }
   try {
-    const nvName=getEnvVariable('PJ_BLOG_NAV_NAME')
+    const navName=getEnvVariable('PJ_BLOG_NAV_NAME')
     const base=getEnvVariable('VITE_BASE')||'/'
-    const res = await fetch(`${base}generated/${nvName}`)
+    const res = await fetchWithFallback([`${base}generated/${navName}`,`${base}generated/nav.json`],'导航数据')
     const all = await res.json()
     results.value = all
         .filter((p: any) =>

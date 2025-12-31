@@ -192,8 +192,13 @@ export function genNavPlugin(navName:string,treeName:string,baseUrl:string): Plu
 
             // 只生成这两个 JSON 文件到 public/generated 目录
             await writeFile(resolve(outDir, navName), JSON.stringify(nav, null, 2))
+            if(navName!=='nav.json'){
+                await writeFile(resolve(outDir, 'nav.json'), JSON.stringify(nav, null, 2))
+            }
             await writeFile(resolve(outDir, treeName), JSON.stringify(tree, null, 2))
-
+            if(navName!=='tree.json'){
+                await writeFile(resolve(outDir, 'tree.json'), JSON.stringify(tree, null, 2))
+            }
             console.log(`Generated ${nav.length} posts → ${navName} & ${treeName}`)
         },
 
