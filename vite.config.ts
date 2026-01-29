@@ -67,6 +67,8 @@ export default defineConfig((config) => {
                     globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
                     maximumFileSizeToCacheInBytes: 5000000, // 5MB
                 },
+                strategies: 'generateSW',
+                filename: `sw-${Date.now()}.js`,
                 manifest: {
                     name: SITE_CONFIG.title,
                     short_name: SITE_CONFIG.title,
