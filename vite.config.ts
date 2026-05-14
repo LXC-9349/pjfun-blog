@@ -189,7 +189,7 @@ export default defineConfig((config) => {
                     keep_fnames: false, // 不保留函数名
                 },
                 format: {
-                    comments: true, // 移除注释
+                    comments: false, // 移除注释
                 },
             } : {},
             dynamicImportVarsOptions: {

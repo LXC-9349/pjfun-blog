@@ -63,17 +63,17 @@ export function getCDN(LOCAL_DEBUG: boolean): CdnResult {
             isMain: true,
             externals: 'Vue',
             js: [
-                `${cdnSources.jsdelivr}/vue@3.5.25/dist/vue.global.prod.min.js`,
-                `${cdnSources.unpkg}/vue@3.5.25/dist/vue.global.prod.js`,
-                `${cdnSources.esm}/vue@3.5.25/dist/vue.global.prod.js`
+                `${cdnSources.jsdelivr}/vue@3.5.34/dist/vue.global.prod.min.js`,
+                `${cdnSources.unpkg}/vue@3.5.34/dist/vue.global.prod.js`,
+                `${cdnSources.esm}/vue@3.5.34/dist/vue.global.prod.js`
             ]
         },
         'vue-router': {
             externals: 'VueRouter',
             js: [
-                `${cdnSources.jsdelivr}/vue-router@4.6.3/dist/vue-router.global.prod.min.js`,
-                `${cdnSources.unpkg}/vue-router@4.6.3/dist/vue-router.global.prod.js`,
-                `${cdnSources.esm}/vue-router@4.6.3/dist/vue-router.global.prod.js`
+                `${cdnSources.jsdelivr}/vue-router@4.6.4/dist/vue-router.global.prod.min.js`,
+                `${cdnSources.unpkg}/vue-router@4.6.4/dist/vue-router.global.prod.js`,
+                `${cdnSources.esm}/vue-router@4.6.4/dist/vue-router.global.prod.js`
             ]
         },
         'highlight.js': {
@@ -87,9 +87,9 @@ export function getCDN(LOCAL_DEBUG: boolean): CdnResult {
         'pdfjs-dist': {
             externals: 'pdfjsLib',
             js: [
-                `${cdnSources.jsdelivr}/pdfjs-dist@5.4.449/legacy/build/pdf.min.mjs`,
-                `${cdnSources.unpkg}/pdfjs-dist@5.4.449/legacy/build/pdf.min.mjs`,
-                `${cdnSources.esm}/pdfjs-dist@5.4.449/legacy/build/pdf.min.mjs`
+                `${cdnSources.jsdelivr}/pdfjs-dist@5.7.284/legacy/build/pdf.min.mjs`,
+                `${cdnSources.unpkg}/pdfjs-dist@5.7.284/legacy/build/pdf.min.mjs`,
+                `${cdnSources.esm}/pdfjs-dist@5.7.284/legacy/build/pdf.min.mjs`
             ]
         },
         mammoth: {
