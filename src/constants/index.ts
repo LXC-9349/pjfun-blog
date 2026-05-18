@@ -1,55 +1,64 @@
+// 简单的环境变量读取函数（用于 vite.config.ts 等不能使用路径别名的场景）
+function getEnvVar(key: string, defaultValue: string): string {
+  // 在 Node.js 环境中（如 vite.config.ts）
+  //@ts-ignore
+  if (typeof process !== 'undefined' && process.env) {
+    //@ts-ignore
+    return process.env[key] || defaultValue
+  }
+  // 在浏览器环境中（Vite 会替换 import.meta.env）
+  // @ts-ignore
+  if (typeof import.meta !== 'undefined' && import.meta.env) {
+    // @ts-ignore
+    return import.meta.env[key] || defaultValue
+  }
+  return defaultValue
+}
+
+// 站点配置 - 支持环境变量覆盖
 export const SITE_CONFIG = {
-  icon: 'Pj',
-  title: 'Pjfun Blog',
-  description: '一个现代化的个人博客和技术分享平台',
-  author: 'Simon',
-  keywords: ['博客', '技术分享', '前端开发', 'Vue', 'TypeScript'],
-  email:'pjfun@aliyun.com',
+  icon: getEnvVar('VITE_SITE_ICON', 'Pj'),
+  title: getEnvVar('VITE_SITE_TITLE', 'Pjfun Blog'),
+  description: getEnvVar('VITE_SITE_DESCRIPTION', '一个现代化的个人博客和技术分享平台'),
+  author: getEnvVar('VITE_SITE_AUTHOR', 'Simon'),
+  keywords: (getEnvVar('VITE_SITE_KEYWORDS', '博客,技术分享,前端开发,Vue,TypeScript')||'').split(',').map(k => k.trim()),
+  email: getEnvVar('VITE_SITE_EMAIL', 'pjfun@aliyun.com'),
   socialLinks: {
-    github: 'https://github.com/LXC-9349/pjfun-blog',
-    Telegram: 'https://t.me/pjfun_top',
+    github: getEnvVar('VITE_SOCIAL_GITHUB', 'https://github.com/LXC-9349/pjfun-blog'),
+    Telegram: getEnvVar('VITE_SOCIAL_TELEGRAM', 'https://t.me/pjfun_top'),
   },
-  foot:{
-    github:'https://github.com/LXC-9349/pjfun-blog',
+  foot: {
+    github: getEnvVar('VITE_FOOT_GITHUB', 'https://github.com/LXC-9349/pjfun-blog'),
   }
 }
-//仓库地址
-export const GIT_REPO=SITE_CONFIG.socialLinks.github
+
+// 仓库地址
+export const GIT_REPO = SITE_CONFIG.socialLinks.github
 
 // Giscus 评论系统配置 https://giscus.app/zh-CN
 export const GISCUS_CONFIG = {
-  enabled: true, // 启用评论系统
-  repo: 'LXC-9349/blog-comment', // GitHub 仓库
-  repoId: 'R_kgDOQmj5WA', // 仓库 ID
-  category: 'Announcements', // Discussion 分类
-  categoryId: 'DIC_kwDOQmj5WM4CzpLf', // 分类 ID
-  mapping: 'pathname', // 映射方式
-  strict: false, // 严格匹配
-  reactionsEnabled: true, // 启用反应
-  emitMetadata: false, // 发送元数据
-  inputPosition: 'top', // 输入框位置
-  lang: 'zh-CN' // 语言
+  enabled: getEnvVar('VITE_GISCUS_ENABLED', 'true') === 'true', // 启用评论系统
+  repo: getEnvVar('VITE_GISCUS_REPO', 'LXC-9349/blog-comment'), // GitHub 仓库
+  repoId: getEnvVar('VITE_GISCUS_REPO_ID', 'R_kgDOQmj5WA'), // 仓库 ID
+  category: getEnvVar('VITE_GISCUS_CATEGORY', 'Announcements'), // Discussion 分类
+  categoryId: getEnvVar('VITE_GISCUS_CATEGORY_ID', 'DIC_kwDOQmj5WM4CzpLf'), // 分类 ID
+  mapping: getEnvVar('VITE_GISCUS_MAPPING', 'pathname'), // 映射方式
+  strict: getEnvVar('VITE_GISCUS_STRICT', 'false') === 'true', // 严格匹配
+  reactionsEnabled: getEnvVar('VITE_GISCUS_REACTIONS', 'true') === 'true', // 启用反应
+  emitMetadata: getEnvVar('VITE_GISCUS_METADATA', 'false') === 'true', // 发送元数据
+  inputPosition: getEnvVar('VITE_GISCUS_POSITION', 'top'), // 输入框位置
+  lang: getEnvVar('VITE_GISCUS_LANG', 'zh-CN') // 语言
 }
 
-// 热门标签
-export const HOT_TAGS = [
-  'Vue',
-  '网页',
-  '文本',
-  '在线课程',
-  '编程教程',
-  '职业技能',
-  '知识管理',
-  '思维导图',
-  '学习笔记',
-  '教育心得',
-  '自我提升'
-]
+// 热门标签 - 支持环境变量配置（逗号分隔）
+const hotTagsStr = getEnvVar('VITE_HOT_TAGS', 'Vue,网页,文本,在线课程,编程教程,职业技能,知识管理,思维导图,学习笔记,教育心得,自我提升')||''
+// @ts-ignore
+export const HOT_TAGS = hotTagsStr.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
 
 export const I18N_CONFIG = {
   zh: {
     siteTitle: SITE_CONFIG.title,
-    siteDescription: '欢迎来到我的个人博客，这里记录了我的技术探索和思考。',
+    siteDescription: '零后端、纯静态、顶级动效、全球秒开的现代化个人博客系统。支持 Markdown/HTML/PDF/Word/Excel，一键部署。',
     articleDirectory: '文章目录',
     latestPosts: '最新文章',
     searchPlaceholder: '搜索文章...',
@@ -60,9 +69,13 @@ export const I18N_CONFIG = {
     home: '首页',
     toggleTheme: '切换主题',
     search: '搜索',
+    archive: '归档',
+    favorites: '收藏',
     close: '关闭',
     loading: '加载中...',
     error: '加载失败',
+    articleLoadError: '文章加载失败',
+    articleLoadErrorDesc: '可能是网络问题或文章已被删除，请稍后再试或返回首页。',
     success: '操作成功',
     searchHint: '输入关键词搜索...',
     noResults: '未找到相关内容',
@@ -135,6 +148,7 @@ export const I18N_CONFIG = {
     incorrectPassword: '密码错误',
     loginError: '登录时发生错误，请稍后重试',
     passwordProtectionNotConfigured: '密码保护未正确配置',
+    logout: '退出登录',
     // 页脚相关翻译
     footerDescription: '一个现代化的个人博客和技术分享平台',
     allRightsReserved: '保留所有权利',
@@ -241,13 +255,18 @@ export const I18N_CONFIG = {
     delete: '删除',
     dataManager:'数据管理',
     noRepoInfo:'未配置仓库',
-    chooseEditor:'选择编辑器',
-    selectEditorToOpenRepo:'请选择要打开仓库的在线编辑器',
+    chooseEditor:'选择在线编辑器',
+    selectEditorToOpenRepo:'请选择一个在线编辑器来打开和编辑仓库代码',
     top:'置顶',
+    prevArticle: '上一篇',
+    nextArticle: '下一篇',
+    footerGitHub: 'GitHub',
+    footerTelegram: 'Telegram',
+    footerEmail: '邮箱',
   },
   en: {
     siteTitle: SITE_CONFIG.title,
-    siteDescription: 'Welcome to my personal blog where I record my technical explorations and thoughts.',
+    siteDescription: 'Zero-backend, pure static, top-tier animation, lightning-fast personal blog system. Supports Markdown/HTML/PDF/Word/Excel with one-click deploy.',
     articleDirectory: 'Article Directory',
     latestPosts: 'Latest Posts',
     searchPlaceholder: 'Search articles...',
@@ -258,10 +277,14 @@ export const I18N_CONFIG = {
     home: 'Home',
     toggleTheme: 'Toggle Theme',
     search: 'Search',
+    archive: 'Archive',
+    favorites: 'Favorites',
     close: 'Close',
     print: 'Print',
     loading: 'Loading...',
     error: 'Failed to load',
+    articleLoadError: 'Article load failed',
+    articleLoadErrorDesc: 'It may be a network issue or the article has been removed. Please try again later or go back to the home page.',
     success: 'Operation successful',
     searchHint: 'Type keywords to search...',
     noResults: 'No relevant content found',
@@ -329,6 +352,7 @@ export const I18N_CONFIG = {
     incorrectPassword: 'Incorrect password',
     loginError: 'Error occurred during login, please try again later',
     passwordProtectionNotConfigured: 'Password protection not configured properly',
+    logout: 'Logout',
     // Footer translations
     footerDescription: 'A modern personal blog and technology sharing platform',
     allRightsReserved: 'All rights reserved',
@@ -435,9 +459,17 @@ export const I18N_CONFIG = {
     delete: 'Delete',
     dataManager:'Data Manager',
     noRepoInfo:'Repo not configured',
-    chooseEditor:'Choose Editor',
-    selectEditorToOpenRepo:'Please select an online editor to open the repository',
+    chooseEditor:'Choose Online Editor',
+    selectEditorToOpenRepo:'Please select an online editor to open and edit the repository code',
     top:'Sticky',
+    prevArticle: 'Previous',
+    nextArticle: 'Next',
+    filterByTag: 'Hot Tags',
+    clear: 'Clear',
+    loadMore: 'Load More',
+    footerGitHub: 'GitHub',
+    footerTelegram: 'Telegram',
+    footerEmail: 'Email',
   }
 }
 

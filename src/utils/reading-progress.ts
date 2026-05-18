@@ -21,14 +21,55 @@ const READING_PROGRESS_KEY = 'pjfun_blog_reading_progress';
 const RECENT_ARTICLES_KEY = 'pjfun_blog_recent_articles';
 
 /**
- * 保存文章阅读进度
+ * 保存文章阅读进度（按path存储多条记录）
  * @param progress 阅读进度信息
  */
 export function saveReadingProgress(progress: ReadingProgress): void {
   try {
-    localStorage.setItem(READING_PROGRESS_KEY, JSON.stringify(progress));
+    const allProgress = getAllReadingProgress()
+    const existingIndex = allProgress.findIndex(p => p.path === progress.path)
+
+    // 更新或新增
+    if (existingIndex >= 0) {
+      allProgress[existingIndex] = progress
+    } else {
+      allProgress.push(progress)
+    }
+
+    // 只保留最近20条记录，防止localStorage溢出
+    const limited = allProgress.slice(-20)
+
+    localStorage.setItem(READING_PROGRESS_KEY, JSON.stringify(limited))
   } catch (e) {
-    console.error('Failed to save reading progress:', e);
+    if (e instanceof DOMException && e.name === 'QuotaExceededError') {
+      // localStorage 配额已满，清除旧数据后重试
+      console.warn('localStorage quota exceeded, clearing old reading progress')
+      clearReadingProgress()
+      try {
+        localStorage.setItem(READING_PROGRESS_KEY, JSON.stringify([progress]))
+      } catch (retryError) {
+        console.error('Failed to save reading progress even after clearing:', retryError)
+      }
+    } else {
+      console.error('Failed to save reading progress:', e)
+    }
+  }
+}
+
+/**
+ * 获取所有阅读进度记录
+ */
+export function getAllReadingProgress(): ReadingProgress[] {
+  try {
+    const progressStr = localStorage.getItem(READING_PROGRESS_KEY)
+    if (!progressStr) return []
+    
+    const parsed = JSON.parse(progressStr)
+    // 确保返回的是数组
+    return Array.isArray(parsed) ? parsed : []
+  } catch (e) {
+    console.error('Failed to get reading progress:', e)
+    return []
   }
 }
 
@@ -39,11 +80,8 @@ export function saveReadingProgress(progress: ReadingProgress): void {
  */
 export function getReadingProgress(path: string): ReadingProgress | null {
   try {
-    const progressStr = localStorage.getItem(READING_PROGRESS_KEY);
-    if (!progressStr) return null;
-    
-    const progress: ReadingProgress = JSON.parse(progressStr);
-    return progress.path === path ? progress : null;
+    const allProgress = getAllReadingProgress();
+    return allProgress?.find(p => p.path === path) || null;
   } catch (e) {
     console.error('Failed to get reading progress:', e);
     return null;

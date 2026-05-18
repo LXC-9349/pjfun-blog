@@ -127,11 +127,11 @@ defineProps<{
 }
 
 .nav-item {
-  @apply flex items-center gap-2 py-1.5 px-2 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 text-sm transform hover:scale-[1.02];
+  @apply flex items-center gap-2 py-1.5 px-2 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 text-sm transform hover:scale-[1.02] cursor-pointer;
 }
 
 .nav-item-active {
-  @apply bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 font-medium;
+  @apply bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 font-medium ring-2 ring-blue-500/20;
 }
 
 .nav-item-icon {

@@ -164,6 +164,17 @@ watch(() => props.url, () => {
   color: #e2e8f0;
 }
 
+/* 确保暗色模式下所有嵌套文本元素正确继承颜色 */
+.dark .html-viewer :deep(p),
+.dark .html-viewer :deep(li),
+.dark .html-viewer :deep(td),
+.dark .html-viewer :deep(th),
+.dark .html-viewer :deep(a),
+.dark .html-viewer :deep(span),
+.dark .html-viewer :deep(div) {
+  color: inherit;
+}
+
 .html-viewer :deep(p) {
   margin-bottom: 1rem;
   line-height: 1.6;

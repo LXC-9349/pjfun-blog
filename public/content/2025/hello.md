@@ -1,545 +1,208 @@
 ---
-title: Hello pjfun-blog！2025 最强纯前端博客
-date: 2025-12-05
-cover: /img/d1.webp
-desc: 零后端、纯静态、顶级动效、全球秒开的个人博客
-tags: [Vite, Vue3, UnoCSS, Lenis]
-sticky: true
----
-# PJ Blog - 现代化个人博客系统
-
-<div align="center" style="display: flex;gap: 2px; justify-content: center; align-items: center;">
-
-  <img src="https://img.shields.io/badge/Vue-3.x-brightgreen" alt="Vue Version">
-  <img src="https://img.shields.io/badge/TypeScript-Support-blue" alt="TypeScript">
-  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
-   <a target="_blank" style="display: grid" href="https://zread.ai/LXC-9349/pjfun-blog">
-   <img src="https://img.shields.io/badge/Ask_Zread-_.svg?style=flat&color=00b0aa&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTg0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff" alt="License">
-   </a>  
-</div>
-<div align="center">
-    <p>
-        <a target="_blank" href="https://github.com/LXC-9349/pjfun-blog/blob/main/README.md">简体中文</a> | <a target="_blank" href="https://github.com/LXC-9349/pjfun-blog/blob/main/README.en.md">English</a> | <a target="_blank" href="https://pjfun.top">主页</a>
-    </p>
-</div>
-
-## 🌟 简介
-
-PJ Blog 是一个零后端、纯静态、顶级动效、全球秒开的现代化个人博客系统。它采用最新的前端技术栈构建，具有响应式设计、暗黑模式、平滑滚动、动画效果等特性，让你轻松拥有一个高性能的技术博客。
-
-只需在 `public/content` 目录下放置 [.md](file://E:\3.0\pjfun-blog\public\content\2025\hello.md)、[.html](file://E:\3.0\pjfun-blog\index.html)、[.txt](file://E:\3.0\pjfun-blog\public\content\2025\文本\示例文本格式.txt)、PDF、Word 或 Excel 文件 → 运行 `pnpm build` → 部署到任何静态网站托管服务即可拥有属于自己的顶级技术站。
-
-## 🚀 技术栈
-
-- [Vue 3](https://v3.vuejs.org/) - 渐进式 JavaScript 框架
-- [TypeScript](https://www.typescriptlang.org/) - JavaScript 的超集，添加了静态类型
-- [Vite](https://vitejs.dev/) - 下一代前端构建工具
-- [UnoCSS](https://unocss.dev/) - 即时按需原子 CSS 引擎
-- [Marked](https://marked.js.org/) - 高性能 Markdown 解析器
-- [Highlight.js](https://highlightjs.org/) - 代码高亮工具
-- [Vue Router](https://router.vuejs.org/) - Vue.js 官方路由管理器
-- [DOMPurify](https://github.com/cure53/DOMPurify) - DOM XSS 清理工具
-- [Giscus](https://giscus.app/zh-CN) - 基于 GitHub Discussions 的评论系统
-
-## ✨ 特性
-
-- 📝 **Markdown 支持** - 使用 Markdown 编写文章，支持 Frontmatter
-- 🌗 **暗黑模式** - 自动适配系统主题或手动切换
-- 🌍 **国际化** - 支持中英文切换
-- 🔍 **全文搜索** - 快速搜索文章标题、摘要和标签（支持 Ctrl+K 快捷键）
-- 🖼️ **封面图片** - 为每篇文章设置封面图
-- 🏷️ **标签系统** - 为文章添加标签，方便分类和筛选
-- 💬 **评论系统** - 集成 Giscus 评论系统
-- 📱 **响应式设计** - 适配各种设备屏幕尺寸
-- ⚡ **高性能** - 静态站点，加载速度快
-- 🎨 **精美 UI** - 使用 UnoCSS 构建现代界面
-- 📚 **目录结构** - 自动生成文章目录树
-- 📈 **阅读时长** - 自动计算文章阅读时间
-- 📤 **代码复制** - 一键复制代码块
-- 🔝 **回到顶部** - 滚动时显示回到顶部按钮
-- 📖 **置顶文章** - 支持文章置顶功能
-- 📋 **文章目录** - 自动生成文章内目录导航
-- 🖼️ **图片灯箱** - 点击文章图片可放大预览
-- 📏 **字体大小调节** - 可在三种字体大小间切换
-- ⚙️ **SEO优化** - 支持结构化数据、Open Graph和Twitter Cards
-- 📡 **RSS支持** - 自动生成RSS、Atom和JSON Feed
-- 📱 **PWA支持** - 可安装为桌面应用
-- 🌐 **多格式支持** - 支持 Markdown、HTML、TXT、PDF、Word 和 Excel 文档
-
-## 🔐 密码保护功能
-
-博客支持密码保护功能，可以通过环境变量启用。
-
-### 启用密码保护
-
-在各个pages中配置环境变量或者在.env中配置：
-   ```
-   VITE_BLOG_PASSWORD_HASH=your_sha256_password_hash_here
-   ```
-
-### 生成密码哈希
-
-### 使用在线工具生成SHA256密码哈希
-除了使用项目自带的generate-password-hash.js脚本外，您也可以使用在线工具来生成SHA256哈希值用于博客密码保护功能。
-#### 推荐在线工具
-
-- [https://www.convertstring.com/zh_CN/Hash/SHA256](https://www.convertstring.com/zh_CN/Hash/SHA256)
-
-#### 使用步骤
-
-1. 访问上述网站
-2. 在输入框中输入您的密码
-3. 点击"Hash"按钮生成SHA256哈希值
-4. 复制生成的哈希值
-
-#### 配置到博客
-
-将生成的SHA256哈希值配置到环境变量中：
-
-```env
-VITE_BLOG_PASSWORD_HASH=your_generated_sha256_hash_here
-```
-
-#### 安全提醒
-⚠️ **重要**: 使用在线工具存在安全风险，因为您的密码会通过网络传输。建议仅在开发测试环境中使用，在生产环境中应使用本地脚本生成：
-```bash
-node scripts/generate-password-hash.js your_password_here
-```
-这将输出密码的 SHA256 哈希值，您需要将该值添加到 `.env` 文件中。
-
-### 使用密码保护
-
-启用密码保护后，访问博客时会跳转到密码输入页面。输入正确的密码后即可访问博客内容。
-
-### 安全注意事项
-
-- 我们现在使用 SHA256 哈希算法来存储密码，比以前的明文存储更加安全
-- 生产环境中请使用强密码
-- 密码保护仅适用于简单场景，对于高安全性需求建议使用专业解决方案
-
-## 📁 项目结构
-
-```
-pjfun-blog/
-├── public/
-│   └── content/           # 文章目录 (支持 Markdown, HTML, TXT, PDF, Word, Excel)
-│       ├── 2025/
-│       ├── 学习/
-│       ├── 教程/
-│       └── 笔记/
-├── src/
-│   ├── assets/            # 静态资源
-│   │   └── icons/         # 本地 SVG 图标
-│   ├── components/        # Vue 组件
-│   │   ├── ui/            # UI 组件
-│   │   ├── Footer.vue     # 页脚组件
-│   │   ├── GiscusComment.vue # 评论组件
-│   │   ├── NavTree.vue    # 导航树组件
-│   │   └── PasswordProtection.vue # 密码保护组件
-│   ├── constants/         # 常量配置
-│   ├── pages/             # 页面组件
-│   │   ├── archive.vue    # 归档页面
-│   │   ├── articleDetail.vue # 文章详情页
-│   │   ├── favorites.vue  # 收藏页面
-│   │   └── index.vue      # 首页
-│   ├── plugins/           # 插件
-│   ├── utils/             # 工具函数
-│   ├── App.vue            # 根组件
-│   └── main.ts            # 入口文件
-├── package/               # 构建相关工具
-├── index.html             # HTML 模板
-├── uno.config.ts          # UnoCSS 配置
-├── vite.config.ts         # Vite 配置
-└── vite-plugin-gen-nav.ts # 导航生成插件
-```
-
-## 🚀 快速开始
-
-### 环境要求
-
-- Node.js >= 20.18.1
-- pnpm >= 7
-
-### 安装依赖
-
-```bash
-pnpm install
-```
-
-### 开发模式
-
-```bash
-pnpm dev
-```
-
-默认会在 http://localhost:1022 启动开发服务器。
-
-### 构建生产版本
-
-```bash
-pnpm build
-```
-
-构建后的文件会输出到 `dist` 目录。
-
-### 预览生产版本
-
-```bash
-pnpm preview
-```
-
-## 🐳 Docker 部署
-
-### 使用 Docker 运行
-
-如果您更喜欢使用 Docker 来部署，可以使用以下命令：
-
-```bash
-# 构建并运行 Docker 容器
-docker build -t pjfun-blog .
-docker run -d --restart=always --name blog -p 1022:80 pjfun-blog
-```
-
-### 使用 Docker Compose 运行
-
-项目还提供了 docker-compose.yml 配置文件，可以使用以下命令运行：
-
-```bash
-# 构建并启动服务
-docker-compose up -d
-
-# 查看服务状态
-docker-compose ps
-
-# 停止服务
-docker-compose down
-```
-
-### 自定义配置
-
-您可以通过环境变量来配置应用，创建 `.env` 文件来配置密码保护等功能：
-
-```bash
-# 复制 .env.example 为 .env 并根据需要修改配置
-VITE_BLOG_PASSWORD_HASH=your_sha256_password_hash_here
-VITE_BASE=/
-```
-
-在 Docker 中使用自定义环境变量：
-
-```bash
-# 使用环境变量文件
-docker run -d --restart=always --name blog -p 1022:80 --env-file .env pjfun-blog
-```
-
-或者在 docker-compose 中使用环境变量：
-
-```bash
-# 编辑 .env 文件以配置您的设置
-vim .env  # 或使用您喜欢的编辑器
-
-# 使用 docker-compose 启动服务
-docker-compose up -d
-```
-
-## 📝 写作指南
-
-### 创建新文章
-
-1. 在 `public/content/` 目录下创建 Markdown、HTML、TXT、PDF、Word 或 Excel 文件
-2. 使用以下格式编写文章元数据（仅 Markdown 支持元数据，其他格式使用 `.desc.json` 或 `.desc.yaml` 配置文件）：
-
-> 对于非 Markdown 文件（如 PDF、Word、Excel），可以创建同名的 `.desc.json` 或 `.desc.yaml` 配置文件来设置元数据。
->
-> 例如：对于 `sample.pdf` 文件，可以创建 `sample.pdf.desc.json` 配置文件：
->
-> ```json
-> {
->   "title": "示例PDF文档",
->   "date": "2025-12-05",
->   "cover": "/image/sample-pdf-cover.jpg",
->   "desc": "这是一个示例PDF文档",
->   "tags": ["PDF", "文档", "示例"],
->   "sticky": false
-> }
-> ```
-
-```
----
-title: 文章标题
-date: 2025-12-05
-cover: /image/pbsh.jpg
-desc: 文章摘要
-tags: [Vite, Vue3, UnoCSS, Marked]
-sticky: true # 可选，设置为置顶文章
+title: 2026 技术趋势回顾：AI 原生开发时代的开启
+date: 2026-05-18
+cover: https://picsum.photos/seed/tech-trends-2026/800/400
+desc: 从 Agent 编程到 WebMCP，从 Passkey 到边缘计算，2026 年是软件开发范式转变的一年
+tags: [技术趋势, AI, 2026, 年度回顾]
 ---
 
-# 标题
+## 这一年，一切都变了
 
-文章内容...
+2026 年 5 月，我回顾这一年的技术变化，最大的感受是：**AI 不再是工具，而是基础设施**。
+
+GitHub Copilot 有 470 万付费用户，Cursor 年收入突破 20 亿美元，OpenAI、Anthropic、Google、xAI、DeepSeek 在模型能力上你追我赶。这不是噱头，是生产力的质变。
+
+这篇文章总结 2026 年最重要的技术趋势，以及它们对开发者的实际影响。
+
+## 趋势一：AI Agent 成为默认开发模式
+
+### 现状
+
+- **2024 年**：AI 辅助写代码（补全、聊天）
+- **2025 年**：AI 驱动重构（多文件编辑）
+- **2026 年**：AI Agent 自主执行任务
+
+### 标志性事件
+
+- Cursor 推出 Composer 模式，可以同时修改几十个文件
+- Claude Code 可以直接在终端执行命令、运行测试、修复 bug
+- 84% 的开发者在日常工作中使用 AI 工具（Stack Overflow 2025 调查）
+
+### 对开发者的影响
+
+1. **编码效率提升 30-50%**：尤其是样板代码、重复性工作
+2. **学习曲线变平**：新手可以用 AI 快速上手新技术
+3. **代码审查更重要**：AI 生成的代码需要人工审查
+
+### 建议
+
+- 不要抗拒 AI，尽早适应
+- 学会写好 prompt，这和写好代码一样重要
+- 永远不要盲信 AI 生成，关键逻辑必须自己验证
+
+## 趋势二：MCP 协议统一 Agent 接口
+
+### 现状
+
+Anthropic 的 MCP（Model Context Protocol）下载量突破 9700 万，OpenAI、Google、Microsoft 全部宣布支持。
+
+### 为什么重要
+
+之前每个 AI 工具都要自己定义"如何连接外部工具"，MCP 统一了这个接口。
 
 ```
+MCP 之前：
+Claude → 定义一套工具格式
+GPT → 定义另一套工具格式
+Gemini → 再定义一套格式
 
-### 目录结构
-
-推荐按照以下方式组织文章：
-
-```
-public/content/
-├── 2025/                 # 按年份分类
-│   ├── hello.md
-│   ├── excel/
-│   │   └── 示例Excel文件.xlsx
-│   ├── pdf/
-│   │   └── 示例PDF文件.pdf
-│   └── word/
-│       └── 示例Word文件.docx
-├── 学习/                 # 按主题分类
-│   ├── Vite构建工具/
-│   │   └── advanced-configurations.md
-│   └── Vue框架/
-│       └── introduction.md
-├── 教程/
-│   └── getting-started.md
-└── 笔记/
-    └── 个人思考/
-        └── on-writing.md
+MCP 之后：
+所有模型 → 统一使用 MCP 协议连接工具
 ```
 
-## 🎨 自定义配置
+### 对开发者的影响
 
-### 站点信息
+- 写一次 MCP Server，可以被所有 AI 模型使用
+- 工具生态繁荣：数据库、文件系统、GitHub、Slack 都有现成的 MCP Server
 
-编辑 `src/constants/index.ts` 文件来修改站点信息：
+## 趋势三：WebMCP 让浏览器成为 AI 游乐场
 
-```typescript
-export const SITE_CONFIG = {
-  icon: 'Pj',
-  title: 'Pjfun Blog',
-  description: '一个现代化的个人博客和技术分享平台',
-  author: 'Simon',
-  keywords: ['博客', '技术分享', '前端开发', 'Vue', 'TypeScript'],
-  email:'pjfun@aliyun.com',
-  socialLinks: {
-    github: 'https://github.com/LXC-9349/pjfun-blog',
-    Telegram: 'https://t.me/pjfun_top',
-  }
-}
-```
+### 现状
 
-### 国际化
+2026 年 3 月，Chrome 发布 WebMCP 早期预览版。网站可以主动向 AI Agent 暴露结构化的工具接口。
 
-在同一个文件中可以修改中英文翻译：
+### 为什么重要
 
-```typescript
-export const I18N_CONFIG = {
-  zh: {
-    // 中文翻译
-  },
-  en: {
-    // 英文翻译
-  }
-}
-```
+之前 AI 操作网站：截图 → 视觉模型 → 计算坐标 → 模拟点击（慢、不准确、脆弱）
 
-## 🔧 开发指南
+WebMCP 之后：AI 直接调用网站提供的工具接口（快、准确、稳定）
 
-### 组件系统
+### 实际影响
 
-项目采用基于文件系统的路由方案，页面组件位于 `src/pages` 目录下。UI组件位于 `src/components/ui`，功能性组件位于 `src/components`。
+- 电商网站可以让 AI 帮用户下单
+- SaaS 产品可以让 AI 帮用户操作
+- 新的 SEO 方向：AI Visibility（让 AI 能理解你的网站功能）
 
-### 图标系统
+## 趋势四：Passkey 开始替代密码
 
-项目支持两种图标使用方式：
-1. 本地 SVG 图标：位于 `src/assets/icons` 目录，通过 `IconComponent` 组件使用
-2. Iconify 图标：通过 `unplugin-icons` 自动生成组件，如 `IconCarbonHome`
+### 现状
 
-推荐优先使用 Iconify 图标，因为它们提供更多选择并且自动按需加载。
+2026 年，所有主流平台都原生支持 Passkey：
+- iOS/macOS：iCloud 钥匙串
+- Android：Google 密码管理器
+- Windows：Windows Hello
 
-### 插件机制
+### 为什么重要
 
-项目包含以下自定义插件：
-- `vite-plugin-gen-nav.ts` - 自动生成导航和目录结构
+| 维度 | 密码 | Passkey |
+|------|------|---------|
+| 钓鱼抵抗 | ❌ | ✅ |
+| 用户记忆 | ❌ 需要 | ✅ 不需要 |
+| 用户体验 | 差 | 好 |
 
-### 样式系统
+### 对开发者的影响
 
-项目使用 UnoCSS 作为样式引擎，配置文件为 `uno.config.ts`。支持 Wind 风格的工具类和图标系统。
+- 新项目应该支持 Passkey 登录
+- 旧项目可以逐步添加 Passkey 作为备选登录方式
+- 减少密码重置支持成本
 
-### 国际化
+## 趋势五：边缘计算成为默认选择
 
-项目支持中英文切换，翻译内容定义在 `src/constants/index.ts` 文件中。
+### 现状
 
-### 密码保护
+Gartner 预测：2026 年 Q4，70% 的新企业工作负载将采用边缘/Serverless 架构。
 
-博客支持简单的密码保护功能，可通过环境变量 `VITE_BLOG_PASSWORD_HASH` 启用。
+### 为什么重要
 
-### 评论系统
+- **延迟**：从 200-500ms 降到 10-50ms
+- **成本**：按调用计费，空闲不收费
+- **AI 应用**：适合 AI 的快速响应需求
 
-博客集成了 Giscus 评论系统，基于 GitHub Discussions。可以在 `src/constants/index.ts` 中配置相关参数。
+### 代表平台
 
-## 🌐 部署
+- Cloudflare Workers：最成熟，冷启动 0-5ms
+- Vercel Edge Functions：与 Next.js 无缝集成
+- Deno Deploy：TypeScript 体验最好
 
-构建完成后，将 `dist` 目录中的内容部署到任何静态网站托管服务，例如：
+## 趋势六：PostgreSQL 继续蚕食市场
 
-## 🔍 SEO & RSS 支持
+### 现状
 
-本项目现已支持SEO优化和RSS订阅：
+Stack Overflow 2025 调查：PostgreSQL 采用率 55.6%，史上最高。MongoDB 首次出现负增长。
 
-- 自动生成结构化数据（Schema.org）
-- 支持Open Graph和Twitter Cards
-- 自动生成RSS、Atom和JSON Feed
-- RSS源文件位于 `/rss.xml`、`/atom.xml` 和 `/feed.json`
+### 为什么
 
-## 📱 PWA 支持
+1. **pgvector**：让 PostgreSQL 兼具向量搜索能力
+2. **JSONB**：NoSQL 功能足够好用
+3. **成本**：自建 PostgreSQL 比 MongoDB Atlas 便宜 3-5 倍
 
-项目支持PWA（渐进式Web应用），用户可以将博客安装为桌面应用，提供类似原生应用的体验。
+### 建议
 
-- [Vercel](https://vercel.com/)
-- [Netlify](https://netlify.com/)
-- [GitHub Pages](https://pages.github.com/)
-- [EdgeOne Pages](https://edgeone.ai/products/pages)
+- 新项目默认考虑 PostgreSQL
+- 只有特定场景才需要 MongoDB（文档嵌套、时序数据）
+- AI 应用的向量搜索：小规模用 pgvector，大规模用 Qdrant
 
-### 一键部署
-####  Vercel
-点击以下按钮即可将项目快速部署到 Vercel：
+## 趋势七：Rust + WebAssembly 进入主流
 
-<a href="https://vercel.com/new/clone?repository-url=https://github.com/LXC-9349/pjfun-blog&project-name=pjfun-blog&repository-name=pjfun-blog" target="_blank">
-  <img src="https://vercel.com/button" alt="Deploy with Vercel">
-</a>
+### 现状
 
+2026 年，Rust 和 WebAssembly 在以下场景成为主流：
+- AI 代码沙箱
+- 图像/视频处理
+- 大数据计算
+- 游戏引擎
 
-**注意**：请将按钮链接中的 `https://github.com/LXC-9349/pjfun-blog` 替换为你的实际 Git 仓库地址。
-**注意**：- vercel在国内被墙，请配合代理或绑定自定义域名使用_~~
+### 为什么
 
-[示例网站：https://pjfun-blog.vercel.app/](https://pjfun-blog.vercel.app/)
-访问密码：123456
+- **性能**：达到原生的 60-70%，比 JS 快 8-30 倍
+- **安全**：WASM 提供沙箱隔离
+- **多线程**：支持真正的多线程计算
 
-#### 腾讯云(国内) edgeone pages
+### 实际案例
 
-<a href="https://console.cloud.tencent.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog&project-name=pjfun-blog&root-directory=.%2F" target="_blank">
-  <img src="https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg" alt="使用 EdgeOne Pages 部署">
-</a>
+- Cloudflare Workers 支持 Rust
+- Figma 用 WASM 处理图形
+- AI Code Interpreter 用 WASM 执行用户代码
 
-[示例网站：https://cnblog.pjfun.top/](https://cnblog.pjfun.top/)
+## 趋势八：可观测性成为标配
 
+### 现状
 
+OpenTelemetry 成为事实标准，所有云服务商和监控工具都支持。
 
-#### 腾讯云(国际) edgeone pages
+### 为什么重要
 
-<a href="https://console.tencentcloud.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog&project-name=pjfun-blog&root-directory=.%2F" target="_blank">
-  <img src="https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg" alt="使用 EdgeOne Pages 部署">
-</a>
+监控只能发现已知问题，可观测性能定位未知问题。
 
+### 三大支柱
 
+- **Metrics**：趋势、告警（Prometheus）
+- **Logs**：事件记录（Loki）
+- **Traces**：请求链路（Tempo）
 
-####  Cloudflare
-<a href="https://deploy.workers.cloudflare.com/?url=https://github.com/LXC-9349/pjfun-blog/tree/main" target="_blank">
-  <img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare Workers">
-</a>
+### 建议
 
-[示例网站：https://demoblog.pjfun.top/](https://demoblog.pjfun.top/)
+- 新项目一开始就接入 OpenTelemetry
+- 不要等出问题再加监控
 
-#### GitHub Pages
+## 开发者行动清单
 
-要将项目部署到 GitHub Pages，您可以使用 GitHub Actions 自动化部署流程。我们已经为您准备好了一个工作流配置文件。
+如果你想在 2026 年保持竞争力：
 
-##### 方法一：使用 GitHub Actions 自动部署（推荐）
+1. **掌握 AI 编程工具**：Cursor 或 Windsurf，熟悉 prompt 技巧
+2. **学习 MCP 协议**：写一个简单的 MCP Server
+3. **了解 WebMCP**：思考你的产品如何暴露给 AI Agent
+4. **支持 Passkey**：在新项目中实现无密码登录
+5. **尝试边缘计算**：用 Cloudflare Workers 或 Vercel Edge 部署一个 API
+6. **深入 PostgreSQL**：学习 pgvector、JSONB、高级查询
+7. **接入可观测性**：OpenTelemetry + Grafana 栈
 
-1. 将您的代码推送到 GitHub 仓库（确保分支名为 `main`）
-2. 提交并推送更改到 GitHub
-3. 在 GitHub 仓库中，进入 Settings > Pages
-4. 在 "Build and deployment" 部分，将 "Source" 设置为 "GitHub Actions"
-5. 等待 Actions 运行完成，您的网站将在 `https://<username>.github.io/<repository>/` 上线
+## 总结
 
+2026 年是软件开发范式转变的一年。AI 不再是辅助工具，而是基础设施；边缘不再是可选方案，而是默认选择；安全不再是事后补救，而是设计之初就考虑。
 
-[示例网站：https://lxc-9349.github.io/pjfun-blog/](https://lxc-9349.github.io/pjfun-blog/)
-##### 方法二：手动部署
+作为开发者，保持学习、拥抱变化、但不要盲目追逐热点。理解每个技术解决的根本问题，才能做出正确的技术决策。
 
-如果您想手动部署到 GitHub Pages：
+---
 
-1. 构建项目：
-   ```bash
-   pnpm build
-   ```
-
-2. 将 `dist` 目录的内容推送到 `gh-pages` 分支：
-   ```bash
-   # 安装 gh-pages 包（如果尚未安装）
-   pnpm add -D gh-pages
-   
-   # 添加部署脚本到 package.json
-   # 在 scripts 部分添加: "deploy": "gh-pages -d dist"
-   
-   # 部署
-   pnpm deploy
-   ```
-
-3. 在 GitHub 仓库中，进入 Settings > Pages
-4. 将 "Source" 设置为 "Deploy from a branch"
-5. 选择 `gh-pages` 分支并保存
-
-**注意**：请将 `<username>` 替换为您的 GitHub 用户名，将 `<repository>` 替换为您的仓库名称。
-
-
-####  Netlify(免费的不推荐)
-点击以下按钮即可将项目快速部署到 Netlify：
-
-<a href="https://app.netlify.com/start/deploy?repository=https://github.com/LXC-9349/pjfun-blog" target="_blank">
-  <img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify">
-</a>
-
-**注意**：请将按钮链接中的 `https://github.com/LXC-9349/pjfun-blog` 替换为你的实际 Git 仓库地址。
-
-
-[//]: # ([示例网站：https://stately-crisp-a560ad.netlify.app/]&#40;https://stately-crisp-a560ad.netlify.app/&#41;)
-
-
-#### Firebase Hosting
-
-安装 Firebase CLI 并运行以下命令：
-
-```bash
-firebase init hosting
-firebase deploy
-```
-
-**注意**：需要先在 Firebase 控制台创建项目，并安装 `firebase-tools`。
-
-#### Azure Static Web Apps
-
-<a href="https://portal.azure.com/#create/Microsoft.StaticApp" target="_blank">
-  <img style="height: 50px;" src="https://azurecomcdn.azureedge.net/cvt-4fd6fa9f1d5510b6339fa7243038120d6e3003656ac48e00c4e4e6e530abecba/images/page/services/static-web-apps/01-Overview/swa-button.svg" alt="Deploy to Azure Static Web Apps">
-</a>
-
-**注意**：需要 Azure 账户，在创建应用时指定源代码仓库。
-
-#### Surge.sh
-
-安装 Surge 并运行以下命令：
-
-```bash
-npm install -g surge
-surge dist/
-```
-
-**注意**：需要先安装 `surge` CLI 工具，并确保构建输出在 `dist` 目录。
-
-## 🤝 贡献
-
-欢迎提交 Issue 和 Pull Request 来帮助改进这个项目。
-
-1. Fork 本仓库
-2. 创建您的特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交您的更改 (`git commit -m 'Add some amazing feature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启一个 Pull Request
-
-## 📄 许可证
-
-此项目采用 MIT 许可证。详见 [LICENSE](LICENSE) 文件。
-
-<video controls preload="metadata" autoplay muted playsinline style="width: 100%; height: auto; border-radius: 8px;">
-  <source src="https://img-baofun.zhhainiao.com/pcwallpaper_ugc/preview/8ded43cfacffefec1c681f99859543cd_preview.mp4" type="video/mp4">
-  <source src="https://img-baofun.zhhainiao.com/pcwallpaper_ugc/preview/fd39802e5f1c034fb556b29b3f5c329b_preview.mp4" type="video/mp4">
-  您的浏览器不支持视频播放。
-</video>
+欢迎来到 AI 原生开发时代。

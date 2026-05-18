@@ -39,5 +39,25 @@ export function t(key: TranslationKey, params?: Record<string, string | number>)
   return translation
 }
 
+/**
+ * 使用 Intl.DateTimeFormat 格式化日期（支持国际化）
+ */
+export function formatDateIntl(dateString: string, lang?: Language): string {
+  if (!dateString) return t('unknownDate')
+  try {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return dateString
+    
+    const locale = (lang || currentLang) === 'zh' ? 'zh-CN' : 'en-US'
+    return new Intl.DateTimeFormat(locale, {
+      year: 'numeric',
+      month: (lang || currentLang) === 'zh' ? 'long' : 'short',
+      day: 'numeric'
+    }).format(date)
+  } catch {
+    return dateString
+  }
+}
+
 // 初始化语言
 currentLang = getLanguage()

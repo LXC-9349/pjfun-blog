@@ -1,10 +1,39 @@
 <template>
-  <router-view />
+  <router-view v-slot="{ Component }">
+    <Transition name="page" mode="out-in">
+      <component :is="Component" />
+    </Transition>
+  </router-view>
+
+  <!-- 移动端底部导航栏 -->
+  <div class="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-t border-gray-200 dark:border-gray-700" style="padding-bottom: env(safe-area-inset-bottom, 0px);">
+    <div class="flex items-center justify-around py-2 px-2">
+      <router-link to="/" class="flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors"
+        :class="$route.path === '/' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        <span class="text-[10px] font-medium">首页</span>
+      </router-link>
+      <router-link to="/archive" class="flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors"
+        :class="$route.path === '/archive' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+        <span class="text-[10px] font-medium">归档</span>
+      </router-link>
+      <router-link to="/favorites" class="flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors"
+        :class="$route.path === '/favorites' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+        <span class="text-[10px] font-medium">收藏</span>
+      </router-link>
+      <button @click="openSearch" class="flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors text-gray-500 dark:text-gray-400">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <span class="text-[10px] font-medium">搜索</span>
+      </button>
+    </div>
+  </div>
   <SearchModal />
   <transition name="slide-up">
     <div v-if="showUpdate" class="update-notification">
       <div class="update-content">
-        <div class="update-icon animate-bounce">
+        <div class="update-icon">
           <IconComponent name="update" :size="24" />
         </div>
         <div class="update-text">
@@ -34,6 +63,10 @@ import 'vue3-toastify/dist/index.css'
 import { startVersionCheck, refreshNow } from '@/utils/version-check'
 const showUpdate = ref(false)
 
+const openSearch = () => {
+  window.dispatchEvent(new CustomEvent('open-search-modal'))
+}
+
 startVersionCheck(() => {
   showUpdate.value = true
 }, 245_000)
@@ -45,20 +78,7 @@ button{
   background: transparent;
 }
 
-.animate-bounce {
-  animation: bounce 1s infinite;
-}
-
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-</style>
-<style scoped>
+/* 页面过渡动画 */
 .update-notification {
   position: fixed;
   bottom: 20px;
@@ -72,19 +92,11 @@ button{
   display: flex;
   align-items: center;
   padding: 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
   color: white;
   border-radius: 12px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
   position: relative;
-  transform: translateZ(0); /* 触发硬件加速 */
-  transition: all 0.3s ease;
-}
-
-.update-content:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
 .update-icon {
@@ -123,8 +135,6 @@ button{
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
-  transform: translateZ(0); /* 触发硬件加速 */
 }
 
 .btn-update {
@@ -133,8 +143,7 @@ button{
 }
 
 .btn-update:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  opacity: 0.9;
 }
 
 .btn-later {
@@ -144,7 +153,6 @@ button{
 
 .btn-later:hover {
   background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
 }
 
 .btn-close {
@@ -167,7 +175,6 @@ button{
 
 .btn-close:hover {
   background: rgba(255, 255, 255, 0.2);
-  transform: rotate(90deg);
 }
 
 .slide-up-enter-active,
@@ -196,8 +203,24 @@ button{
   }
 }
 
+/* 页面过渡动画 */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-12px);
+}
+
 /* 暗色主题适配 */
 .dark .update-content {
-  background: linear-gradient(135deg, #2c3e50 0%, #4a235a 100%);
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
 }
 </style>

@@ -5,7 +5,6 @@ desc: 深入了解 Vite 构建工具的各种高级配置选项
 cover: 	https://img0.baidu.com/it/u=899788717,490343799&fm=253&fmt=auto&app=138&f=JPEG
 tags: [Vite, 构建工具, 性能优化]
 ---
-我将帮您完善这份 Vite 高级配置文档，增加更多实用的内容和细节。
 
 ## 环境变量和模式
 

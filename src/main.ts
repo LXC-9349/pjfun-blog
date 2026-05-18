@@ -4,6 +4,7 @@ import { MotionPlugin } from '@vueuse/motion'
 import '@unocss/reset/tailwind-compat.css'
 import 'uno.css'
 import 'lenis/dist/lenis.css'
+import '@/styles/global.css'
 import App from "./App.vue";
 import { getLanguage, setLanguage } from '@/utils/i18n'
 import { setupSEO } from '@/plugins/seo'
@@ -20,7 +21,12 @@ export const lenis = new Lenis({
     smoothWheel: true,
     wheelMultiplier: 1,
     touchMultiplier: 2,
-    syncTouch: false
+    syncTouch: false,
+    // 排除 router-link 元素，避免阻止路由跳转
+    autoRaf: true,
+    gestureOrientation: 'vertical',
+    // normalizeWheel: true, // Removed: not in LenisOptions type
+    lerp: 0.1
 })
 
 function raf(t: number) {
@@ -182,11 +188,15 @@ async function mountApp() {
 }
 
 mountApp()
-//标识加载成功
-//@ts-ignore
-window.pjfun = window.pjfun || {};
-//@ts-ignore
-window.pjfun.loaded = true;
+// 将 passwordApi 暴露到全局，供各页面调用登出等功能
+Object.defineProperty(window, 'pjfun', {
+  value: Object.freeze({
+    ...((window as any).pjfun || {}),
+    loaded: true,
+    passwordApi: passwordApi
+  }),
+  writable: false
+});
 window.onerror = function(message, source, lineno, colno, error) {
     console.error('Global error:', { message, source, lineno, colno, error });
 };

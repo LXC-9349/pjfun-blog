@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
+  <div class="card p-6 transition-all duration-300 hover:shadow-xl">
     <div class="flex justify-between items-center mb-5">
       <h3 class="text-lg font-bold flex items-center gap-2 dark:text-white">
         <IconCarbonRecentlyViewed class="w-5 h-5 text-blue-500" />
@@ -83,11 +83,4 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-</style>
+<style scoped></style>

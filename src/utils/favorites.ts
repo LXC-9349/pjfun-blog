@@ -41,7 +41,11 @@ export function addFavorite(item: FavoriteItem): void {
       localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
     }
   } catch (error) {
-    console.error('Failed to add favorite:', error);
+    if (error instanceof DOMException && error.name === 'QuotaExceededError') {
+      console.warn('localStorage quota exceeded, cannot add favorite')
+    } else {
+      console.error('Failed to add favorite:', error);
+    }
   }
 }
 

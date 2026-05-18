@@ -85,10 +85,10 @@ onMounted(() => {
 <template>
   <button 
     @click="toggleDark"
-    class="p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+    class="theme-toggle-btn"
     :aria-label="t('toggleTheme')"
   >
-    <IconCarbonSun class="w-6 h-6 dark:hidden" />
-    <IconCarbonMoon class="w-6 h-6 hidden dark:block" />
+    <IconCarbonSun class="w-6 h-6 dark:hidden transition-all duration-300 hover:rotate-45" />
+    <IconCarbonMoon class="w-6 h-6 hidden dark:block transition-all duration-300 hover:-rotate-12" />
   </button>
 </template>

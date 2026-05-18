@@ -1,0 +1,79 @@
+/* 全局样式补充 — UnoCSS 无法覆盖的伪元素相关 */
+
+/* 确保 router-link 始终可以接收点击事件 */
+a.router-link-active,
+a.router-link-exact-active,
+router-link {
+  pointer-events: auto !important;
+  cursor: pointer;
+}
+
+/* ===== 可访问性：可见焦点状态 ===== */
+*:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+button:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* 移除默认 focus 但保留 focus-visible */
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+input:focus:not(:focus-visible),
+select:focus:not(:focus-visible),
+textarea:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ===== 可访问性：减少动画 ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ===== 交互：所有可点击元素光标 ===== */
+button,
+a,
+[role="button"],
+.cursor-clickable {
+  cursor: pointer;
+}
+
+/* ===== 全局滚动条美化 ===== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}

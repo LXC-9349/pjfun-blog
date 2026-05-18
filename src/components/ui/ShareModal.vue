@@ -5,12 +5,13 @@
         @click.stop 
         class="w-full max-w-md mx-4 bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden"
         v-motion 
-        :initial="{ y: -80, opacity: 0 }" 
-        :enter="{ y: 0, opacity: 1 }"
+        :initial="{ y: -40, opacity: 0, scale: 0.95 }"
+        :enter="{ y: 0, opacity: 1, scale: 1, transition: { duration: 400, ease: 'easeOutQuart' } }"
+        :leave="{ y: -30, opacity: 0, scale: 0.95, transition: { duration: 300, ease: 'easeInQuart' } }"
       >
         <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
           <h2 class="text-lg font-bold text-gray-800 dark:text-white">{{ t('share') }}</h2>
-          <button @click="closeModal" class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400" :aria-label="t('close')">
+          <button @click="closeModal" class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-pointer" :aria-label="t('close')">
             <IconCarbonClose class="w-6 h-6" />
           </button>
         </div>
@@ -23,7 +24,7 @@
                 v-for="platform in platforms" 
                 :key="platform.name"
                 @click="shareTo(platform)"
-                class="flex flex-col items-center justify-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                class="flex flex-col items-center justify-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
                 :aria-label="platform.label"
               >
                 <div class="w-12 h-12 rounded-full flex items-center justify-center mb-2" :class="platform.bgColor">
@@ -52,7 +53,7 @@
               />
               <button 
                 @click="copyLink"
-                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-r-lg font-medium text-sm transition-colors flex items-center gap-1"
+                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-r-lg font-medium text-sm transition-colors flex items-center gap-1 cursor-pointer"
               >
                 <IconCarbonCopy class="w-4 h-4" />
                 {{ copied ? t('copied') : t('copy') }}

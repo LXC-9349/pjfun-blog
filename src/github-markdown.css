@@ -10,6 +10,187 @@
   --fontStack-monospace: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
   --fgColor-accent: Highlight;
 }
+
+/* 主题切换平滑过渡 */
+html,
+html *,
+html *::before,
+html *::after {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 代码块暗色主题增强 */
+.dark .markdown-body pre {
+  background: #161b22 !important;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+}
+
+.dark .markdown-body pre code {
+  color: #e6edf3;
+}
+
+.dark .markdown-body code:not(pre code) {
+  background: rgba(56, 58, 89, 0.5);
+  color: #f0a8c0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.markdown-body code:not(pre code) {
+  background: rgba(175, 184, 193, 0.2);
+  color: #d63384;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+/* 代码块整体美化 */
+.markdown-body pre {
+  border-radius: 12px;
+  margin: 1.5em 0;
+  position: relative;
+}
+
+.markdown-body pre code {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* highlight.js 亮色主题 (GitHub Light) */
+.markdown-body pre code .hljs-comment,
+.markdown-body pre code .hljs-quote {
+  color: #6a737d;
+  font-style: italic;
+}
+.markdown-body pre code .hljs-keyword,
+.markdown-body pre code .hljs-selector-tag,
+.markdown-body pre code .hljs-type {
+  color: #d73a49;
+}
+.markdown-body pre code .hljs-string,
+.markdown-body pre code .hljs-addition {
+  color: #032f62;
+}
+.markdown-body pre code .hljs-number,
+.markdown-body pre code .hljs-literal {
+  color: #005cc5;
+}
+.markdown-body pre code .hljs-built_in,
+.markdown-body pre code .hljs-builtin-name {
+  color: #6f42c1;
+}
+.markdown-body pre code .hljs-function .hljs-title,
+.markdown-body pre code .hljs-title.function_,
+.markdown-body pre code .hljs-title {
+  color: #6f42c1;
+}
+.markdown-body pre code .hljs-variable,
+.markdown-body pre code .hljs-attr {
+  color: #005cc5;
+}
+.markdown-body pre code .hljs-params {
+  color: #24292e;
+}
+.markdown-body pre code .hljs-meta {
+  color: #735c0f;
+}
+.markdown-body pre code .hljs-deletion {
+  color: #b31d28;
+  background-color: #ffeef0;
+}
+.markdown-body pre code .hljs-selector-class,
+.markdown-body pre code .hljs-selector-id {
+  color: #6f42c1;
+}
+.markdown-body pre code .hljs-tag {
+  color: #22863a;
+}
+.markdown-body pre code .hljs-name {
+  color: #22863a;
+}
+.markdown-body pre code .hljs-attribute {
+  color: #005cc5;
+}
+.markdown-body pre code .hljs-symbol,
+.markdown-body pre code .hljs-bullet {
+  color: #e36209;
+}
+.markdown-body pre code .hljs-section {
+  color: #005cc5;
+  font-weight: bold;
+}
+
+/* highlight.js 暗色主题 (GitHub Dark) */
+.dark .markdown-body pre code .hljs-comment,
+.dark .markdown-body pre code .hljs-quote {
+  color: #8b949e;
+  font-style: italic;
+}
+.dark .markdown-body pre code .hljs-keyword,
+.dark .markdown-body pre code .hljs-selector-tag,
+.dark .markdown-body pre code .hljs-type {
+  color: #ff7b72;
+}
+.dark .markdown-body pre code .hljs-string,
+.dark .markdown-body pre code .hljs-addition {
+  color: #a5d6ff;
+}
+.dark .markdown-body pre code .hljs-number,
+.dark .markdown-body pre code .hljs-literal {
+  color: #79c0ff;
+}
+.dark .markdown-body pre code .hljs-built_in,
+.dark .markdown-body pre code .hljs-builtin-name {
+  color: #d2a8ff;
+}
+.dark .markdown-body pre code .hljs-function .hljs-title,
+.dark .markdown-body pre code .hljs-title.function_,
+.dark .markdown-body pre code .hljs-title {
+  color: #d2a8ff;
+}
+.dark .markdown-body pre code .hljs-variable,
+.dark .markdown-body pre code .hljs-attr {
+  color: #79c0ff;
+}
+.dark .markdown-body pre code .hljs-params {
+  color: #e6edf3;
+}
+.dark .markdown-body pre code .hljs-meta {
+  color: #d29922;
+}
+.dark .markdown-body pre code .hljs-deletion {
+  color: #ffa198;
+  background-color: rgba(248, 81, 73, 0.1);
+}
+.dark .markdown-body pre code .hljs-selector-class,
+.dark .markdown-body pre code .hljs-selector-id {
+  color: #d2a8ff;
+}
+.dark .markdown-body pre code .hljs-tag {
+  color: #7ee787;
+}
+.dark .markdown-body pre code .hljs-name {
+  color: #7ee787;
+}
+.dark .markdown-body pre code .hljs-attribute {
+  color: #79c0ff;
+}
+.dark .markdown-body pre code .hljs-symbol,
+.dark .markdown-body pre code .hljs-bullet {
+  color: #ffa657;
+}
+.dark .markdown-body pre code .hljs-section {
+  color: #79c0ff;
+  font-weight: bold;
+}
+
+/* 阻止主题切换过渡影响代码块高亮内部 */
+.dark .markdown-body pre code .hljs *,
+.markdown-body pre code .hljs * {
+  transition: none !important;
+}
 .dark {
   .markdown-body{
     /* dark */
@@ -137,6 +318,7 @@
 
 .markdown-body .octicon {
   display: inline-block;
+  overflow: visible !important;
   fill: currentColor;
   vertical-align: text-bottom;
 }
@@ -174,32 +356,10 @@
   background-color: transparent;
   color: var(--fgColor-accent);
   text-decoration: none;
-  transition: all 0.2s ease;
-  position: relative;
 }
 
 .markdown-body a:hover {
   text-decoration: underline;
-  transform: translateY(-1px);
-}
-
-.markdown-body a:active {
-  transform: translateY(0);
-}
-
-.markdown-body a::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background-color: var(--fgColor-accent);
-  transition: width 0.3s ease;
-}
-
-.markdown-body a:hover::after {
-  width: 100%;
 }
 
 .markdown-body abbr[title] {
@@ -322,10 +482,6 @@
   -webkit-appearance: button;
   appearance: button;
   font: inherit;
-}
-
-.markdown-body a:hover {
-  text-decoration: underline;
 }
 
 .markdown-body ::placeholder {
@@ -499,13 +655,6 @@
   font-family: var(--fontStack-monospace, ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace);
   font-size: 12px;
   word-wrap: normal;
-}
-
-.markdown-body .octicon {
-  display: inline-block;
-  overflow: visible !important;
-  vertical-align: text-bottom;
-  fill: currentColor;
 }
 
 .markdown-body input::-webkit-outer-spin-button,
@@ -1257,1658 +1406,3 @@
   display: none;
 }
 
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::after {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code br {
-  display: none;
-}
-
-.markdown-body .pre.text-content pre code::before {
-  display: none;
-}
-
-.markdown .pre.text-content pre code::after {
-  display: none;
-}

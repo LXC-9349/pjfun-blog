@@ -3,11 +3,11 @@
 
     <div class="absolute top-0px left-1/2 transform -translate-x-1/2 z-10 flex items-center gap-2 px-4 py-1 bg-white/85 dark:bg-dark-300/85 backdrop-blur-12px rounded-4 shadow-lg hover:shadow-xl border border-white/50 dark:border-dark-600/50 transition-all duration-300 hover:shadow-xl dark:hover:shadow-xl" v-if="!isLoading && !errorMessage">
       <div class="flex items-center gap-1">
-        <button @click="prevPage" :disabled="pageNum <= 1" :title="t('prevPage')" class="flex items-center justify-center w-9 h-9 border-none bg-transparent text-gray-700 dark:text-gray-300 rounded-2 cursor-pointer transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/10 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
+        <button @click="prevPage" :disabled="pageNum <= 1" :title="t('prevPage')" class="pdf-toolbar-btn">
           <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
         <span class="text-sm font-medium text-gray-600 dark:text-gray-400 min-w-25 text-center font-mono select-none">{{ pageNum }} / {{ totalPages }}</span>
-        <button @click="nextPage" :disabled="pageNum >= totalPages" :title="t('nextPage')" class="flex items-center justify-center w-9 h-9 border-none bg-transparent text-gray-700 dark:text-gray-300 rounded-2 cursor-pointer transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/10 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
+        <button @click="nextPage" :disabled="pageNum >= totalPages" :title="t('nextPage')" class="pdf-toolbar-btn">
           <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </button>
         <!-- 跳转页码输入框 -->
@@ -21,18 +21,18 @@
             @keyup.enter="jumpToPage"
             class="w-20 px-2 py-1 border border-gray-300 dark:border-dark-600 rounded-1.5 text-sm text-center bg-white dark:bg-dark-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(59,130,246,0.1)] dark:focus:shadow-[0_0_0_3px_rgba(31,111,235,0.2)]"
           />
-          <button @click="jumpToPage" :title="t('jumpToPage')" class="flex items-center justify-center w-9 h-9 border-none bg-transparent text-gray-700 dark:text-gray-300 rounded-2 cursor-pointer transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/10 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">{{ t('jump') }}</button>
+          <button @click="jumpToPage" :title="t('jumpToPage')" class="pdf-toolbar-btn">{{ t('jump') }}</button>
         </div>
       </div>
 
       <div class="w-1px h-5 bg-gray-300 dark:bg-dark-500 mx-2"></div>
 
       <div class="flex items-center gap-1">
-        <button @click="zoomOut" :title="t('zoomOut')" class="flex items-center justify-center w-9 h-9 border-none bg-transparent text-gray-700 dark:text-gray-300 rounded-2 cursor-pointer transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/10 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
+        <button @click="zoomOut" :title="t('zoomOut')" class="pdf-toolbar-btn">
           <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
         </button>
         <span @click="resetZoom" :title="t('reset')" class="text-sm font-medium text-gray-600 dark:text-gray-400 min-w-12.5 text-center cursor-pointer select-none hover:text-primary dark:hover:text-blue-400">{{ scalePercentage }}</span>
-        <button @click="zoomIn" :title="t('zoomIn')" class="flex items-center justify-center w-9 h-9 border-none bg-transparent text-gray-700 dark:text-gray-300 rounded-2 cursor-pointer transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/10 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
+        <button @click="zoomIn" :title="t('zoomIn')" class="pdf-toolbar-btn">
           <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
         </button>
       </div>
@@ -40,13 +40,13 @@
       <div class="w-1px h-5 bg-gray-300 dark:bg-dark-500 mx-2"></div>
 
       <div class="flex items-center gap-1">
-        <button @click="copyPageText" :title="t('copy')" class="flex items-center justify-center w-9 h-9 border-none bg-transparent text-gray-700 dark:text-gray-300 rounded-2 cursor-pointer transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/10 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
+        <button @click="copyPageText" :title="t('copy')" class="pdf-toolbar-btn">
           <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
         </button>
-        <button @click="rotateClockwise" :title="t('rotate')" class="flex items-center justify-center w-9 h-9 border-none bg-transparent text-gray-700 dark:text-gray-300 rounded-2 cursor-pointer transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/10 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
+        <button @click="rotateClockwise" :title="t('rotate')" class="pdf-toolbar-btn">
           <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M2.5 2v6h6M2.66 15.57a10 10 0 1 0 .57-8.38"/></svg>
         </button>
-        <button @click="downloadPdf" :title="t('download')" class="flex items-center justify-center w-9 h-9 border-none bg-transparent text-gray-700 dark:text-gray-300 rounded-2 cursor-pointer transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/10 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
+        <button @click="downloadPdf" :title="t('download')" class="pdf-toolbar-btn">
           <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
         </button>
       </div>
@@ -75,6 +75,45 @@ import * as pdfjsLib from 'pdfjs-dist';
 import type { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { t } from '@/utils/i18n';
 import {showSuccess} from "@/utils/tool";
+
+const PDF_WORKER_VERSION = pdfjsLib.version;
+
+// 多源 Worker 列表（按优先级排序）
+const PDF_WORKER_SOURCES = [
+  `https://unpkg.pjfun.top/pdfjs-dist@${PDF_WORKER_VERSION}/build/pdf.worker.min.mjs`,
+  `https://unpkg.com/pdfjs-dist@${PDF_WORKER_VERSION}/build/pdf.worker.min.mjs`,
+  `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDF_WORKER_VERSION}/build/pdf.worker.min.mjs`,
+  `https://esm.sh/pdfjs-dist@${PDF_WORKER_VERSION}/build/pdf.worker.min.mjs`,
+];
+
+/**
+ * 加载 PDF Worker 脚本，支持多源回退
+ */
+async function loadPdfWorker(): Promise<string> {
+  // 尝试每个源直到成功
+  for (const src of PDF_WORKER_SOURCES) {
+    try {
+      // HEAD 请求在 no-cors 模式下总是返回 opaque response（状态0）
+      // 所以我们直接尝试加载脚本
+      await new Promise<void>((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.type = 'text/javascript';
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error(`Failed to load: ${src}`));
+        document.head.appendChild(script);
+        // 清理已加载的脚本
+        setTimeout(() => {
+          if (script.parentNode) script.parentNode.removeChild(script);
+        }, 100);
+      });
+      return src;
+    } catch {
+      continue;
+    }
+  }
+  throw new Error('All PDF Worker sources failed to load');
+}
 
 // 定义 Props
 interface Props {
@@ -107,8 +146,26 @@ let renderTask: any = null;
 
 // --- 初始化与加载 ---
 onMounted(async () => {
-  // 配置 Worker (严格按照你的要求)
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.pjfun.top/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
+  // 配置 Worker (支持多源回退)
+  try {
+    const workerSrc = await loadPdfWorker();
+    pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
+  } catch (e) {
+    // 如果 Worker CDN 都失败，使用内置的 worker 构建（如果可用）
+    console.warn('PDF Worker CDN fallback failed, trying inline:', e);
+    try {
+      // 最后手段：尝试从 pdfjs-dist 包中加载
+      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+        'pdfjs-dist/build/pdf.worker.min.mjs',
+        import.meta.url
+      ).toString();
+    } catch {
+      // 如果所有方法都失败，PDF 将无法渲染但不会导致页面崩溃
+      errorMessage.value = t('documentLoadError') + ': PDF Worker not available';
+      isLoading.value = false;
+      return;
+    }
+  }
 
   await loadPdf();
 
@@ -419,50 +476,15 @@ const scalePercentage = computed(() => `${Math.round(scale.value * 100)}%`);
 
 </script>
 <style scoped>
-/* 按钮样式 */
-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: none;
-  background: transparent;
-  color: #374151;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.dark button {
-  color: #d1d9e0;
-}
-
-button:hover:not(:disabled) {
-  background-color: rgba(0, 0, 0, 0.05);
-  color: #111827;
-}
-
-.dark button:hover:not(:disabled) {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #f0f6fc;
-}
-
-button:active:not(:disabled) {
-  transform: scale(0.95);
-}
-
-button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
 .pdf-canvas {
   filter: none;
+  background-color: #ffffff;
 }
 
+/* 暗色模式：使用深色背景 + 降低亮度来模拟暗色阅读体验，避免色彩失真 */
 .dark .pdf-canvas {
-  filter: invert(90%) hue-rotate(180deg);
+  filter: invert(80%) hue-rotate(180deg) brightness(0.9) contrast(1.05);
+  background-color: #1a1a2e;
 }
 
 @media print {

@@ -4,7 +4,7 @@
       <div class="flex flex-col md:flex-row justify-between items-center">
         <div class="mb-4 md:mb-0">
           <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+            <div class="w-8 h-8 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 flex-center">
               <span class="text-white font-bold text-lg">{{ SITE_CONFIG.icon }}</span>
             </div>
             <span class="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -24,13 +24,13 @@
 
         <div class="flex flex-col items-center md:items-end">
           <div class="flex space-x-6 mb-4">
-            <a target="_blank" :href="SITE_CONFIG.foot.github" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+            <a target="_blank" rel="noopener noreferrer" :href="SITE_CONFIG.foot.github" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" :aria-label="t('footerGitHub')">
               <IconCarbonLogoGithub class="w-5 h-5" />
             </a>
-            <a target="_blank" :href="SITE_CONFIG.socialLinks.Telegram" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+            <a target="_blank" rel="noopener noreferrer" :href="SITE_CONFIG.socialLinks.Telegram" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" :aria-label="t('footerTelegram')">
               <IconComponent name="telegram" class="w-5 h-5" />
             </a>
-            <a target="_blank" :href="'mailto:'+SITE_CONFIG.email" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+            <a target="_blank" rel="noopener noreferrer" :href="'mailto:'+SITE_CONFIG.email" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" :aria-label="t('footerEmail')">
               <IconCarbonEmail class="w-5 h-5" />
             </a>
           </div>

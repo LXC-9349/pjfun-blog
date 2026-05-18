@@ -5,7 +5,6 @@ desc: 探索现代前端框架 Vue 3 的核心特性
 cover: https://img1.baidu.com/it/u=2738382553,2853559896&fm=253&fmt=auto&app=138&f=JPEG
 tags: [Vue, JavaScript, 前端]
 ---
-我将为您完善和丰富这份 Vue 3 简介文档，添加更多有价值的内容。
 
 ## Vue 3 简介
 

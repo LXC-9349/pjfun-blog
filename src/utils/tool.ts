@@ -35,6 +35,55 @@ export function getEnvVariable(key: string, defaultValue?: string): string | und
                 return import.meta.env.VITE_TITLE || defaultValue;
             case 'VITE_BLOG_PASSWORD_HASH':
                 return import.meta.env.VITE_BLOG_PASSWORD_HASH || defaultValue;
+            case 'VITE_BLOG_PASSWORD':
+                return import.meta.env.VITE_BLOG_PASSWORD || defaultValue;
+            // Site configuration
+            case 'VITE_SITE_ICON':
+                return import.meta.env.VITE_SITE_ICON || defaultValue;
+            case 'VITE_SITE_TITLE':
+                return import.meta.env.VITE_SITE_TITLE || defaultValue;
+            case 'VITE_SITE_DESCRIPTION':
+                return import.meta.env.VITE_SITE_DESCRIPTION || defaultValue;
+            case 'VITE_SITE_AUTHOR':
+                return import.meta.env.VITE_SITE_AUTHOR || defaultValue;
+            case 'VITE_SITE_KEYWORDS':
+                return import.meta.env.VITE_SITE_KEYWORDS || defaultValue;
+            case 'VITE_SITE_EMAIL':
+                return import.meta.env.VITE_SITE_EMAIL || defaultValue;
+            // Social links
+            case 'VITE_SOCIAL_GITHUB':
+                return import.meta.env.VITE_SOCIAL_GITHUB || defaultValue;
+            case 'VITE_SOCIAL_TELEGRAM':
+                return import.meta.env.VITE_SOCIAL_TELEGRAM || defaultValue;
+            // Footer links
+            case 'VITE_FOOT_GITHUB':
+                return import.meta.env.VITE_FOOT_GITHUB || defaultValue;
+            // Giscus configuration
+            case 'VITE_GISCUS_ENABLED':
+                return import.meta.env.VITE_GISCUS_ENABLED || defaultValue;
+            case 'VITE_GISCUS_REPO':
+                return import.meta.env.VITE_GISCUS_REPO || defaultValue;
+            case 'VITE_GISCUS_REPO_ID':
+                return import.meta.env.VITE_GISCUS_REPO_ID || defaultValue;
+            case 'VITE_GISCUS_CATEGORY':
+                return import.meta.env.VITE_GISCUS_CATEGORY || defaultValue;
+            case 'VITE_GISCUS_CATEGORY_ID':
+                return import.meta.env.VITE_GISCUS_CATEGORY_ID || defaultValue;
+            case 'VITE_GISCUS_MAPPING':
+                return import.meta.env.VITE_GISCUS_MAPPING || defaultValue;
+            case 'VITE_GISCUS_STRICT':
+                return import.meta.env.VITE_GISCUS_STRICT || defaultValue;
+            case 'VITE_GISCUS_REACTIONS':
+                return import.meta.env.VITE_GISCUS_REACTIONS || defaultValue;
+            case 'VITE_GISCUS_METADATA':
+                return import.meta.env.VITE_GISCUS_METADATA || defaultValue;
+            case 'VITE_GISCUS_POSITION':
+                return import.meta.env.VITE_GISCUS_POSITION || defaultValue;
+            case 'VITE_GISCUS_LANG':
+                return import.meta.env.VITE_GISCUS_LANG || defaultValue;
+            // Hot tags
+            case 'VITE_HOT_TAGS':
+                return import.meta.env.VITE_HOT_TAGS || defaultValue;
         }
         return defaultValue
     } catch (e) {
@@ -177,7 +226,7 @@ function injectDialogStyles() {
       
       .select-option-btn {
         width: 100%;
-        padding: 12px;
+        padding: 12px 16px;
         border-radius: 8px;
         border: 1px solid #d1d5db;
         background: #fff;
@@ -186,7 +235,31 @@ function injectDialogStyles() {
         cursor: pointer;
         transition: all 0.2s ease;
         display: flex;
-        align-items: center;
+        flex-direction: column;
+        gap: 4px;
+      }
+      
+      .select-option-label {
+        font-weight: 500;
+        color: #1f2937;
+      }
+      
+      @media (prefers-color-scheme: dark) {
+        .select-option-label {
+          color: #f9fafb;
+        }
+      }
+      
+      .select-option-description {
+        font-size: 13px;
+        color: #6b7280;
+        line-height: 1.4;
+      }
+      
+      @media (prefers-color-scheme: dark) {
+        .select-option-description {
+          color: #9ca3af;
+        }
       }
       
       .select-option-btn:hover {
@@ -291,7 +364,7 @@ interface DialogConfig {
   inputType?: string;
   placeholder?: string;
   hasSelect?: boolean;
-  selectOptions?: Array<{ value: string, label: string }>;
+  selectOptions?: Array<{ value: string, label: string, description?: string }>;
   hasCancel?: boolean;
   hasConfirm?: boolean;
 }
@@ -321,7 +394,10 @@ function createDialog<T>(config: DialogConfig): Promise<T> {
             selectHtml = `
                 <div class="select-options">
                   ${config.selectOptions.map(option => `
-                    <button class="select-option-btn" data-value="${option.value}">${option.label}</button>
+                    <button class="select-option-btn" data-value="${option.value}">
+                      <div class="select-option-label">${option.label}</div>
+                      ${option.description ? `<div class="select-option-description">${option.description}</div>` : ''}
+                    </button>
                   `).join('')}
                 </div>
             `;
@@ -663,6 +739,7 @@ export function promptDialog(title: string, message: string, options: PromptDial
     });
 }
 
+// @ts-ignore
 export const getRepoInfo = (gitRepo:string=GIT_REPO) => {
     const parts = gitRepo.replace(/\/$/, '').split('/')
     if (parts.length >= 2) {
@@ -682,7 +759,7 @@ export const getRepoInfo = (gitRepo:string=GIT_REPO) => {
  * @param options - 可选择的编辑器选项
  * @returns 用户选择的编辑器类型，取消返回null
  */
-export function selectDialog(title: string, message: string, options: Array<{ value: string, label: string }> = []): Promise<string | null> {
+export function selectDialog(title: string, message: string, options: Array<{ value: string, label: string, description?: string }> = []): Promise<string | null> {
     return createDialog<string | null>({
         title,
         message,
@@ -701,10 +778,10 @@ export const toDev = async () => {
 
     // 显示编辑器选择对话框
     const editorOptions = [
-        { value: 'stackblitz', label: 'StackBlitz' },
-        { value: 'githubdev', label: 'GitHub.dev (VSCode Online)' },
-        { value: 'vscode', label: 'VSCode.dev' },
-        { value: 'bolt', label: 'Bolt.new' }
+        { value: 'stackblitz', label: 'StackBlitz', description: '快速启动的在线 IDE，支持实时预览' },
+        { value: 'githubdev', label: 'GitHub.dev', description: 'GitHub 官方的轻量级 VSCode 在线版' },
+        { value: 'vscode', label: 'VSCode.dev', description: '完整的 VSCode 在线体验，功能丰富' },
+        { value: 'bolt', label: 'Bolt.new', description: 'AI 驱动的全栈开发环境' }
     ]
 
     const selectedEditor = await selectDialog(

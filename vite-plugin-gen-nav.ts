@@ -60,7 +60,7 @@ export function genNavPlugin(navName:string,treeName:string,baseUrl:string): Plu
                         // 正确处理文件URL，确保中文字符被正确编码
                         const fileUrl = `/content${route}.${extension}`;
                         
-                        let itemData = {
+                        let                        itemData = {
                             type: 'post',
                             title: slug,
                             path: route,
@@ -70,7 +70,8 @@ export function genNavPlugin(navName:string,treeName:string,baseUrl:string): Plu
                             tags: [],
                             excerpt: '',
                             sticky: false,
-                            extension: extension
+                            extension: extension,
+                            wordCount: 0
                         }
                         
                         // 如果存在描述配置文件，则优先使用其中的数据
@@ -85,7 +86,8 @@ export function genNavPlugin(navName:string,treeName:string,baseUrl:string): Plu
                                 tags: descData.tags || [],
                                 excerpt: descData.excerpt || '',
                                 sticky: descData.sticky || false,
-                                extension: extension
+                                extension: extension,
+                                wordCount: 0
                             };
                         } else if (extension === 'md') {
                             // 只有 Markdown 文件才解析 frontmatter

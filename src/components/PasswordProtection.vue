@@ -32,7 +32,7 @@
           <button
             type="submit"
             :disabled="loading"
-            class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-70"
+            class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-70 cursor-pointer"
           >
             <span v-if="!loading">{{ t('access') }}</span>
             <span v-else class="flex items-center justify-center">

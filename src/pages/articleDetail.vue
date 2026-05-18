@@ -1,23 +1,24 @@
 <template>
-  <Transition name="fade" mode="out-in">
-    <div v-if="showLightbox" class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-4 cursor-zoom-out" @click="showLightbox = false">
-      <img :src="lightboxImg" class="max-w-full max-h-screen object-contain rounded-sm shadow-2xl scale-in animate-zoom-in" :alt="t('lightboxImage')" @click.stop />
-      <button class="absolute top-6 right-6 text-white/50 hover:text-white p-2 transition-colors transform hover:scale-110 hover:rotate-90" @click="showLightbox = false" aria-label="Close Lightbox">
-        <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-  </Transition>
+  <div class="article-detail-wrapper">
+    <Transition name="fade" mode="out-in">
+      <div v-if="showLightbox" class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-4 cursor-zoom-out" @click="showLightbox = false">
+        <img :src="lightboxImg" class="max-w-full max-h-screen object-contain rounded-sm shadow-2xl scale-in animate-zoom-in" :alt="t('lightboxImage')" @click.stop />
+        <button class="absolute top-6 right-6 text-white/50 hover:text-white p-2 transition-colors" @click="showLightbox = false" aria-label="Close Lightbox">
+          <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </Transition>
 
-  <!-- 现代化水平进度条：位于底部 -->
+  <!-- 现代化水平进度条：位于顶部 -->
   <div
       v-if="!isOfficeFile"
-      class="fixed bottom-0 left-0 w-full h-1 bg-transparent z-50 transition-all duration-500 ease-out-expo"
+      class="fixed top-0 left-0 w-full h-1 bg-transparent z-[9999] transition-all duration-500 ease-out-expo pointer-events-none"
       :class="{ 'opacity-0': !showProgress, 'opacity-100': showProgress }"
   >
     <div
-        class="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 rounded-r-full shadow-lg transition-all duration-300 ease-out"
+        class="h-full bg-gradient-to-r from-sky-400 to-blue-600 transition-all duration-200 ease-out"
         :style="{ width: progress + '%' }"
     >
     </div>
@@ -27,20 +28,23 @@
   <div class="fixed lg:hidden top-4 left-4 z-[60]">
     <router-link
         to="/"
-        class="flex items-center gap-2 px-3 py-3 bg-black/20 dark:bg-white/20 backdrop-blur-md rounded-full hover:bg-black/30 dark:hover:bg-white/30 transition-all duration-300 border border-white/20 dark:border-white/30 group text-white transform hover:scale-110"
+        class="flex items-center gap-2 px-3 py-3 bg-black/20 dark:bg-white/20 backdrop-blur-md rounded-full hover:bg-black/30 dark:hover:bg-white/30 transition-colors border border-white/20 dark:border-white/30 text-white"
     >
-      <svg class="w-4 h-4 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
       </svg>
     </router-link>
   </div>
 
   <!-- 主题切换按钮 -->
-  <div class="fixed top-4 right-4 z-[9999] transform hover:scale-110 transition-all duration-300 hover:rotate-12">
+  <div class="fixed top-4 right-4 z-[9999]">
     <ThemeToggle />
   </div>
 
-  <article class="min-h-screen bg-gray-50 dark:bg-[#0d1117] transition-colors duration-300">
+  <article class="min-h-screen dark:bg-[#0d1117] transition-colors duration-300 lg:pb-0" style="padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));"
+    @touchstart.passive="handleTouchStart"
+    @touchend.passive="handleTouchEnd"
+  >
     <!-- 封面部分 -->
     <div v-if="cover" class="relative h-[60vh] min-h-[400px] overflow-hidden group">
       <img :src="cover" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 filter brightness-90" alt="封面">
@@ -49,7 +53,7 @@
       <!-- 封面中的标题信息 -->
       <div class="absolute bottom-0 left-0 w-full p-8 md:p-16 text-white z-10 max-w-7xl mx-auto">
         <div class="flex flex-wrap gap-3 mb-6 opacity-0 animate-slide-up" style="animation-delay: 0.1s">
-          <span v-for="tag in articleMeta.tags" :key="tag" class="px-4 py-1.5 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/30 backdrop-blur-md rounded-full text-xs font-semibold tracking-wide transition-all duration-300 hover:scale-110">
+          <span v-for="tag in articleMeta.tags" :key="tag" class="px-4 py-1.5 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/30 backdrop-blur-md rounded-full text-xs font-semibold tracking-wide transition-colors cursor-pointer">
             #{{ tag }}
           </span>
         </div>
@@ -78,7 +82,7 @@
         {{ articleMeta.title }}
       </h1>
       <div class="flex dark:text-white dark:text-warmGray flex-wrap justify-center gap-3 mb-2 opacity-0 animate-slide-up" style="animation-delay: 0.1s">
-        <span v-for="tag in articleMeta.tags" :key="tag" class="px-4 py-1.5 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/30 backdrop-blur-md rounded-full text-xs font-semibold tracking-wide transition-all duration-300 hover:scale-110">
+        <span v-for="tag in articleMeta.tags" :key="tag" class="px-4 py-1.5 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/30 backdrop-blur-md rounded-full text-xs font-semibold tracking-wide transition-colors cursor-pointer">
           #{{ tag }}
         </span>
       </div>
@@ -101,22 +105,22 @@
       <div class="flex flex-col lg:flex-row gap-5 relative">
 
         <div class="hidden lg:flex flex-col gap-4 sticky top-32 h-fit items-end w-16 shrink-0 order-first">
-          <div class="flex flex-col gap-4 p-2 bg-white/80 dark:bg-[#161b22]/80 backdrop-blur-lg rounded-full border border-gray-200 dark:border-gray-700 shadow-xl">
+          <div class="flex flex-col gap-4 p-2 bg-white/80 dark:bg-[#161b22]/80 backdrop-blur rounded-full border border-gray-200 dark:border-gray-700 shadow-sm">
             <div class="tooltip tooltip-right" :data-tip="t('backToHome')">
               <router-link
                   to="/"
-                  class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all duration-300 transform hover:scale-110"
+                  class="icon-btn"
                   :aria-label="t('backToHome')"
               >
-                <svg class="w-5 h-5 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
               </router-link>
             </div>
             <div class="h-px w-6 bg-gray-200 dark:bg-gray-700 mx-auto"></div>
             <div class="tooltip tooltip-right" :data-tip="t('share')">
-              <button @click="openShareModal" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-all duration-300 group" :aria-label="t('share')">
-                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <button @click="openShareModal" class="w-10 h-10 flex-center rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" :aria-label="t('share')">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                 </svg>
               </button>
@@ -125,8 +129,8 @@
             <div class="h-px w-6 bg-gray-200 dark:bg-gray-700 mx-auto"></div>
 
             <div class="tooltip tooltip-right" :data-tip="t('print')">
-              <button @click="handlePrint" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all duration-300 group transform hover:scale-110" :aria-label="t('print')">
-                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <button @click="handlePrint" class="icon-btn" :aria-label="t('print')">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                 </svg>
               </button>
@@ -137,12 +141,12 @@
             <div class="tooltip tooltip-right" :data-tip="isFavorited ? t('removeFromFavorites') : t('addToFavorites')">
               <button 
                 @click="toggleFavorite"
-                class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-red-100 dark:hover:bg-red-900/30 text-gray-500 dark:text-gray-400 hover:text-red-600 transition-all duration-300 group" 
+                class="w-10 h-10 flex-center rounded-full hover:bg-red-100 dark:hover:bg-red-900/30 text-gray-500 dark:text-gray-400 hover:text-red-600 transition-colors" 
                 :aria-label="isFavorited ? t('removeFromFavorites') : t('addToFavorites')"
               >
                 <svg 
-                  class="w-5 h-5 group-hover:scale-110 transition-transform" 
-                  :class="{ 'fill-current animate-heartbeat': isFavorited }"
+                  class="w-5 h-5" 
+                  :class="{ 'fill-current': isFavorited }"
                   viewBox="0 0 24 24" 
                   stroke="currentColor" 
                   fill="none"
@@ -160,7 +164,7 @@
             <div class="h-px w-6 bg-gray-200 dark:bg-gray-700 mx-auto"></div>
 
             <div class="tooltip tooltip-right" :data-tip="fontSizeLabels[fontSizeLevel]">
-              <button @click="fontSizeLevel = (fontSizeLevel + 1) % 3" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all duration-300 transform hover:scale-110 hover:rotate-12" :aria-label="t('adjustFontSize')">
+              <button @click="fontSizeLevel = (fontSizeLevel + 1) % 3" class="icon-btn" :aria-label="t('adjustFontSize')">
                 <span class="font-serif font-bold transition-all" :class="fontSizeClasses[fontSizeLevel]">T</span>
               </button>
             </div>
@@ -173,13 +177,43 @@
               ? 'max-w-full mx-auto' 
               : 'max-w-4xl mx-auto min-w-0'"
           >
-          <div v-if="loading" class="space-y-12 animate-pulse max-w-3xl mx-auto">
-            <div v-for="i in 3" :key="i">
-              <div class="h-8 bg-gray-200 dark:bg-gray-800 rounded w-1/3 mb-6"></div>
-              <div class="space-y-4">
-                <div class="h-4 bg-gray-200 dark:bg-gray-800 rounded w-full"></div>
-                <div class="h-4 bg-gray-200 dark:bg-gray-800 rounded w-full"></div>
-                <div class="h-4 bg-gray-200 dark:bg-gray-800 rounded w-2/3"></div>
+          <!-- 骨架屏：更贴近真实内容布局 -->
+          <div v-if="loading" class="space-y-10 animate-pulse max-w-3xl mx-auto">
+            <!-- 封面占位 -->
+            <div class="h-56 md:h-72 bg-gray-200 dark:bg-gray-700 rounded-2xl"></div>
+            <!-- 标题占位 -->
+            <div class="space-y-3">
+              <div class="h-8 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+              <div class="flex gap-4">
+                <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
+                <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
+              </div>
+            </div>
+            <!-- 标签占位 -->
+            <div class="flex gap-2">
+              <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-16"></div>
+              <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-20"></div>
+              <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-12"></div>
+            </div>
+            <!-- 正文占位 -->
+            <div class="space-y-4">
+              <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+              <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+              <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+              <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/5"></div>
+            </div>
+            <div class="space-y-4">
+              <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+              <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+              <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-11/12"></div>
+            </div>
+            <!-- 代码块占位 -->
+            <div class="bg-gray-100 dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
+              <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-1/4 mb-3"></div>
+              <div class="space-y-2">
+                <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+                <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-4/5"></div>
               </div>
             </div>
           </div>
@@ -218,6 +252,38 @@
             :lang="GISCUS_CONFIG.lang"
           />
 
+          <!-- 上一篇/下一篇导航 -->
+          <div v-motion class="flex flex-col md:flex-row justify-between gap-4 p-6 rounded-2xl border border-gray-100 dark:border-gray-700/50" v-if="prevArticle || nextArticle"
+               :initial="{ opacity: 0, y: 20 }"
+               :enter="{ opacity: 1, y: 0, transition: { duration: 500, delay: 200 } }">
+            <router-link
+              v-if="prevArticle"
+              :to="prevArticle.path"
+              class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/10 hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-300 group"
+              :aria-label="'上一篇: ' + prevArticle.title"
+            >
+              <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              <div class="min-w-0">
+                <div class="text-xs text-gray-400">{{ t('prevArticle') }}</div>
+                <div class="text-sm font-medium text-gray-700 dark:text-gray-300 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400">{{ prevArticle.title }}</div>
+              </div>
+            </router-link>
+            <div v-if="!prevArticle" class="invisible"></div>
+            <router-link
+              v-if="nextArticle"
+              :to="nextArticle.path"
+              class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/10 hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-300 group justify-end"
+              :aria-label="'下一篇: ' + nextArticle.title"
+            >
+              <div class="min-w-0 text-right">
+                <div class="text-xs text-gray-400">{{ t('nextArticle') }}</div>
+                <div class="text-sm font-medium text-gray-700 dark:text-gray-300 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400">{{ nextArticle.title }}</div>
+              </div>
+              <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </router-link>
+            <div v-if="!nextArticle" class="invisible"></div>
+          </div>
+
           <div class="flex flex-col md:flex-row justify-between items-center gap-8 bg-gray-100/50 dark:bg-gray-800/30 p-6 rounded-2xl border border-gray-200 dark:border-gray-700/50">
             <div class="flex items-center gap-3" v-if="articleMeta.tags.length>0">
               <span class="text-gray-500 font-medium">{{ t('tags') }}:</span>
@@ -226,7 +292,8 @@
               </div>
             </div>
             <div class="flex gap-3">
-              <button @click="handlePrint" class="flex items-center gap-2 px-6 py-2.5 bg-gray-600 text-white rounded-full hover:bg-gray-700 shadow-lg shadow-gray-600/20 hover:shadow-gray-600/30 hover:-translate-y-0.5 transition-all duration-300 font-medium print:hidden" :aria-label="t('print')">
+              <button @click="handlePrint"
+                  class="flex items-center gap-2 px-6 py-2.5 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors print:hidden" :aria-label="t('print')">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                 </svg>
@@ -234,7 +301,7 @@
               </button>
               <button 
                 @click="toggleFavorite"
-                class="flex items-center gap-2 px-6 py-2.5 bg-red-600 text-white rounded-full hover:bg-red-700 shadow-lg shadow-red-600/20 hover:shadow-red-600/30 hover:-translate-y-0.5 transition-all duration-300 font-medium" 
+                class="flex items-center gap-2 px-6 py-2.5 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors font-medium" 
                 :aria-label="isFavorited ? t('removeFromFavorites') : t('addToFavorites')"
                 :class="{ 'bg-red-700': isFavorited }"
               >
@@ -254,7 +321,7 @@
                 </svg>
                 {{ isFavorited ? t('favorited') : t('favorite') }}
               </button>
-              <button @click="openShareModal" class="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 shadow-lg shadow-blue-600/20 hover:shadow-blue-600/30 hover:-translate-y-0.5 transition-all duration-300 font-medium" :aria-label="t('share')">
+              <button @click="openShareModal" class="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors font-medium" :aria-label="t('share')">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                 </svg>
@@ -265,12 +332,12 @@
         </main>
 
         <aside class="hidden xl:block w-72 shrink-0" v-if="headings.length > 0">
-          <div class="sticky top-16 max-h-[calc(100vh-8rem)] overflow-y-auto custom-scrollbar pl-4 border-l border-gray-200 dark:border-gray-800 z-100" style="pointer-events: auto; overscroll-behavior: contain;" @wheel.stop>
+          <div class="sticky top-16 max-h-[calc(100vh-8rem)] overflow-y-auto toc-scrollbar pl-4 border-l border-gray-200 dark:border-gray-800 z-100" style="pointer-events: auto; overscroll-behavior: contain;" @wheel.stop>
             <h4 class="font-bold text-gray-800 dark:text-white mb-4 text-xs uppercase tracking-wider opacity-60">{{ t('articleDirectory') }}</h4>
             <div v-if="headings.length === 0" class="text-gray-500 dark:text-gray-400 text-sm">
               {{ t('noExcerpt') }}
             </div>
-            <ul v-else class="space-y-1 relative">
+            <ul v-else class=" relative">
               <li v-for="h in headings" :key="h.id" class="relative">
                 <div v-if="activeHeadingId === h.id" class="absolute -left-[21px] top-1 bottom-1 w-[3px] bg-blue-600 rounded-r-md transition-all"></div>
                 <button
@@ -310,7 +377,7 @@
       <button
           v-if="showBackToTop"
           @click="handleBackToTop"
-          class="w-12 h-12 flex items-center justify-center dark:bg-[#1b2f73ff] bg-[#3b2f73ff] text-white rounded-full shadow-lg shadow-blue-600/30 hover:bg-blue-700 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 active:scale-95"
+          class="scroll-top-btn"
       >
         <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
           <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z" />
@@ -322,8 +389,8 @@
   <Transition name="slide-fade">
     <div v-if="showMobileToc&&headings.length > 0" class="fixed inset-0 z-[60] lg:hidden">
       <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="showMobileToc = false"></div>
-      <div class="absolute right-0 top-0 bottom-0 w-3/4 max-w-sm bg-white dark:bg-[#161b22] shadow-2xl p-6 overflow-y-auto">
-        <div class="flex justify-between items-center mb-6">
+      <div class="absolute right-0 top-0 bottom-0 w-3/4 max-w-sm bg-white dark:bg-[#161b22] shadow-2xl flex flex-col">
+        <div class="flex-shrink-0 flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
           <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ t('articleDirectory') }}</h3>
           <button @click="showMobileToc = false" class="p-2 text-gray-500 hover:text-gray-900 dark:hover:text-white" :aria-label="t('close')">
             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -331,18 +398,18 @@
             </svg>
           </button>
         </div>
-        <div v-if="headings.length === 0" class="text-gray-500 dark:text-gray-400 text-sm py-4">
+        <div v-if="headings.length === 0" class="flex-1 flex items-center justify-center text-[#000000ff]">
           {{ t('noExcerpt') }}
         </div>
-        <div v-else class="space-y-4 max-h-[calc(100vh-120px)] overflow-y-auto custom-scrollbar">
-          <ul>
+        <div v-else class="flex-1 overflow-y-auto min-h-0 p-6 toc-scrollbar">
+          <ul class="space-y-1">
           <li v-for="h in headings" :key="h.id">
               <button
                   @click="scrollToHeading(h.id)"
-                  class="text-left w-full text-sm truncate py-1 border-l-2 pl-4 transition-colors"
+                  class="text-left w-full text-sm truncate py-2 border-l-2 pl-4 transition-colors"
                   :class="[
                   activeHeadingId === h.id
-                  ? 'border-blue-600 text-blue-600 font-bold  dark:bg-blue-900/20'
+                  ? 'border-blue-600 text-blue-600 font-bold dark:bg-blue-900/20'
                   : 'border-transparent text-gray-600 dark:text-gray-400'
                 ]"
                   :aria-current="activeHeadingId === h.id ? 'true' : 'false'"
@@ -356,6 +423,27 @@
     </div>
   </Transition>
 
+  <!-- 移动端文章操作浮动栏 -->
+  <div class="fixed bottom-[60px] left-0 right-0 z-40 lg:hidden flex justify-center pointer-events-none" style="bottom: calc(60px + env(safe-area-inset-bottom, 0px));">
+    <div class="flex items-center gap-1 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg rounded-full shadow-xl border border-gray-200 dark:border-gray-700 px-3 py-2 pointer-events-auto transform transition-all duration-300">
+      <button @click="handleBackToTop" class="icon-btn-sm" :aria-label="t('backToTop')">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+      </button>
+      <div class="w-px h-5 bg-gray-200 dark:bg-gray-700"></div>
+      <button v-if="headings.length > 0" @click="showMobileToc = true" class="icon-btn-sm" :aria-label="t('showDirectory')">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+      </button>
+      <div class="w-px h-5 bg-gray-200 dark:bg-gray-700"></div>
+      <button @click="fontSizeLevel = (fontSizeLevel + 1) % 3" class="icon-btn-sm" :aria-label="t('adjustFontSize')">
+        <span class="font-serif font-bold text-sm">{{ ['S','M','L'][fontSizeLevel] }}</span>
+      </button>
+      <div class="w-px h-5 bg-gray-200 dark:bg-gray-700"></div>
+      <button @click="openShareModal" class="w-9 h-9 flex-center rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" :aria-label="t('share')">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+      </button>
+    </div>
+  </div>
+
   <!-- 分享模态框 -->
   <ShareModal 
     :is-open="showShareModal"
@@ -363,11 +451,12 @@
     :url="windowLocation"
     @close="closeShareModal"
   />
+  </div>
 </template>
 <script setup lang="ts">
-import {nextTick, onMounted, onUnmounted, ref, watch, onActivated, computed} from 'vue'
-import {useRoute} from 'vue-router'
-import {SITE_CONFIG} from '@/constants'
+import {computed, nextTick, onActivated, onMounted, onUnmounted, ref, watch} from 'vue'
+import {useRoute, useRouter} from 'vue-router'
+import {GISCUS_CONFIG, SITE_CONFIG} from '@/constants'
 import {t} from '@/utils/i18n'
 import {marked, Renderer} from 'marked'
 import {gfmHeadingId} from 'marked-gfm-heading-id';
@@ -377,12 +466,12 @@ import '@/github-markdown.css'
 import ShareModal from '@/components/ui/ShareModal.vue'
 import DocumentViewer from '@/components/DocumentViewer.vue'
 import GiscusComment from '@/components/GiscusComment.vue'
-import { GISCUS_CONFIG } from '@/constants'
-import {addFavorite, isFavorite, removeFavorite} from "@/utils/favorites";
 import type {FavoriteItem} from "@/utils/favorites"
+import {addFavorite, isFavorite, removeFavorite} from "@/utils/favorites";
 import {fetchWithFallback, formatDate, getEnvVariable} from "@/utils/tool";
-import { addRecentArticle, getReadingProgress, saveReadingProgress } from '@/utils/reading-progress';
-import {setupSEO, updateArticleSEO} from '@/plugins/seo';
+import {addRecentArticle, getReadingProgress, saveReadingProgress} from '@/utils/reading-progress';
+import {setupSEO, updateArticleSEO, updateArticleJsonLd} from '@/plugins/seo';
+import {lenis} from '@/main';
 
 // 创建 marked 实例并配置一次
 const renderer = new Renderer()
@@ -408,6 +497,7 @@ marked.use(
 );
 
 const route = useRoute()
+const router = useRouter()
 
 // ==================== 状态定义 ====================
 const html = ref('')
@@ -416,6 +506,26 @@ const loading = ref(true)
 const cover = ref('')
 const readingTime = ref('')
 const showBackToTop = ref(false)
+
+// 用于上一篇/下一篇导航
+const allArticles = ref<any[]>([])
+
+// 竞态条件修复：AbortController 用于取消过期的文章加载请求
+let articleAbortController: AbortController | null = null
+
+// 上一篇/下一篇计算
+const prevArticle = computed(() => {
+  if (allArticles.value.length === 0) return null
+  const currentIdx = allArticles.value.findIndex(a => a.path === artPath.value)
+  if (currentIdx <= 0) return null
+  return allArticles.value[currentIdx - 1]
+})
+const nextArticle = computed(() => {
+  if (allArticles.value.length === 0) return null
+  const currentIdx = allArticles.value.findIndex(a => a.path === artPath.value)
+  if (currentIdx < 0 || currentIdx >= allArticles.value.length - 1) return null
+  return allArticles.value[currentIdx + 1]
+})
 const articleMeta = ref({
   title: '',
   date: '',
@@ -458,6 +568,36 @@ const fontSizeLabels = [t('fontSizeSmall'), t('fontSizeMedium'), t('fontSizeLarg
 // 渲染后的Markdown内容
 const renderedMarkdown = ref('')
 
+// ==================== 代码高亮 ====================\n
+// 提取公共的代码高亮逻辑，避免3处重复\n
+const highlightCodeBlock = (block: Element) => {
+  const pre = block.parentElement
+  if (!pre) return
+  // 获取代码内容
+  const codeContent = block.textContent || ''
+  // 获取语言类名
+  const classes = Array.from(block.classList)
+  const langClass = classes.find(cls => cls.startsWith('language-'))
+  const language = langClass ? langClass.replace('language-', '') : 'plaintext'
+  // 应用高亮
+  try {
+    if (hljs.getLanguage(language)) {
+      const highlighted = hljs.highlight(codeContent, { language }).value
+      block.innerHTML = highlighted
+    } else {
+      const highlighted = hljs.highlightAuto(codeContent).value
+      block.innerHTML = highlighted
+    }
+  } catch (e) {
+    console.warn('代码高亮失败:', e)
+  }
+}
+
+const highlightAllCodeBlocks = () => {
+  const codeBlocks = document.querySelectorAll('.markdown-body pre code')
+  codeBlocks.forEach(highlightCodeBlock)
+}
+
 // 监听主题变化事件
 const handleThemeChange = (event: CustomEvent) => {
   const theme = event.detail.theme;
@@ -467,35 +607,7 @@ const handleThemeChange = (event: CustomEvent) => {
     if (markdownBody) {
       markdownBody.setAttribute('data-theme', theme);
     }
-
-    // 重新处理代码高亮
-    const codeBlocks = document.querySelectorAll('.markdown-body pre code')
-    codeBlocks.forEach((block) => {
-      const pre = block.parentElement
-      if (pre) {
-        // 获取代码内容
-        const codeContent = block.textContent || ''
-        // 获取语言类名
-        const classes = Array.from(block.classList)
-        const langClass = classes.find(cls => cls.startsWith('language-'))
-        const language = langClass ? langClass.replace('language-', '') : 'plaintext'
-
-        // 应用高亮
-        try {
-          if (hljs.getLanguage(language)) {
-            const highlighted = hljs.highlight(codeContent, {language}).value
-            block.innerHTML = highlighted
-          } else {
-            const highlighted = hljs.highlightAuto(codeContent).value
-            block.innerHTML = highlighted
-          }
-        } catch (e) {
-          console.warn('代码高亮失败:', e)
-        }
-      }
-    })
-
-    // 重新添加复制按钮
+    highlightAllCodeBlocks()
     addCopyButtons()
   })
 }
@@ -511,14 +623,14 @@ async function renderFromHtml() {
     await nextTick()
     
     // 检查是否为 Markdown 内容
-    const isMarkdownContent = !newHtml.startsWith('<') || newHtml.startsWith('<pre class="text-content">') || newHtml.startsWith('<!DOCTYPE html>');
+    const isMarkdownContent = !newHtml.startsWith('<') && !newHtml.startsWith('<!DOCTYPE html>');
     
     let dirty;
-    if (isMarkdownContent && !newHtml.startsWith('<!DOCTYPE html>')) {
+    if (isMarkdownContent) {
       // 处理 Markdown 内容
       dirty = await marked.parse(newHtml)
     } else {
-      // 直接使用 HTML 内容
+      // 直接使用 HTML 内容（包括 txt 的 <pre> 包裹和 html 文件）
       dirty = newHtml
     }
 // 处理相对路径的图片和视频资源
@@ -583,32 +695,10 @@ async function renderFromHtml() {
     componentKey.value++
 
     await nextTick()
-    // 在渲染完成后手动处理代码高亮
-    const codeBlocks = document.querySelectorAll('.markdown-body pre code')
-    codeBlocks.forEach((block) => {
-      const pre = block.parentElement
-      if (pre) {
-        // 获取代码内容
-        const codeContent = block.textContent || ''
-        // 获取语言类名
-        const classes = Array.from(block.classList)
-        const langClass = classes.find(cls => cls.startsWith('language-'))
-        const language = langClass ? langClass.replace('language-', '') : 'plaintext'
-
-        // 应用高亮
-        try {
-          if (hljs.getLanguage(language)) {
-            const highlighted = hljs.highlight(codeContent, {language}).value
-            block.innerHTML = highlighted
-          } else {
-            const highlighted = hljs.highlightAuto(codeContent).value
-            block.innerHTML = highlighted
-          }
-        } catch (e) {
-          console.warn('代码高亮失败:', e)
-        }
-      }
-    })
+    // 等待 Vue 完成 DOM 更新后再处理代码高亮
+    await new Promise(resolve => setTimeout(resolve, 0))
+    // 在渲染完成后统一处理代码高亮
+    highlightAllCodeBlocks()
 
     generateTOC()
     setupScrollSpy()
@@ -634,32 +724,8 @@ onActivated(() => {
         button.remove();
       });
 
-      // 手动处理代码高亮
-      const codeBlocks = document.querySelectorAll('.markdown-body pre code')
-      codeBlocks.forEach((block) => {
-        const pre = block.parentElement
-        if (pre) {
-          // 获取代码内容
-          const codeContent = block.textContent || ''
-          // 获取语言类名
-          const classes = Array.from(block.classList)
-          const langClass = classes.find(cls => cls.startsWith('language-'))
-          const language = langClass ? langClass.replace('language-', '') : 'plaintext'
-
-          // 应用高亮
-          try {
-            if (hljs.getLanguage(language)) {
-              const highlighted = hljs.highlight(codeContent, {language}).value
-              block.innerHTML = highlighted
-            } else {
-              const highlighted = hljs.highlightAuto(codeContent).value
-              block.innerHTML = highlighted
-            }
-          } catch (e) {
-            console.warn('代码高亮失败:', e)
-          }
-        }
-      });
+      // 使用公共高亮函数
+      highlightAllCodeBlocks()
 
       // 重新添加复制按钮
       addCopyButtons()
@@ -672,13 +738,31 @@ const addCopyButtons = () => {
   document.querySelectorAll('.markdown-body pre > .copy-button').forEach(button => {
     button.remove();
   });
+  // 清理已存在的语言标签
+  document.querySelectorAll('.markdown-body pre > .lang-label').forEach(label => {
+    label.remove();
+  });
 
   document.querySelectorAll('.markdown-body pre').forEach((pre) => {
     const codeBlock = pre.querySelector('code');
     if (!codeBlock || pre.querySelector('.copy-button')) return;
 
+    // 获取语言
+    const classes = Array.from(codeBlock.classList);
+    const langClass = classes.find(cls => cls.startsWith('language-'));
+    const language = langClass ? langClass.replace('language-', '') : '';
+
+    // 添加语言标签
+    if (language) {
+      const langLabel = document.createElement('span');
+      langLabel.className =
+          'lang-label absolute top-0 left-3 h-[2.0rem] text-[9px] font-mono font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 select-none z-10';
+      langLabel.textContent = language;
+      pre.appendChild(langLabel);
+    }
+
     const button = document.createElement('button');
-    button.className = 'copy-button absolute top-3 right-3 p-1.5 rounded-md bg-white/10 dark:bg-gray-700/50 backdrop-blur-sm hover:bg-white/30 dark:hover:bg-gray-600/50 transition-all duration-200 opacity-0 group-hover:opacity-100 z-10 flex items-center justify-center';
+    button.className = 'copy-button absolute top-0 right-2 h-[2.5rem] flex items-center justify-center p-1.5 rounded-md hover:bg-white/30 dark:hover:bg-gray-600/50 transition-all duration-200 opacity-0 group-hover:opacity-100 z-10';
     button.innerHTML = `<svg class="w-4 h-4 text-gray-600 dark:text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
     button.title = t('copyCode');
     button.onclick = () => copyCodeToClipboard(codeBlock.textContent || '', button);
@@ -690,12 +774,39 @@ const addCopyButtons = () => {
   });
 };
 
-const copyCodeToClipboard = (text: string, button: HTMLElement) => {
-  navigator.clipboard.writeText(text).then(() => {
-    const original = button.innerHTML;
+let copyToastTimer: ReturnType<typeof setTimeout> | null = null;
+
+const copyCodeToClipboard = async (text: string, button: HTMLElement) => {
+  const original = button.innerHTML;
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      // 回退方案：使用 textarea
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    }
     button.innerHTML = `<svg class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-    setTimeout(() => button.innerHTML = original, 2000);
-  });
+    // 清除之前的 toast 避免堆叠
+    if (copyToastTimer) {
+      clearTimeout(copyToastTimer);
+      copyToastTimer = null;
+    }
+  } catch {
+    button.innerHTML = `<svg class="w-4 h-4 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 8l4 4 4-4"/></svg>`;
+    // showError(t('copyFailed'));
+  } finally {
+    copyToastTimer = setTimeout(() => {
+      button.innerHTML = original;
+      copyToastTimer = null;
+    }, 2500);
+  }
 };
 
 // ==================== 阅读进度条 ====================
@@ -703,28 +814,86 @@ const progress = ref(0)
 const showProgress = ref(false)
 const progressTimer = ref<number | null>(null)
 
+// 节流保存：限制 localStorage 写入频率
+let lastSaveTime = 0
+const SAVE_THROTTLE_MS = 3000
+
+const saveProgressThrottled = () => {
+  const now = Date.now()
+  if (now - lastSaveTime < SAVE_THROTTLE_MS) return
+  lastSaveTime = now
+  saveReadingProgress({
+    path: route.path,
+    title: articleMeta.value.title,
+    scrollTop: window.scrollY,
+    timestamp: now
+  })
+}
+
+// 使用 rAF 节流滚动事件
+let rafId: number | null = null
+
 const updateProgress = () => {
-  const winScroll = document.documentElement.scrollTop || document.body.scrollTop
-  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight
-  progress.value = height > 0 ? (winScroll / height) * 100 : 0
-  showBackToTop.value = winScroll > 300
-  
-  // 显示进度条
-  showProgress.value = true
-  
-  // 清除之前的计时器
-  if (progressTimer.value) {
-    clearTimeout(progressTimer.value)
-  }
-  
-  // 设置新的计时器，在停止滚动后隐藏进度条
-  progressTimer.value = setTimeout(() => {
-    showProgress.value = false
-  }, 1500)
+  if (rafId) return
+  rafId = requestAnimationFrame(() => {
+    rafId = null
+    const winScroll = document.documentElement.scrollTop || document.body.scrollTop
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight
+    progress.value = height > 0 ? (winScroll / height) * 100 : 0
+    showBackToTop.value = winScroll > 300
+
+    // 显示进度条
+    showProgress.value = true
+
+    // 节流保存阅读进度
+    saveProgressThrottled()
+
+    // 清除之前的计时器
+    if (progressTimer.value) {
+      clearTimeout(progressTimer.value)
+    }
+
+    // 设置新的计时器，在停止滚动后隐藏进度条
+    progressTimer.value = setTimeout(() => {
+      showProgress.value = false
+    }, 1500)
+  })
 }
 
 const handleBackToTop = () => {
-  window.scrollTo({top: 0, behavior: 'smooth'})
+  lenis.scrollTo(0, { duration: 1 })
+}
+
+// 移动端触摸滑动切换文章
+let touchStartX = 0
+let touchStartY = 0
+const SWIPE_THRESHOLD = 60
+
+const handleTouchStart = (e: TouchEvent) => {
+  //@ts-ignore
+  touchStartX = e.touches[0].clientX
+  //@ts-ignore
+  touchStartY = e.touches[0].clientY
+}
+
+const handleTouchEnd = (e: TouchEvent) => {
+  //@ts-ignore
+  const endX = e.changedTouches[0].clientX
+  //@ts-ignore
+  const endY = e.changedTouches[0].clientY
+  const diffX = endX - touchStartX
+  const diffY = Math.abs(endY - touchStartY)
+
+  // 只处理水平滑动，忽略垂直滚动
+  if (Math.abs(diffX) < SWIPE_THRESHOLD || diffY > Math.abs(diffX) * 0.5) return
+
+  if (diffX > 0 && prevArticle.value) {
+    // 右滑 → 上一篇
+    router.push(prevArticle.value.path)
+  } else if (diffX < 0 && nextArticle.value) {
+    // 左滑 → 下一篇
+    router.push(nextArticle.value.path)
+  }
 }
 
 // 优化: Lightbox 和 MobileToc 的键盘事件处理
@@ -734,6 +903,14 @@ const handleKeydown = (e: KeyboardEvent) => {
       showLightbox.value = false
     } else if (showMobileToc.value) {
       showMobileToc.value = false
+    }
+  }
+  // ← → 切换文章
+  if (!showLightbox.value && !showMobileToc.value && !showShareModal.value) {
+    if (e.key === 'ArrowLeft' && prevArticle.value) {
+      router.push(prevArticle.value.path)
+    } else if (e.key === 'ArrowRight' && nextArticle.value) {
+      router.push(nextArticle.value.path)
     }
   }
 }
@@ -785,8 +962,8 @@ const setupScrollSpy = () => {
         activeHeadingId.value = visibleHeadings[0]?.id ?? '';
       }
     }, {
-      // 优化: 顶部 margin 设为 -80px，匹配 scrollToHeading 的偏移量
-      rootMargin: '-80px 0px -66% 0px'
+      // 优化: 顶部 margin 设为 -100px（考虑固定导航栏+工具栏），底部 -50% 确保标题进入上半屏即激活
+      rootMargin: '-100px 0px -50% 0px'
     })
 
     container.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach((h) => {
@@ -798,7 +975,8 @@ const setupScrollSpy = () => {
 // ==================== 图片查看器 ====================
 const handleContentClick = (e: MouseEvent) => {
   const target = e.target as HTMLElement
-  if (target.tagName === 'IMG' && target.closest('.markdown-body')&& !target.closest('a')) {
+  // 只处理图片点击，不要阻止其他元素的默认行为（如 router-link）
+  if (target.tagName === 'IMG' && target.closest('.markdown-body') && !target.closest('a')) {
     e.preventDefault()
     lightboxImg.value = (target as HTMLImageElement).src
     showLightbox.value = true
@@ -848,6 +1026,12 @@ const handlePrint = () => {
 const artPath=ref<string>('')
 // ==================== 加载文章逻辑 ====================
 const loadArticle = async (filePath: string) => {
+  // 竞态条件修复：取消之前的请求
+  if (articleAbortController) {
+    articleAbortController.abort()
+  }
+  articleAbortController = new AbortController()
+
   window.scrollTo(0, 0)
   activeHeadingId.value = ''
   if (observer) observer.disconnect() // 在加载新文章前断开旧 observer
@@ -865,10 +1049,17 @@ const loadArticle = async (filePath: string) => {
     const base=getEnvVariable('VITE_BASE')||'/'
     const navRes = await fetchWithFallback([`${base}generated/${navName}`,`${base}generated/nav.json`],'导航数据');
     const navData = await navRes.json();
-    
+
+    // 存储所有文章用于上一篇/下一篇导航（仅非文档类型）
+    const articleList = navData.filter((item: any) => {
+      const ext = item.url?.split('.').pop()?.toLowerCase() || '';
+      return !['pdf','doc','docx','xls','xlsx'].includes(ext);
+    });
+    allArticles.value = articleList;
+
     // 根据路径查找文章信息
+    // 移除console调试语句
     const articleInfo = navData.find((item: any) => item.path === artPath.value || item.path === artPath.value.slice(0, -3));
-    console.log('articleInfo',articleInfo)
     if (!articleInfo) {
       throw new Error('Not Found');
     }
@@ -884,7 +1075,6 @@ const loadArticle = async (filePath: string) => {
     });
     
     const actualFilePath=decodeURIComponent(articleInfo.url)||''
-    console.log('actualFilePath',actualFilePath)
     // 添加时间戳避免缓存
     const fiveMinuteTimestamp = Math.floor(Date.now() / (5 * 60 * 1000))
     const baseUrl=getEnvVariable('VITE_BASE')||''
@@ -918,12 +1108,21 @@ const loadArticle = async (filePath: string) => {
         path: route.path
       })
       
+      // 更新 JSON-LD 结构化数据
+      updateArticleJsonLd({
+        title: articleInfo.title,
+        description: articleInfo.excerpt || SITE_CONFIG.description,
+        date: articleInfo.date,
+        cover: articleInfo.cover,
+        path: route.path
+      })
+      
       loading.value = false;
       // await loadDocument(filePathWithTimestamp,fileExtension)
       return;
     }
 
-    const res = await fetch(filePathWithTimestamp);
+    const res = await fetch(filePathWithTimestamp, { signal: articleAbortController.signal });
 
     if (!res.ok) throw new Error('Not Found');
 
@@ -954,9 +1153,13 @@ const loadArticle = async (filePath: string) => {
       const words = contentText.trim().split(/\s+/).length;
       readingTime.value = Math.ceil(words / 200) + ' ' + t('readingTime');
     }else{
-      const fmMatch = contentText.trim().match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/m)
+      // 移除 BOM 字符和开头空白后匹配 frontmatter
+      const trimmedContent = contentText.replace(/^\uFEFF/, '').trimStart()
+      const fmMatch = trimmedContent.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/)
       if (fmMatch) {
-        content = contentText.replace(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/m, '')
+        content = trimmedContent.slice(fmMatch[0].length)
+      } else {
+        content = trimmedContent
       }
     }
 
@@ -980,6 +1183,15 @@ const loadArticle = async (filePath: string) => {
       path: route.path
     })
     
+    // 更新 JSON-LD 结构化数据
+    updateArticleJsonLd({
+      title: articleMeta.value.title,
+      description: articleMeta.value.excerpt || SITE_CONFIG.description,
+      date: articleMeta.value.date,
+      cover: articleMeta.value.cover,
+      path: route.path
+    })
+    
     // 页面加载完成后恢复阅读进度
     setTimeout(() => {
       const progress = getReadingProgress(route.path);
@@ -988,8 +1200,12 @@ const loadArticle = async (filePath: string) => {
       }
     },300);
   } catch (err) {
+    // 竞态条件修复：忽略被取消的请求
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      return
+    }
     console.error(err)
-    html.value = `# 404\n${t('error')}`
+    html.value = `# 😕 ${t('articleLoadError')}\n\n${t('articleLoadErrorDesc')}\n\n\`\`\`\n${err instanceof Error ? err.message : String(err)}\n\`\`\``
     isFavorited.value = false;
   } finally {
     loading.value = false
@@ -1010,15 +1226,7 @@ onMounted(() => {
   // 监听主题变化事件
   window.addEventListener('theme-change', handleThemeChange as EventListener)
   
-  // 设置定时保存阅读进度（每5秒保存一次）
-  saveProgressTimer = window.setInterval(() => {
-    saveReadingProgress({
-      path: route.path,
-      title: articleMeta.value.title,
-      scrollTop: window.scrollY,
-      timestamp: Date.now()
-    });
-  }, 5000);
+  // 阅读进度由滚动事件中的 rAF + 节流函数自动保存
 })
 
 onUnmounted(() => {
@@ -1030,10 +1238,28 @@ onUnmounted(() => {
   // 移除主题变化事件监听
   window.removeEventListener('theme-change', handleThemeChange as EventListener)
   
+  // 清理 rAF（防止内存泄漏）
+  if (rafId) {
+    cancelAnimationFrame(rafId)
+    rafId = null
+  }
+  
+  // 清除进度条隐藏定时器
+  if (progressTimer.value) {
+    clearTimeout(progressTimer.value)
+    progressTimer.value = null
+  }
+  
   // 清除定时保存阅读进度的定时器
   if (saveProgressTimer) {
     clearInterval(saveProgressTimer);
     saveProgressTimer = null;
+  }
+  
+  // 取消正在进行的文章加载请求
+  if (articleAbortController) {
+    articleAbortController.abort()
+    articleAbortController = null
   }
   
   // 恢复默认SEO标签
@@ -1051,18 +1277,11 @@ onUnmounted(() => {
 const scrollToHeading = (id: string) => {
   const el = document.getElementById(id)
   if (el) {
-    // 滚动到标题，并留出 80px 的顶部偏移量（固定导航栏）
-    const offset = 80
-    const bodyRect = document.body.getBoundingClientRect().top
-    const elementRect = el.getBoundingClientRect().top
-    const elementPosition = elementRect - bodyRect
-    const offsetPosition = elementPosition - offset
-
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: 'smooth'
-    })
     showMobileToc.value = false
+    lenis.scrollTo(el, {
+      offset: -80,
+      duration: 1.2
+    })
   }
 }
 
@@ -1095,54 +1314,74 @@ const scrollToHeading = (id: string) => {
   transform: translateY(20px);
 }
 
+/* 动画 */
 .scale-in {
   animation: scaleIn 0.3s ease-out forwards;
 }
 
+.animate-zoom-in {
+  animation: zoomIn 0.3s ease-out;
+}
+
 @keyframes scaleIn {
-  from {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
-.animate-slide-up {
-  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+@keyframes zoomIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
 /* 滚动条美化 */
-.custom-scrollbar::-webkit-scrollbar {
+.toc-scrollbar::-webkit-scrollbar {
   width: 4px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
+.toc-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.2);
-  border-radius: 20px;
+.toc-scrollbar::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
 }
 
-.custom-scrollbar:hover::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.4);
+.toc-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: #9ca3af;
 }
 
+.dark .toc-scrollbar::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+.dark .toc-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: #6b7280;
+}
+
+/* Mac 风格代码块顶部装饰 */
+.markdown-body pre {
+  padding-top: 2.5rem !important;
+}
+
+.markdown-body pre::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2.5rem;
+  background-color: rgb(243 244 246);
+  border-bottom: 1px solid rgb(209 213 219);
+  border-radius: 12px 12px 0 0;
+}
+
+.dark .markdown-body pre::before {
+  background-color: rgb(31 41 55);
+  border-bottom-color: rgb(55 65 81);
+}
+
+/* 工具提示 */
 .tooltip {
   position: relative;
   display: inline-block;
@@ -1170,209 +1409,27 @@ const scrollToHeading = (id: string) => {
   opacity: 1;
 }
 
-/* Mac 风格代码块容器 - 通过包裹 pre 来实现 */
-.markdown-body pre {
-  position: relative;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  margin: 1.5rem 0;
-  background-color: #ffffff;
-  border: 1px solid rgb(209 213 219);
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-}
-
-.dark .markdown-body pre {
-  background-color: rgb(17 24 39);
-  border: 1px solid rgb(55 65 81);
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
-}
-
-.markdown-body pre::before {
-  content: "";
-  display: block;
-  height: 2rem;
-  background-color: rgb(243 244 246);
-  border-bottom: 1px solid rgb(209 213 219);
-}
-
-.dark .markdown-body pre::before {
-  background-color: rgb(31 41 55);
-  border-bottom: 1px solid rgb(55 65 81);
-}
-
-.markdown-body pre::after {
-  content: "";
-  position: absolute;
-  top: 0.75rem;
-  left: 0.75rem;
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 50%;
-  background-color: rgb(239 68 68);
-  box-shadow: 1.25rem 0 0 rgb(245 158 11), 2.5rem 0 0 rgb(34 197 94);
-}
-
-.markdown-body pre > code {
-  display: block;
-  padding: 1rem;
-  padding-top: 0.5rem; /* 调整以避开头栏 */
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 0.875rem;
-  line-height: 1.5rem;
-  overflow-x: auto;
-  tab-size: 2;
-  color: rgb(55 65 81);
-}
-
-.dark .markdown-body pre > code {
-  color: rgb(209 213 219);
-  background-color: rgb(17 24 39);
-}
-
-.markdown-body :not(pre) > code {
-  background-color: rgb(243 244 246);
-  color: rgb(31 41 55);
-  padding: 0.2em 0.4em;
-  border-radius: 0.25rem;
-  font-size: 0.875rem;
-}
-
-.dark .markdown-body :not(pre) > code {
-  background-color: rgb(55 65 81);
-  color: rgb(229 231 235);
-}
-
-.max-h-\[calc\(100vh-120px\)\]::-webkit-scrollbar {
-  width: 6px;
-}
-
-.max-h-\[calc\(100vh-120px\)\]::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.max-h-\[calc\(100vh-120px\)\]::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.5);
-  border-radius: 3px;
-}
-
-.max-h-\[calc\(100vh-120px\)\]::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(156, 163, 175, 0.7);
-}
-
 /* 打印样式 */
 @media print {
-  /* 隐藏不需要打印的元素 */
-  .fixed, .sticky, .print\:hidden {
-    display: none !important;
-  }
-  
-  /* 主体内容样式 */
-  body {
-    background: white !important;
-    color: black !important;
-  }
-  
-  /* 文章容器样式 */
-  article {
-    background: white !important;
-  }
-  
-  /* 标题样式 */
-  h1, h2, h3, h4, h5, h6 {
-    color: black !important;
-    break-after: avoid;
-  }
-  
-  /* 段落样式 */
-  p {
-    color: black !important;
-  }
-  
-  /* 代码块样式 */
-  .markdown-body pre {
-    background: #f5f5f5 !important;
-    border: 1px solid #ddd !important;
-    box-shadow: none !important;
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
-  
-  .dark .markdown-body pre,
-  .markdown-body pre {
-    background: #f5f5f5 !important;
-    border: 1px solid #ddd !important;
-    box-shadow: none !important;
-  }
-  
-  .dark .markdown-body pre::before {
-    background: #eee !important;
-    border-bottom: 1px solid #ddd !important;
-  }
-  
-  .dark .markdown-body pre::before {
-    background: #eee !important;
-    border-bottom: 1px solid #ddd !important;
-  }
-  
-  .dark .markdown-body pre > code {
-    color: #333 !important;
-  }
-  
-  .dark .markdown-body pre > code {
-    color: #333 !important;
-    background: #f5f5f5 !important;
-  }
-  
-  .dark .markdown-body :not(pre) > code {
+  .markdown-body :not(pre) > code {
     background: #eee !important;
     color: #333 !important;
   }
-  
-  .dark .markdown-body :not(pre) > code {
-    background: #eee !important;
-    color: #333 !important;
-  }
-  
-  /* 表格样式 */
-  table {
-    border-collapse: collapse !important;
-  }
-  
-  th, td {
-    border: 1px solid #ddd !important;
-    padding: 8px !important;
-  }
-  
-  th {
-    background: #f5f5f5 !important;
-  }
-  
-  /* 链接样式 */
-  a {
-    color: #0066cc !important;
-    text-decoration: underline !important;
-  }
-  
-  /* 图片样式 */
-  img {
-    max-width: 100% !important;
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
-  
-  /* 列表样式 */
-  ul, ol {
-    color: black !important;
-  }
-  
-  li {
-    color: black !important;
-  }
-  
-  /* 引用样式 */
-  blockquote {
-    border-left: 4px solid #ccc !important;
-    color: #555 !important;
-  }
+  table { border-collapse: collapse !important; }
+  th, td { border: 1px solid #ddd !important; padding: 8px !important; }
+  th { background: #f5f5f5 !important; }
+  a { color: #0066cc !important; text-decoration: underline !important; }
+  img { max-width: 100% !important; break-inside: avoid; page-break-inside: avoid; }
+  ul, ol, li { color: black !important; }
+  blockquote { border-left: 4px solid #ccc !important; color: #555 !important; }
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 3s infinite;
+}
+
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 </style>

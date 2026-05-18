@@ -13,10 +13,12 @@ import {ViteImageOptimizer} from 'vite-plugin-image-optimizer'
 import {getCDN} from './package/build_cdn'
 import vitePluginCdn from './package/vite-plugin-cdn'
 import {createHtmlPlugin} from 'vite-plugin-html'
-// import { rssPlugin } from './package/vite-plugin-rss'
+import { rssPlugin } from './package/vite-plugin-rss'
+import { sitemapPlugin } from './package/vite-plugin-sitemap'
 import {VitePWA} from 'vite-plugin-pwa'
 import {SITE_CONFIG} from "./src/constants";
 import {createSvgIconsPlugin} from "vite-plugin-svg-icons";
+import {autoPasswordHashPlugin} from './vite-plugin-auto-password-hash';
 
 export default defineConfig((config) => {
 
@@ -64,8 +66,53 @@ export default defineConfig((config) => {
             VitePWA({
                 registerType: 'autoUpdate',
                 workbox: {
-                    globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+                    globPatterns: ['**/*.{js,css,html,ico,png,svg,webp}'],
                     maximumFileSizeToCacheInBytes: 5000000, // 5MB
+                    // 优化缓存策略：优先缓存导航数据和文章
+                    runtimeCaching: [
+                        {
+                            urlPattern: /^.*\/generated\/.*\.json$/i,
+                            handler: 'StaleWhileRevalidate',
+                            options: {
+                                cacheName: 'nav-data-cache',
+                                expiration: {
+                                    maxEntries: 10,
+                                    maxAgeSeconds: 60 * 60 * 24 // 24 小时
+                                },
+                                cacheableResponse: {
+                                    statuses: [0, 200]
+                                }
+                            }
+                        },
+                        {
+                            urlPattern: /^.*\/content\/.*$/i,
+                            handler: 'CacheFirst',
+                            options: {
+                                cacheName: 'article-content-cache',
+                                expiration: {
+                                    maxEntries: 50,
+                                    maxAgeSeconds: 60 * 60 * 24 * 7 // 7 天
+                                },
+                                cacheableResponse: {
+                                    statuses: [0, 200]
+                                }
+                            }
+                        },
+                        {
+                            urlPattern: /^.*\.(?:png|jpg|jpeg|svg|gif|webp|avif)$/i,
+                            handler: 'CacheFirst',
+                            options: {
+                                cacheName: 'image-cache',
+                                expiration: {
+                                    maxEntries: 100,
+                                    maxAgeSeconds: 60 * 60 * 24 * 30 // 30 天
+                                },
+                                cacheableResponse: {
+                                    statuses: [0, 200]
+                                }
+                            }
+                        }
+                    ]
                 },
                 strategies: 'generateSW',
                 filename: `sw-${Date.now()}.js`,
@@ -134,7 +181,9 @@ export default defineConfig((config) => {
                 }
             }),
             isProduction&&versionPlugin (),
-            // rssPlugin(),
+            autoPasswordHashPlugin(),
+            rssPlugin(),
+            sitemapPlugin(),
         ].filter(Boolean),
         assetsInclude: ['**/*.pdf', '**/*.doc', '**/*.docx', '**/*.xls', '**/*.xlsx'],
         server: {

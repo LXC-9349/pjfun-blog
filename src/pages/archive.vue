@@ -1,22 +1,27 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 lg:pb-0" style="padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));">
     <!-- Header -->
-    <header class="py-4 px-4 sm:px-6 lg:px-8 border-b border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
+    <header
+        :class="[
+          'sticky-header',
+          headerScrolled ? 'py-2 shadow-lg' : 'py-4'
+        ]"
+    >
       <div class="max-w-7xl mx-auto flex justify-between items-center">
         <div class="flex items-center space-x-3">
-          <button @click="$router.back()" class="mr-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+          <button @click="$router.back()" class="mr-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer">
             <IconCarbonArrowLeft class="w-6 h-6 text-gray-600 dark:text-gray-300" />
           </button>
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+          <div class="badge">
             <span class="text-white font-bold text-lg">{{ SITE_CONFIG.icon }}</span>
           </div>
-          <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
             {{ t('archiveTitle') }}
           </h1>
         </div>
 
         <div class="flex items-center space-x-4">
-          <button @click="toggleLanguage" class="hidden dark:text-gray-300 sm:flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm hover:bg-gray-50 dark:hover:bg-gray-700">
+          <button @click="toggleLanguage" class="hidden dark:text-gray-300 sm:flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
             <IconCarbonLanguage class="w-4 h-4" />
             {{ currentLang === 'zh' ? 'EN' : '中文' }}
           </button>
@@ -26,7 +31,7 @@
     </header>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
           <h2 class="text-2xl font-bold dark:text-white">{{ t('archiveTitle') }}</h2>
           
@@ -61,50 +66,72 @@
               v-for="year in Object.keys(groupedPosts)" 
               :key="year"
               @click="scrollToYear(year)"
-              class="px-3 py-1.5 text-sm rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors whitespace-nowrap"
+              class="px-3 py-1.5 text-sm rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors whitespace-nowrap cursor-pointer"
             >
               {{ year }} ({{ groupedPosts[year].count }})
             </button>
           </div>
         </div>
 
-        <!-- 归档列表 -->
-        <div v-if="Object.keys(filteredGroupedPosts).length > 0" class="space-y-8">
+        <!-- 归档列表 - 时间线风格 -->
+        <div v-if="Object.keys(filteredGroupedPosts).length > 0" class="space-y-10">
           <div 
             v-for="(yearGroup, year) in filteredGroupedPosts" 
             :key="year" 
-            class="year-section" 
+            class="year-section relative" 
             :id="`year-${year}`"
           >
-            <h3 class="text-xl font-semibold mb-4 pb-2 border-b border-gray-200 dark:border-gray-700 dark:text-white">
-              {{ year }} ({{ yearGroup.count }})
-            </h3>
+            <!-- 年份标题 -->
+            <div class="flex items-center gap-4 mb-6">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                {{ year.slice(-2) }}
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900 dark:text-white">
+                {{ year }}
+                <span class="text-base font-normal text-gray-400 dark:text-gray-500 ml-2">({{ yearGroup.count }})</span>
+              </h3>
+            </div>
             
-            <div v-for="(monthGroup, month) in yearGroup.months" :key="month" class="mb-6">
-              <h4 class="text-lg font-medium mb-3 pl-4 dark:text-gray-300">
-                {{ formatMonth(month) }} ({{ monthGroup.count }})
-              </h4>
-              
-              <ul class="space-y-2 ml-8">
-                <li v-for="post in monthGroup.posts" :key="post.path" class="border-l-2 border-gray-200 dark:border-gray-700 pl-4 hover:border-blue-500 dark:hover:border-blue-400 transition-colors">
-                  <router-link 
-                    :to="post.path" 
-                    class="block py-2 group transition-colors"
-                  >
-                    <div class="flex justify-between items-start">
-                      <h5 class="font-medium text-gray-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                        {{ post.title }}
-                      </h5>
-                      <span class="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap ml-4">
-                        {{ formatDate(post.date) }}
-                      </span>
-                    </div>
-                    <p v-if="post.excerpt" class="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
-                      {{ post.excerpt }}
-                    </p>
-                  </router-link>
-                </li>
-              </ul>
+            <!-- 时间线 -->
+            <div class="relative pl-8 border-l-2 border-blue-200 dark:border-blue-900/50 ml-5 space-y-0">
+              <div v-for="(monthGroup, month) in yearGroup.months" :key="month" class="relative mb-6">
+                <!-- 月份圆点 -->
+                <div class="absolute -left-[calc(2rem+5px)] top-1 w-3 h-3 rounded-full bg-blue-500 dark:bg-blue-400 border-2 border-white dark:border-gray-800 shadow-sm"></div>
+                <h4 class="text-base font-semibold text-gray-600 dark:text-gray-400 mb-3 ml-2">
+                  {{ formatMonth(month) }}
+                  <span class="text-xs text-gray-500 dark:text-gray-500 ml-1">({{ monthGroup.count }})</span>
+                </h4>
+                
+                <!-- 文章列表 -->
+                <div class="space-y-2 ml-2">
+                  <div v-for="post in monthGroup.posts" :key="post.path" class="group">
+                    <router-link 
+                      :to="post.path" 
+                      class="block py-3 px-4 rounded-xl hover:bg-white dark:hover:bg-gray-800 transition-all duration-300 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 hover:shadow-md"
+                    >
+                      <div class="flex justify-between items-start gap-4">
+                        <div class="flex-1 min-w-0">
+                          <h5 class="font-medium text-gray-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-2">
+                            <span v-if="post.sticky" class="text-[10px] px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 font-semibold flex-shrink-0">置顶</span>
+                            {{ post.title }}
+                          </h5>
+                          <p v-if="post.excerpt" class="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-1 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors">
+                            {{ post.excerpt }}
+                          </p>
+                          <div v-if="post.tags && post.tags.length" class="flex flex-wrap gap-1.5 mt-2">
+                            <span v-for="tag in post.tags.slice(0, 3)" :key="tag" class="text-[11px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
+                              #{{ tag }}
+                            </span>
+                          </div>
+                        </div>
+                        <span class="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap flex-shrink-0 mt-1 font-mono">
+                          {{ formatDate(post.date) }}
+                        </span>
+                      </div>
+                    </router-link>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -120,14 +147,16 @@
     </div>
 
     <!-- 返回顶部按钮 -->
-    <Transition name="fade">
+    <Transition name="slide-up-fade">
       <button
         v-if="showBackTop"
         @click="scrollToTop"
-        class="fixed bottom-8 right-8 p-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300 z-10"
+        class="scroll-top-btn"
         :aria-label="t('backToTop')"
       >
-        <IconCarbonArrowUp class="w-6 h-6" />
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z" />
+        </svg>
       </button>
     </Transition>
   </div>
@@ -144,6 +173,7 @@ const allPosts = ref<any[]>([])
 const currentLang = ref(getLanguage())
 const searchQuery = ref('')
 const showBackTop = ref(false)
+const headerScrolled = ref(false)
 
 // 获取年份范围
 const oldestYear = computed(() => {
@@ -325,6 +355,7 @@ const scrollToTop = () => {
 // 处理滚动事件
 const handleScroll = () => {
   showBackTop.value = window.scrollY > 300
+  headerScrolled.value = window.scrollY > 20
 }
 
 onMounted(async () => {
@@ -352,20 +383,27 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+.animate-bounce-slow {
+  animation: bounce-slow 3s infinite;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.slide-up-fade-enter-active,
+.slide-up-fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-up-fade-enter-from {
   opacity: 0;
+  transform: translateY(20px);
+}
+
+.slide-up-fade-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
 }
 </style>
