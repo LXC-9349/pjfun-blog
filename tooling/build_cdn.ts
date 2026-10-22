@@ -1,3 +1,33 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+interface PackageManifest {
+    dependencies?: Record<string, string>;
+    devDependencies?: Record<string, string>;
+}
+
+// 依赖版本统一来源于 package.json，避免 CDN 地址与本地依赖版本脱节
+const packageManifest: PackageManifest = JSON.parse(
+    readFileSync(resolve(process.cwd(), 'package.json'), 'utf-8')
+);
+
+/**
+ * 读取依赖在 package.json 中声明的版本
+ * @param name - 依赖名
+ * @returns 去掉 ^ ~ >= 等范围前缀后的具体版本号
+ */
+function getPackageVersion(name: string): string {
+    const declared = packageManifest.dependencies?.[name] ?? packageManifest.devDependencies?.[name];
+    if (!declared) {
+        throw new Error(`[build_cdn] package.json 中未声明依赖 ${name}，无法生成 CDN 地址`);
+    }
+    const version = declared.replace(/^[^\d]+/, '');
+    if (!/^\d/.test(version)) {
+        throw new Error(`[build_cdn] 依赖 ${name} 的版本 "${declared}" 无法解析为具体版本号`);
+    }
+    return version;
+}
+
 interface CdnSources {
     jsdelivr: string;
     noisework: string;
@@ -13,6 +43,8 @@ interface CdnSources {
 interface LibraryConfig {
     isMain?: boolean;
     externals?: string;
+    /** 不进入首屏脚本清单，由业务代码按需加载（见 src/utils/cdn.ts） */
+    lazy?: boolean;
     js: string[];
     css?: string[];
 }
@@ -38,6 +70,8 @@ interface CdnResult {
     global: { [key: string]: string };
     global_cdn: string[];
     mainJs: string[];
+    /** 按需库：库名 -> 逗号分隔的候选 URL（写入 window.PJ_LAZY_LIBS） */
+    lazy: { [key: string]: string };
 }
 
 export function getCDN(LOCAL_DEBUG: boolean): CdnResult {
@@ -57,59 +91,45 @@ export function getCDN(LOCAL_DEBUG: boolean): CdnResult {
         esm: 'https://esm.sh',
     };
 
+    // 依赖版本（从 package.json 动态读取，不再写死）
+    // 注意：highlight.js / pdfjs-dist / mammoth 体积大且仅文章页、文档页使用，
+    // 不走 CDN 全局脚本（external 会生成顶层全局访问代码，必然进入首屏 chunk），
+    // 改为本地打包 + 动态导入，由路由/异步组件触发加载。
+    const versions = {
+        vue: getPackageVersion('vue'),
+        vueRouter: getPackageVersion('vue-router'),
+    };
+
     // 核心库配置
     const libraries: Libraries = {
         vue: {
             isMain: true,
             externals: 'Vue',
             js: [
-                `${cdnSources.jsdelivr}/vue@3.5.34/dist/vue.global.prod.min.js`,
-                `${cdnSources.unpkg}/vue@3.5.34/dist/vue.global.prod.js`,
-                `${cdnSources.esm}/vue@3.5.34/dist/vue.global.prod.js`
+                `${cdnSources.jsdelivr}/vue@${versions.vue}/dist/vue.global.prod.min.js`,
+                `${cdnSources.unpkg}/vue@${versions.vue}/dist/vue.global.prod.js`,
+                `${cdnSources.esm}/vue@${versions.vue}/dist/vue.global.prod.js`
             ]
         },
         'vue-router': {
             externals: 'VueRouter',
             js: [
-                `${cdnSources.jsdelivr}/vue-router@4.6.4/dist/vue-router.global.prod.min.js`,
-                `${cdnSources.unpkg}/vue-router@4.6.4/dist/vue-router.global.prod.js`,
-                `${cdnSources.esm}/vue-router@4.6.4/dist/vue-router.global.prod.js`
-            ]
-        },
-        'highlight.js': {
-            externals: 'hljs',
-            js: [
-                `${cdnSources.jsdelivr}/@highlightjs/cdn-assets@11.11.1/highlight.min.js`,
-                `${cdnSources.unpkg}/@highlightjs/cdn-assets@11.11.1/highlight.min.js`,
-                `${cdnSources.esm}/@highlightjs/cdn-assets@11.11.1/highlight.min.js`
-            ]
-        },
-        'pdfjs-dist': {
-            externals: 'pdfjsLib',
-            js: [
-                `${cdnSources.jsdelivr}/pdfjs-dist@5.7.284/legacy/build/pdf.min.mjs`,
-                `${cdnSources.unpkg}/pdfjs-dist@5.7.284/legacy/build/pdf.min.mjs`,
-                `${cdnSources.esm}/pdfjs-dist@5.7.284/legacy/build/pdf.min.mjs`
-            ]
-        },
-        mammoth: {
-            externals: 'mammoth',
-            js: [
-                `${cdnSources.jsdelivr}/mammoth@1.11.0/mammoth.browser.min.js`,
-                `${cdnSources.unpkg}/mammoth@1.11.0/mammoth.browser.min.js`,
-                `${cdnSources.esm}/mammoth@1.11.0/mammoth.browser.min.js`
+                `${cdnSources.jsdelivr}/vue-router@${versions.vueRouter}/dist/vue-router.global.prod.min.js`,
+                `${cdnSources.unpkg}/vue-router@${versions.vueRouter}/dist/vue-router.global.prod.js`,
+                `${cdnSources.esm}/vue-router@${versions.vueRouter}/dist/vue-router.global.prod.js`
             ]
         },
     };
 
     // 为 vite-plugin-externals 生成配置
     let external: string[] = [];
-    let modules: string[] = [];
     let js: string[] = [];
     let css: string[] = [];
     let mainJs: string[] = [];
-    let global_cdn: string[] = [];
+    const modules: string[] = [];
+    const global_cdn: string[] = [];
     let global: { [key: string]: string } = {};
+    const lazy: { [key: string]: string } = {};
 
     // CDN 源（按优先级顺序）
     const backupCdnKeys: BackupCdnKeys = {
@@ -178,7 +198,10 @@ export function getCDN(LOCAL_DEBUG: boolean): CdnResult {
                 cdnSources
             });
 
-            if (isMain) {
+            if (lib.lazy) {
+                // 按需库：只登记 URL，由业务代码触发加载
+                lazy[key] = jsItems.join(',');
+            } else if (isMain) {
                 mainJs.push(jsItems.join(','));
             } else {
                 js.push(jsItems.join(','));
@@ -213,6 +236,7 @@ export function getCDN(LOCAL_DEBUG: boolean): CdnResult {
         modules,
         global,
         global_cdn,
-        mainJs
+        mainJs,
+        lazy
     };
 }

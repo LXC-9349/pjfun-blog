@@ -1,5 +1,5 @@
 // 国际化工具
-import { I18N_CONFIG } from '@/constants'
+import { I18N_CONFIG, STORAGE_KEYS } from '@/constants'
 
 type Language = 'zh' | 'en'
 type TranslationKey = keyof typeof I18N_CONFIG.zh
@@ -8,11 +8,11 @@ let currentLang: Language = 'zh'
 
 export function setLanguage(lang: Language) {
   currentLang = lang
-  localStorage.setItem('language', lang)
+  localStorage.setItem(STORAGE_KEYS.language, lang)
 }
 
 export function getLanguage(): Language {
-  const savedLang = localStorage.getItem('language') as Language | null
+  const savedLang = localStorage.getItem(STORAGE_KEYS.language) as Language | null
   if (savedLang) {
     return savedLang
   }

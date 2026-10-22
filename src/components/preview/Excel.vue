@@ -44,6 +44,14 @@
       <div class="mt-2 text-sm opacity-75">{{ t('pleaseWait') }}</div>
     </div>
 
+    <div v-else-if="initFailed" class="absolute inset-0 bg-white dark:bg-gray-900 z-[60] flex flex-col items-center justify-center gap-3 text-red-500">
+      <div class="i-mdi-file-excel-outline text-5xl"></div>
+      <div class="text-sm font-medium">{{ t('resourceLoadFailed') }}</div>
+      <button type="button" class="rounded-lg bg-emerald-600 px-4 py-2 text-xs text-white hover:bg-emerald-700" @click="retryInit">
+        {{ t('retry') }}
+      </button>
+    </div>
+
     <div class="flex-1 relative w-full">
       <div
           :id="CONTAINER_ID"
@@ -57,6 +65,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { t } from '@/utils/i18n'
+import { JQUERY_CDN_URL, LUCKYSHEET_CDN_BASE, LUCKY_EXCEL_CDN_URL } from '@/constants'
 import { alertDialog } from '@/utils/tool'
 
 declare global {
@@ -74,22 +83,24 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   src: '',
-  fileName: '新建工作簿.xlsx'
+  fileName: `${t('newWorkbook')}.xlsx`
 })
 
 // --- 配置项 ---
 const CONTAINER_ID = 'luckysheet-container'
-const CDN_BASE = 'https://unpkg.pjfun.top/luckysheet@2.1.13/dist' // 使用 unpkg 源
-const JQUERY_URL = 'https://unpkg.pjfun.top/jquery@3.7.1/dist/jquery.min.js'
-const LUCKY_EXCEL_URL = 'https://unpkg.pjfun.top/luckyexcel@1.0.1/dist/luckyexcel.umd.js'
+const CDN_BASE = LUCKYSHEET_CDN_BASE
+const JQUERY_URL = JQUERY_CDN_URL
+const LUCKY_EXCEL_URL = LUCKY_EXCEL_CDN_URL
 
 // --- 状态管理 ---
 const isReady = ref(false)
 const isLoading = ref(true)
+const initFailed = ref(false)
 const loadingText = ref(t('initializingExcelEngine'))
 const fileInput = ref<HTMLInputElement | null>(null)
 const currentFileName = ref(t('newWorkbook'))
 const isFullscreen = ref(false)
+let excelSeq = 0
 
 // --- 菜单处理逻辑 ---
 const handleMenuClick = (menu: string) => {
@@ -304,7 +315,7 @@ const printExcel = () => {
                 window.close();
               }, 1000);
             }
-          <\/script>
+          ${'<' + '/script>'}
         </body>
       </html>
     `)
@@ -317,38 +328,50 @@ const printExcel = () => {
 }
 
 // --- 动态加载资源的核心函数 ---
-const loadLink = (href: string) => {
-  return new Promise<void>((resolve, reject) => {
-    if (document.querySelector(`link[href="${href}"]`)) {
-      resolve() // 已存在，直接返回
-      return
-    }
+const linkLoads = new Map<string, Promise<void>>()
+const scriptLoads = new Map<string, Promise<void>>()
+
+const loadLink = (href: string): Promise<void> => {
+  const cached = linkLoads.get(href)
+  if (cached) return cached
+  const task = new Promise<void>((resolve, reject) => {
     const link = document.createElement('link')
     link.rel = 'stylesheet'
     link.href = href
     link.onload = () => resolve()
-    link.onerror = () => reject(new Error(`Failed to load CSS: ${href}`))
+    link.onerror = () => {
+      link.remove()
+      linkLoads.delete(href)
+      reject(new Error(`Failed to load CSS: ${href}`))
+    }
     document.head.appendChild(link)
   })
+  linkLoads.set(href, task)
+  return task
 }
 
-const loadScript = (src: string) => {
-  return new Promise<void>((resolve, reject) => {
-    // 检查 script 是否已存在且加载完成 (简单判断)
-    if (document.querySelector(`script[src="${src}"]`)) {
-      resolve()
-      return
-    }
+const loadScript = (src: string): Promise<void> => {
+  const cached = scriptLoads.get(src)
+  if (cached) return cached
+  const task = new Promise<void>((resolve, reject) => {
     const script = document.createElement('script')
     script.src = src
     script.onload = () => resolve()
-    script.onerror = () => reject(new Error(`Failed to load JS: ${src}`))
+    script.onerror = () => {
+      script.remove()
+      scriptLoads.delete(src)
+      reject(new Error(`Failed to load JS: ${src}`))
+    }
     document.head.appendChild(script)
   })
+  scriptLoads.set(src, task)
+  return task
 }
 
 // --- 初始化流程 ---
 const initLuckysheet = async () => {
+  initFailed.value = false
+  isLoading.value = true
   try {
     loadingText.value = t('loadingStyles')
     // 1. 加载 CSS
@@ -366,6 +389,10 @@ const initLuckysheet = async () => {
     await loadScript(`${CDN_BASE}/luckysheet.umd.js`)
     await loadScript(LUCKY_EXCEL_URL)
 
+    if (!window.luckysheet || !window.LuckyExcel) {
+      throw new Error('Excel engine not available')
+    }
+
     // 3. 渲染空表格
     renderSheet()
     isReady.value = true
@@ -373,13 +400,21 @@ const initLuckysheet = async () => {
 
     // 检查是否有传入的文件URL
     if (props.src) {
-      loadExcelFromUrl(props.src)
+      void loadExcelFromUrl(props.src)
     }
 
   } catch (error) {
     console.error('资源加载失败:', error)
     loadingText.value = t('resourceLoadFailed')
+    initFailed.value = true
+    isLoading.value = false
   }
+}
+
+const retryInit = () => {
+  initFailed.value = false
+  isLoading.value = true
+  void initLuckysheet()
 }
 
 // --- 渲染表格 ---
@@ -419,13 +454,15 @@ const handleFile = (e: Event) => {
   if (!files || files.length === 0) return
 
   const file = files[0]
-  //@ts-ignore
+  if (!file) return
+  const seq = ++excelSeq
   currentFileName.value = file.name
   isLoading.value = true
   loadingText.value = t('parsingExcelFile')
 
   // 使用 LuckyExcel (已通过 CDN 全局注入)
   window.LuckyExcel.transformExcelToLucky(file, (exportJson: any) => {
+    if (seq !== excelSeq) return
     if (exportJson.sheets == null || exportJson.sheets.length === 0) {
       alertDialog(t('readFailed'), t('checkFileFormat'))
       isLoading.value = false
@@ -439,6 +476,7 @@ const handleFile = (e: Event) => {
     renderSheet(exportJson.sheets, exportJson.info.name)
     isLoading.value = false
   }, (err: any) => {
+    if (seq !== excelSeq) return
     console.error('解析失败', err)
     isLoading.value = false
     alertDialog(t('parseFailed'), t('ensureValidXlsx'))
@@ -447,6 +485,7 @@ const handleFile = (e: Event) => {
 
 // --- 从URL加载Excel文件 ---
 const loadExcelFromUrl = async (url: string) => {
+  const seq = ++excelSeq
   try {
     isLoading.value = true
     loadingText.value = t('loadingExcelFromUrl')
@@ -457,15 +496,18 @@ const loadExcelFromUrl = async (url: string) => {
 
     // 使用 fetch 获取文件
     const response = await fetch(url)
+    if (seq !== excelSeq) return
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
     const blob = await response.blob()
+    if (seq !== excelSeq) return
     const file = new File([blob], fileName, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
 
     // 使用 LuckyExcel 解析
     window.LuckyExcel.transformExcelToLucky(file, (exportJson: any) => {
+      if (seq !== excelSeq) return
       if (exportJson.sheets == null || exportJson.sheets.length === 0) {
         alertDialog(t('readFailed'), t('checkFileFormat'))
         isLoading.value = false
@@ -479,16 +521,16 @@ const loadExcelFromUrl = async (url: string) => {
       renderSheet(exportJson.sheets, exportJson.info.name)
       isLoading.value = false
     }, (err: any) => {
+      if (seq !== excelSeq) return
       console.error('解析失败', err)
       isLoading.value = false
       alertDialog(t('parseFailed'), t('ensureValidXlsx'))
     })
   } catch (error) {
+    if (seq !== excelSeq) return
     console.error('加载失败:', error)
     loadingText.value = t('loadFailedCheckUrl')
-    setTimeout(() => {
-      isLoading.value = false
-    }, 2000)
+    isLoading.value = false
   }
 }
 
@@ -496,27 +538,29 @@ const triggerUpload = () => fileInput.value?.click()
 
 // 监听props变化
 watch(() => props.src, (newSrc) => {
-  if (newSrc) {
-    loadExcelFromUrl(newSrc)
+  if (newSrc && isReady.value) {
+    void loadExcelFromUrl(newSrc)
   }
 })
 
+// 全屏状态同步（监听器在组件卸载时移除，避免泄漏）
+const handleFullscreenChange = () => {
+  isFullscreen.value = !!document.fullscreenElement
+}
+
 onMounted(() => {
   initLuckysheet()
-
-  // 监听全屏变化事件
-  const handleFullscreenChange = () => {
-    isFullscreen.value = !!document.fullscreenElement
-  }
-
   document.addEventListener('fullscreenchange', handleFullscreenChange)
+})
 
-  onBeforeUnmount(() => {
-    document.removeEventListener('fullscreenchange', handleFullscreenChange)
-    if (window.luckysheet) {
-      // window.luckysheet.destroy()
-    }
-  })
+onBeforeUnmount(() => {
+  excelSeq++
+  document.removeEventListener('fullscreenchange', handleFullscreenChange)
+  try {
+    window.luckysheet?.destroy?.()
+  } catch (error) {
+    console.warn('销毁 Excel 引擎失败:', error)
+  }
 })
 
 </script>

@@ -1,5 +1,10 @@
 import { SITE_CONFIG } from '@/constants'
 
+// 应用可能部署在子路径下，SEO 绝对地址必须带上 VITE_BASE
+const siteBase = () => new URL(import.meta.env.BASE_URL || '/', window.location.origin)
+const absoluteUrl = (path: string): string =>
+  new URL(String(path || '').replace(/^\//, ''), siteBase()).href
+
 // 存储已创建的meta标签，便于后续清理
 const createdMetaTags: HTMLElement[] = []
 
@@ -68,7 +73,7 @@ export function setupWebsiteJsonLd() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: SITE_CONFIG.title,
-    url: window.location.origin,
+    url: siteBase().href,
     description: SITE_CONFIG.description,
     author: {
       "@type": "Person",
@@ -103,7 +108,7 @@ export function setupArticleJsonLd(article: {
       "@type": "Organization",
       name: SITE_CONFIG.title
     },
-    mainEntityOfPage: `${window.location.origin}${article.path}`,
+    mainEntityOfPage: absoluteUrl(article.path),
     ...(article.cover ? { image: article.cover } : {})
   }
   addJsonLd(data)
@@ -120,7 +125,7 @@ export function setupBreadcrumbJsonLd(items: Array<{ name: string; path: string 
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
-      item: `${window.location.origin}${item.path}`
+      item: absoluteUrl(item.path)
     }))
   }
   addJsonLd(data)
@@ -138,7 +143,7 @@ export function setupSEO(articleData?: { title?: string; description?: string; p
   // 根据是否有文章数据决定使用哪种SEO配置
   const title = articleData?.title || SITE_CONFIG.title
   const description = articleData?.description || SITE_CONFIG.description
-  const url = articleData?.path ? `${window.location.origin}${articleData.path}` : window.location.href
+  const url = articleData?.path ? absoluteUrl(articleData.path) : window.location.href
 
   // 设置基础SEO meta标签
   const metaTags = [

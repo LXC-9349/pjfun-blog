@@ -1,34 +1,34 @@
 <template>
-  <div class="card p-6 transition-all duration-300 hover:shadow-xl">
-    <div class="flex justify-between items-center mb-5">
-      <h3 class="text-lg font-bold flex items-center gap-2 dark:text-white">
-        <IconCarbonRecentlyViewed class="w-5 h-5 text-blue-500" />
+  <div class="card p-4 transition-all duration-300 hover:shadow-xl">
+    <div class="flex justify-between items-center mb-3">
+      <h3 class="text-base font-bold flex items-center gap-2 dark:text-white">
+        <IconCarbonRecentlyViewed class="w-5 h-5 text-orange-500" />
         {{ t('recentlyViewed') }}
       </h3>
       <button 
         v-if="recentArticles.length > 0"
         @click="clearRecent"
-        class="text-sm text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+        class="text-xs text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
       >
         {{ t('clearRecent') }}
       </button>
     </div>
     
-    <div v-if="recentArticles.length === 0" class="text-center py-8">
-      <IconCarbonDocumentBlank class="w-12 h-12 mx-auto text-gray-400 dark:text-gray-500" />
-      <p class="mt-3 text-gray-500 dark:text-gray-400 text-sm">
+    <div v-if="recentArticles.length === 0" class="text-center py-5">
+      <IconCarbonDocumentBlank class="w-10 h-10 mx-auto text-gray-400 dark:text-gray-500" />
+      <p class="mt-2 text-gray-500 dark:text-gray-400 text-sm">
         {{ t('noRecentArticles') }}
       </p>
     </div>
     
-    <div v-else class="space-y-4">
+    <div v-else id="recent-posts-list" class="space-y-1 max-h-[26dvh] overflow-y-auto card-scroll pr-1" data-lenis-prevent>
       <router-link
         v-for="article in recentArticles"
         :key="article.path"
         :to="article.path"
-        class="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors group"
+        class="flex items-start gap-2.5 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors group"
       >
-        <div v-if="article.cover" class="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden">
+        <div v-if="article.cover" class="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden">
           <img 
             :src="article.cover" 
             :alt="article.title"
@@ -36,17 +36,17 @@
           >
         </div>
         <div class="flex-1 min-w-0">
-          <h4 class="font-medium text-gray-800 dark:text-white line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors text-sm">
+          <h4 class="font-medium text-gray-800 dark:text-white line-clamp-2 leading-tight group-hover:text-orange-600 transition-colors text-sm">
             {{ article.title }}
           </h4>
           <p v-if="article.excerpt" class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
             {{ article.excerpt }}
           </p>
-          <div class="flex flex-wrap gap-1 mt-2">
+          <div class="flex flex-wrap gap-1 mt-1.5">
             <span
               v-for="tag in (article.tags || []).slice(0, 2)"
               :key="tag"
-              class="px-2 py-0.5 text-xs rounded-full bg-blue-100 dark:bg-blue-900/40 text-gray-800 dark:text-blue-300"
+              class="px-1.5 py-0.5 text-[11px] rounded-full bg-orange-100 dark:bg-orange-900/40 text-gray-800 dark:text-orange-300"
             >
               {{ tag }}
             </span>

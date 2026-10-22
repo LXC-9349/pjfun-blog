@@ -1,32 +1,60 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/icon.ico" />
+    <link rel="icon" href="<%= basePath %>icon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pjfun-blog</title>
+    <!-- 入口 HTML 必须实时：真正的保障是 CDN/Nginx 的响应头，这里作为浏览器端兜底 -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title><%= siteTitle %></title>
+
+    <!-- 版本守卫：首屏对比 version.json，发现入口 HTML 落后于最新构建时带版本号重载 -->
+    <script>
+    (function () {
+      if (!window.fetch || !window.URL) return
+      var pageVersion = Number('<%= buildVersion %>') || 0
+      if (!pageVersion) return
+      var basePath = '<%= basePath %>'
+      var reloadKey = 'pj_reload_version'
+
+      fetch(basePath + 'version.json?_=' + Date.now(), { cache: 'no-store' })
+        .then(function (res) { return res.ok ? res.json() : null })
+        .then(function (data) {
+          var latest = Number(data && data.v) || 0
+          // 只在服务端版本明确更新时才重载，避免缓存异常导致刷新死循环
+          if (!latest || latest <= pageVersion) return
+          try {
+            if (sessionStorage.getItem(reloadKey) === String(latest)) return
+            sessionStorage.setItem(reloadKey, String(latest))
+          } catch (e) {}
+          var url = new URL(window.location.href)
+          url.searchParams.set('_v', String(latest))
+          window.location.replace(url.toString())
+        })
+        .catch(function () {})
+    })()
+    </script>
 
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "PJ Blog",
-      "url": "https://pjfun.top/"
+      "name": "<%= siteTitle %>",
+      "url": "<%= siteUrl %>/"
     }
     </script>
     
-    <!-- PWA Manifest -->
-    <% if (process.env.NODE_ENV === 'production') { %>
-    <link rel="manifest" href="/manifest.webmanifest">
-    <% } %>
-    <meta name="theme-color" content="#ffffff"/>
+    <!-- PWA Manifest 由 vite-plugin-pwa 按 VITE_BASE 注入 -->
+    <meta name="theme-color" content="#fff7ed"/>
   </head>
     <style>
       :root {
-        --primary-color: #3b82f6;
-        --secondary-color: #8b5cf6;
-        --background-color: #f8fafc;
-        --text-color: #374151;
+        --primary-color: #f97316;
+        --secondary-color: #f59e0b;
+        --background-color: #fdf8f3;
+        --text-color: #3f3a35;
         --loader-size: 80px;
         --transition-duration: 0.3s;
       }
@@ -57,7 +85,7 @@
         align-items: center;
         justify-content: center;
         margin-bottom: 30px;
-        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+        box-shadow: 0 4px 20px rgba(249, 115, 22, 0.3);
       }
 
       .logo span {
@@ -69,7 +97,7 @@
       .loader {
         width: var(--loader-size);
         height: var(--loader-size);
-        border: 5px solid #e2e8f0;
+        border: 5px solid #f0e6da;
         border-top: 5px solid var(--primary-color);
         border-radius: 50%;
         animation: spin 1s linear infinite;
@@ -125,14 +153,14 @@
       <div id="app">
           <div class="loading-container">
               <div class="logo">
-                  <span>P</span>
+                  <span><%= siteIcon.charAt(0) %></span>
               </div>
               <div class="loader"></div>
-              <div class="loading-text">Loading<span class="dots"></span></div>
+              <div class="loading-text"><%= loadingText %><span class="dots"></span></div>
           </div>
       </div>
       <noscript>
-          <div style="text-align: center">请开启 JavaScript</div>
+          <div style="text-align: center"><%= jsDisabledNotice %></div>
       </noscript>
     <script type="module" src="/src/main.ts"></script>
   <script>  window.PJ_BLOG_NAV_NAME = '<%= PJ_BLOG_NAV_NAME %>';
@@ -149,12 +177,20 @@
   </script>
   <% if (cdn) { %>
   <script>
+  window.PJ_PUBLIC_TEXTS = {
+    resourceLoadFailed: '<%= globalTexts.resourceLoadFailed %>',
+    refreshRequired: '<%= globalTexts.refreshRequired %>'
+  };
   <% for (const item of global_cdn) { %><%- item %>
   <% } %>
   // 定义资源列表
   const mainJs = [<% for (const item of mainJsList) { %>`<%= item %>`,<% } %>];
   const cssResources = [<% for (const item of cssList) { %>`<%= item %>`,<% } %>];
   const jsResources = [<% for (const item of jsList) { %>`<%= item %>`,<% } %>];
+  // 按需 CDN 库清单：当前为空（重型库已改为本地异步 chunk），保留机制供后续外置大库使用
+  window.PJ_LAZY_LIBS = {<% for (const [libName, libUrls] of Object.entries(lazyLibs || {})) { %>
+    '<%= libName %>': `<%- libUrls %>`,<% } %>
+  };
   </script>
   <script replace />
   <% } %>

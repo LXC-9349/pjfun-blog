@@ -19,7 +19,7 @@
             :max="totalPages" 
             :placeholder="t('pageNumber')"
             @keyup.enter="jumpToPage"
-            class="w-20 px-2 py-1 border border-gray-300 dark:border-dark-600 rounded-1.5 text-sm text-center bg-white dark:bg-dark-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(59,130,246,0.1)] dark:focus:shadow-[0_0_0_3px_rgba(31,111,235,0.2)]"
+            class="w-20 px-2 py-1 border border-gray-300 dark:border-dark-600 rounded-1.5 text-sm text-center bg-white dark:bg-dark-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(249,115,22,0.15)] dark:focus:shadow-[0_0_0_3px_rgba(249,115,22,0.25)]"
           />
           <button @click="jumpToPage" :title="t('jumpToPage')" class="pdf-toolbar-btn">{{ t('jump') }}</button>
         </div>
@@ -31,7 +31,7 @@
         <button @click="zoomOut" :title="t('zoomOut')" class="pdf-toolbar-btn">
           <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
         </button>
-        <span @click="resetZoom" :title="t('reset')" class="text-sm font-medium text-gray-600 dark:text-gray-400 min-w-12.5 text-center cursor-pointer select-none hover:text-primary dark:hover:text-blue-400">{{ scalePercentage }}</span>
+        <span @click="resetZoom" :title="t('reset')" class="text-sm font-medium text-gray-600 dark:text-gray-400 min-w-12.5 text-center cursor-pointer select-none hover:text-primary dark:hover:text-orange-400">{{ scalePercentage }}</span>
         <button @click="zoomIn" :title="t('zoomIn')" class="pdf-toolbar-btn">
           <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
         </button>
@@ -54,7 +54,7 @@
 
     <div class="flex-1 overflow-auto flex justify-center items-start p-10 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-dark-600 scrollbar-track-transparent">
       <div v-if="isLoading" class="flex flex-col items-center justify-center h-full text-gray-500 dark:text-gray-400 gap-4">
-        <div class="w-10 h-10 border-3 border-gray-200 dark:border-dark-600 border-t-primary dark:border-t-blue-400 rounded-1/2 animate-spin"></div>
+        <div class="w-10 h-10 border-3 border-gray-200 dark:border-dark-600 border-t-primary dark:border-t-orange-400 rounded-1/2 animate-spin"></div>
         <p>{{ t('loadingDocument') }}</p>
       </div>
 
@@ -63,7 +63,7 @@
         <p>{{ errorMessage }}</p>
       </div>
 
-      <div class="shadow-lg transition-transform duration-200 line-height-0 relative" v-show="!isLoading && !errorMessage" ref="pageContainerRef">
+      <div class="shadow-lg transition-transform duration-200 line-height-0 relative" v-show="!isLoading && !errorMessage">
         <canvas ref="canvasRef" class="pdf-canvas"></canvas>
       </div>
     </div>
@@ -71,27 +71,33 @@
 </template>
 <script setup lang="ts">
 import { shallowRef,ref, onMounted, watch, onUnmounted, computed} from 'vue';
-import * as pdfjsLib from 'pdfjs-dist';
 import type { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { t } from '@/utils/i18n';
+import { getPdfWorkerSources } from '@/constants';
+import { ensureCdnLib } from '@/utils/cdn';
 import {showSuccess} from "@/utils/tool";
 
-const PDF_WORKER_VERSION = pdfjsLib.version;
+type PdfjsLib = typeof import('pdfjs-dist')
 
-// 多源 Worker 列表（按优先级排序）
-const PDF_WORKER_SOURCES = [
-  `https://unpkg.pjfun.top/pdfjs-dist@${PDF_WORKER_VERSION}/build/pdf.worker.min.mjs`,
-  `https://unpkg.com/pdfjs-dist@${PDF_WORKER_VERSION}/build/pdf.worker.min.mjs`,
-  `https://cdn.jsdelivr.net/npm/pdfjs-dist@${PDF_WORKER_VERSION}/build/pdf.worker.min.mjs`,
-  `https://esm.sh/pdfjs-dist@${PDF_WORKER_VERSION}/build/pdf.worker.min.mjs`,
-];
+// pdfjs 在生产构建中被外置为按需库（见 build_cdn.ts）：
+// 不能在模块顶层读取全局变量，否则 external 模块初始化时拿到的是 undefined。
+let pdfjsLib: PdfjsLib | null = null
+
+async function loadPdfjs(): Promise<PdfjsLib> {
+  if (pdfjsLib) return pdfjsLib
+  await ensureCdnLib('pdfjs-dist')
+  const fromGlobal = (window as unknown as { pdfjsLib?: PdfjsLib }).pdfjsLib
+  // 开发模式未外置，走本地打包的动态导入
+  pdfjsLib = fromGlobal || (await import('pdfjs-dist'))
+  return pdfjsLib
+}
 
 /**
  * 加载 PDF Worker 脚本，支持多源回退
  */
-async function loadPdfWorker(): Promise<string> {
+async function loadPdfWorker(sources: string[]): Promise<string> {
   // 尝试每个源直到成功
-  for (const src of PDF_WORKER_SOURCES) {
+  for (const src of sources) {
     try {
       // HEAD 请求在 no-cors 模式下总是返回 opaque response（状态0）
       // 所以我们直接尝试加载脚本
@@ -136,26 +142,49 @@ const isLoading = ref(true);
 const errorMessage = ref('');
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const containerRef = ref<HTMLElement | null>(null);
-//@ts-ignore
-const pageContainerRef = ref<HTMLElement | null>(null);
 // 缓存页面文本内容
 const pageTextCache = new Map<number, string>();
 
 // 渲染任务控制（用于防止快速翻页时的冲突）
 let renderTask: any = null;
+let disposed = false;
+let loadSeq = 0;
+
+const destroyPdfDocument = () => {
+  if (renderTask) {
+    renderTask.cancel();
+    renderTask = null;
+  }
+  const doc = pdfDoc.value;
+  pdfDoc.value = null;
+  if (doc) void doc.destroy().catch(() => undefined);
+  pageTextCache.clear();
+};
 
 // --- 初始化与加载 ---
 onMounted(async () => {
-  // 配置 Worker (支持多源回退)
+  let lib: PdfjsLib
   try {
-    const workerSrc = await loadPdfWorker();
-    pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
+    lib = await loadPdfjs()
+  } catch (error) {
+    console.error('PDF 引擎加载失败:', error)
+    errorMessage.value = t('documentLoadError')
+    isLoading.value = false
+    return
+  }
+  if (disposed) return
+
+  // 配置 Worker (支持多源回退，版本与当前 pdfjs 保持一致)
+  const workerSources = getPdfWorkerSources(lib.version)
+  try {
+    const workerSrc = await loadPdfWorker(workerSources)
+    lib.GlobalWorkerOptions.workerSrc = workerSrc
   } catch (e) {
     // 如果 Worker CDN 都失败，使用内置的 worker 构建（如果可用）
     console.warn('PDF Worker CDN fallback failed, trying inline:', e);
     try {
       // 最后手段：尝试从 pdfjs-dist 包中加载
-      pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+      lib.GlobalWorkerOptions.workerSrc = new URL(
         'pdfjs-dist/build/pdf.worker.min.mjs',
         import.meta.url
       ).toString();
@@ -166,8 +195,10 @@ onMounted(async () => {
       return;
     }
   }
+  if (disposed) return
 
   await loadPdf();
+  if (disposed) return
 
   // 添加窗口大小改变监听
   window.addEventListener('resize', handleResize);
@@ -177,6 +208,9 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
+  disposed = true
+  loadSeq++
+  destroyPdfDocument()
   window.removeEventListener('resize', handleResize);
   window.removeEventListener('keydown', handleKeyDown);
   saveState();
@@ -184,7 +218,8 @@ onUnmounted(() => {
 
 // 监听源文件变化
 watch(() => props.src, () => {
-  loadPdf();
+  destroyPdfDocument()
+  void loadPdf();
 });
 
 // 监听页码和配置变化，自动保存状态
@@ -271,16 +306,30 @@ const saveState = () => {
 const loadPdf = async () => {
   if (!props.src) return;
 
+  const seq = ++loadSeq
   isLoading.value = true;
   errorMessage.value = '';
 
   try {
+    // 切换文档时恢复默认视图，避免沿用上一份文档的页码/缩放/旋转
+    pageNum.value = 1;
+    scale.value = 1.0;
+    rotation.value = 0;
+    pageTextCache.clear();
     // 先加载状态
     loadState();
 
-    const loadingTask = pdfjsLib.getDocument(props.src);
-    pdfDoc.value = await loadingTask.promise;
-    totalPages.value = pdfDoc.value.numPages;
+    const loadingTask = pdfjsLib!.getDocument(props.src);
+    const doc = await loadingTask.promise;
+    if (seq !== loadSeq || disposed) {
+      void doc.destroy().catch(() => undefined);
+      return;
+    }
+
+    const previous = pdfDoc.value;
+    pdfDoc.value = doc;
+    if (previous) void previous.destroy().catch(() => undefined);
+    totalPages.value = doc.numPages;
 
     // 如果保存的页码超出范围，则设置为第一页
     if (pageNum.value > totalPages.value) {
@@ -289,16 +338,19 @@ const loadPdf = async () => {
 
     await renderPage(pageNum.value);
   } catch (error: any) {
+    if (seq !== loadSeq) return;
     console.error('PDF加载失败:', error);
     errorMessage.value = t('documentLoadError') + ': ' + error.message;
   } finally {
-    isLoading.value = false;
+    if (seq === loadSeq) isLoading.value = false;
   }
 };
 
 // --- 核心渲染逻辑 ---
 const renderPage = async (num: number) => {
   if (!pdfDoc.value || !canvasRef.value) return;
+
+  const seq = loadSeq
 
   // 如果有正在进行的渲染任务，取消它
   if (renderTask) {
@@ -307,6 +359,7 @@ const renderPage = async (num: number) => {
 
   try {
     const page: PDFPageProxy = await pdfDoc.value.getPage(num);
+    if (seq !== loadSeq || disposed) return
 
     // 计算视口
     const viewport = page.getViewport({ scale: scale.value, rotation: rotation.value });
@@ -334,7 +387,7 @@ const renderPage = async (num: number) => {
       viewport: viewport,
       transform: transform, // 传入变换矩阵以适配高清屏
     };
-    //@ts-ignore
+    // @ts-expect-error pdfjs 的 RenderParameters 类型对 transform 的元组约束比运行时更严格
     renderTask = page.render(renderContext);
     await renderTask.promise;
 
@@ -358,6 +411,7 @@ const copyPageText = async () => {
       const page = await pdfDoc.value.getPage(pageNum.value);
       const textContent = await page.getTextContent();
       pageText = textContent.items.map((item: any) => item.str).join('');
+      pageTextCache.set(pageNum.value, pageText);
     }
     
     // 复制到剪贴板
@@ -367,22 +421,6 @@ const copyPageText = async () => {
     console.error('复制页面文本失败:', error);
     // 可以添加错误提示
   }
-};
-
-// 自适应宽度
-//@ts-ignore
-const fitToWidth = () => {
-  if (!pdfDoc.value || !containerRef.value) return;
-  
-  const containerWidth = containerRef.value.clientWidth - 40; // 减去padding
-  const currentPage = pageNum.value;
-  
-  pdfDoc.value.getPage(currentPage).then((page: PDFPageProxy) => {
-    const viewport = page.getViewport({ scale: 1 });
-    const scaleFit = containerWidth / viewport.width;
-    scale.value = parseFloat(scaleFit.toFixed(2));
-    renderPage(currentPage);
-  });
 };
 
 // 页面大小优化：自动适应容器

@@ -1,4 +1,5 @@
 // 阅读进度跟踪和最近浏览文章工具
+import { STORAGE_KEYS, STORAGE_LIMITS } from '@/constants'
 
 export interface ReadingProgress {
   path: string;
@@ -17,8 +18,8 @@ export interface RecentArticle {
   lastVisited: number;
 }
 
-const READING_PROGRESS_KEY = 'pjfun_blog_reading_progress';
-const RECENT_ARTICLES_KEY = 'pjfun_blog_recent_articles';
+const READING_PROGRESS_KEY = STORAGE_KEYS.readingProgress;
+const RECENT_ARTICLES_KEY = STORAGE_KEYS.recentArticles;
 
 /**
  * 保存文章阅读进度（按path存储多条记录）
@@ -36,8 +37,8 @@ export function saveReadingProgress(progress: ReadingProgress): void {
       allProgress.push(progress)
     }
 
-    // 只保留最近20条记录，防止localStorage溢出
-    const limited = allProgress.slice(-20)
+    // 只保留最近若干条记录，防止localStorage溢出
+    const limited = allProgress.slice(-STORAGE_LIMITS.readingProgressMax)
 
     localStorage.setItem(READING_PROGRESS_KEY, JSON.stringify(limited))
   } catch (e) {
@@ -117,9 +118,9 @@ export function addRecentArticle(article: Omit<RecentArticle, 'lastVisited'>): v
       lastVisited: Date.now()
     });
     
-    // 只保留最近5篇文章
-    if (recent.length > 5) {
-      recent = recent.slice(0, 5);
+    // 只保留最近若干篇文章
+    if (recent.length > STORAGE_LIMITS.recentArticlesMax) {
+      recent = recent.slice(0, STORAGE_LIMITS.recentArticlesMax);
     }
     
     localStorage.setItem(RECENT_ARTICLES_KEY, JSON.stringify(recent));

@@ -61,7 +61,7 @@ defineProps<{
 }
 
 .nav-folder-summary {
-  @apply flex items-center gap-2 py-1.5 px-2 rounded-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 list-none select-none;
+  @apply flex items-center gap-2 py-1 px-1.5 rounded-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 list-none select-none;
 }
 
 .nav-folder-summary::-webkit-details-marker {
@@ -81,15 +81,15 @@ defineProps<{
 }
 
 .folder-icon {
-  @apply w-3.5 h-3.5 text-blue-500 flex-shrink-0 transition-all duration-300;
+  @apply w-3.5 h-3.5 text-orange-500 flex-shrink-0 transition-all duration-300;
 }
 
 .folder-icon.closed {
-  @apply dark:text-blue-400;
+  @apply dark:text-orange-400;
 }
 
 .folder-icon.open {
-  @apply dark:text-blue-400;
+  @apply dark:text-orange-400;
 }
 
 .closed {
@@ -113,11 +113,11 @@ defineProps<{
 }
 
 .folder-count {
-  @apply flex-shrink-0 text-xs bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-full w-5 h-5 flex items-center justify-center transition-all duration-200;
+  @apply flex-shrink-0 text-[11px] bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-full w-5 h-5 flex items-center justify-center transition-all duration-200;
 }
 
 .folder-children {
-  @apply ml-3 pl-2 border-l border-gray-200 dark:border-gray-600 space-y-0.5 mt-0.5 overflow-hidden;
+  @apply ml-2.5 pl-1.5 border-l border-gray-200 dark:border-gray-600 space-y-0.5 mt-0.5 overflow-hidden;
   max-height: 0;
   transition: max-height 0.3s ease-out;
 }
@@ -127,11 +127,11 @@ defineProps<{
 }
 
 .nav-item {
-  @apply flex items-center gap-2 py-1.5 px-2 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 text-sm transform hover:scale-[1.02] cursor-pointer;
+  @apply flex items-center gap-2 py-1 px-1.5 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 text-sm transform hover:scale-[1.02] cursor-pointer;
 }
 
 .nav-item-active {
-  @apply bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 font-medium ring-2 ring-blue-500/20;
+  @apply bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-300 font-medium ring-2 ring-orange-500/20;
 }
 
 .nav-item-icon {
@@ -139,7 +139,7 @@ defineProps<{
 }
 
 .nav-item-active .nav-item-icon {
-  @apply text-blue-500;
+  @apply text-orange-500;
 }
 
 .nav-item-title {
@@ -147,7 +147,7 @@ defineProps<{
 }
 
 .nav-item-active .nav-item-title {
-  @apply text-blue-600 dark:text-blue-300;
+  @apply text-orange-600 dark:text-orange-300;
 }
 
 .nav-folder-empty .nav-folder-summary {

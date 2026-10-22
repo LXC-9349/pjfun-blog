@@ -2,7 +2,7 @@ import {getLanguage, t} from "@/utils/i18n";
 // 导入vue3-toastify并添加相关工具方法
 import { toast} from 'vue3-toastify';
 import type { ToastContent, Id,ToastOptions } from 'vue3-toastify';
-import {GIT_REPO} from "@/constants";
+import {GIT_REPO, UI_CONFIG} from "@/constants";
 
 /**
  * 获取环境变量值
@@ -15,10 +15,11 @@ import {GIT_REPO} from "@/constants";
  */
 export function getEnvVariable(key: string, defaultValue?: string): string | undefined {
     // 1. 首先检查系统环境变量（最高优先级）
-    //@ts-ignore
-    if (typeof process !== 'undefined' && process.env && process.env[key]) {
-        //@ts-ignore
-        return process.env[key];
+    const nodeEnv = (globalThis as {
+        process?: { env?: Record<string, string | undefined> }
+    }).process?.env
+    if (nodeEnv && nodeEnv[key]) {
+        return nodeEnv[key]
     }
 
     // 2. 检查 window 对象（浏览器环境）
@@ -35,8 +36,6 @@ export function getEnvVariable(key: string, defaultValue?: string): string | und
                 return import.meta.env.VITE_TITLE || defaultValue;
             case 'VITE_BLOG_PASSWORD_HASH':
                 return import.meta.env.VITE_BLOG_PASSWORD_HASH || defaultValue;
-            case 'VITE_BLOG_PASSWORD':
-                return import.meta.env.VITE_BLOG_PASSWORD || defaultValue;
             // Site configuration
             case 'VITE_SITE_ICON':
                 return import.meta.env.VITE_SITE_ICON || defaultValue;
@@ -107,7 +106,7 @@ function injectDialogStyles() {
         left: 0;
         width: 100%;
         height: 100%;
-        z-index: 10000;
+        z-index: ${UI_CONFIG.dialogZIndex};
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       }
       
@@ -325,13 +324,13 @@ function injectDialogStyles() {
       }
       
       .dialog-btn-confirm {
-        background: linear-gradient(to right, #3b82f6, #2563eb);
+        background: linear-gradient(to right, rgb(var(--accent-500)), rgb(var(--accent-600)));
         color: white;
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
       }
       
       .dialog-btn-confirm:hover {
-        background: linear-gradient(to right, #2563eb, #1d4ed8);
+        background: linear-gradient(to right, rgb(var(--accent-600)), rgb(var(--accent-700)));
         transform: translateY(-1px);
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       }
@@ -406,10 +405,10 @@ function createDialog<T>(config: DialogConfig): Promise<T> {
         if (config.hasCancel !== false || config.hasConfirm) {
             footerHtml = '<div class="dialog-footer">';
             if (config.hasCancel !== false) {
-                footerHtml += `<button class="dialog-btn dialog-btn-cancel">${config.options?.cancelText || '取消'}</button>`;
+                footerHtml += `<button class="dialog-btn dialog-btn-cancel">${config.options?.cancelText || t('cancel')}</button>`;
             }
             if (config.hasConfirm) {
-                footerHtml += `<button class="dialog-btn dialog-btn-confirm">${config.options?.confirmText || '确定'}</button>`;
+                footerHtml += `<button class="dialog-btn dialog-btn-confirm">${config.options?.confirmText || t('confirm')}</button>`;
             }
             footerHtml += '</div>';
         }
@@ -444,7 +443,11 @@ function createDialog<T>(config: DialogConfig): Promise<T> {
         const promptInput = dialogWrapper.querySelector('.prompt-input') as HTMLInputElement;
         const optionButtons = dialogWrapper.querySelectorAll('.select-option-btn') as NodeListOf<HTMLButtonElement>;
         
+        let closed = false
         const closeDialog = (result: any) => {
+            if (closed) return
+            closed = true
+            document.removeEventListener('keydown', handleEsc)
             // 添加关闭动画
             dialogWrapper.style.opacity = '0';
             dialogWrapper.style.transition = 'opacity 0.2s ease';
@@ -452,7 +455,7 @@ function createDialog<T>(config: DialogConfig): Promise<T> {
             setTimeout(() => {
                 dialogWrapper.remove();
                 resolve(result);
-            }, 200);
+            }, UI_CONFIG.dialogCloseAnimationMs);
         };
         
         // 为确认按钮绑定事件
@@ -495,7 +498,6 @@ function createDialog<T>(config: DialogConfig): Promise<T> {
         const handleEsc = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 closeDialog(config.hasInput || config.hasSelect ? null : false);
-                document.removeEventListener('keydown', handleEsc);
             }
         };
         
@@ -528,8 +530,8 @@ interface ConfirmDialogOptions {
  */
 export function confirmDialog(title: string, message: string, options: ConfirmDialogOptions = {}): Promise<boolean> {
     const defaultOptions = {
-        confirmText: '确定',
-        cancelText: '取消',
+        confirmText: t('confirm'),
+        cancelText: t('cancel'),
         type: 'confirm' // confirm, alert, prompt
     };
     
@@ -560,7 +562,7 @@ interface AlertDialogOptions {
  */
 export function alertDialog(title: string, message: string, options: AlertDialogOptions = {}): Promise<void> {
     const defaultOptions = {
-        confirmText: '确定'
+        confirmText: t('confirm')
     };
     
     const opts = Object.assign(defaultOptions, options);
@@ -591,7 +593,7 @@ export function showSuccess(message: ToastContent, options: ToastOptionsExtended
     const defaultOptions: ToastOptions = {
         theme: 'auto',
         position: 'bottom-right',
-        autoClose: 3000
+        autoClose: UI_CONFIG.toastAutoCloseMs
     };
     
     return toast.success(message, { ...defaultOptions, ...options });
@@ -607,7 +609,7 @@ export function showError(message: ToastContent, options: ToastOptionsExtended =
     const defaultOptions: ToastOptions = {
         theme: 'auto',
         position: 'bottom-right',
-        autoClose: 5000
+        autoClose: UI_CONFIG.toastErrorAutoCloseMs
     };
     
     return toast.error(message, { ...defaultOptions, ...options });
@@ -623,7 +625,7 @@ export function showWarning(message: ToastContent, options: ToastOptionsExtended
     const defaultOptions: ToastOptions = {
         theme: 'auto',
         position: 'bottom-right',
-        autoClose: 4000
+        autoClose: UI_CONFIG.toastWarnAutoCloseMs
     };
     
     return toast.warn(message, { ...defaultOptions, ...options });
@@ -639,7 +641,7 @@ export function showInfo(message: ToastContent, options: ToastOptionsExtended = 
     const defaultOptions: ToastOptions = {
         theme: 'auto',
         position: 'bottom-right',
-        autoClose: 3000
+        autoClose: UI_CONFIG.toastAutoCloseMs
     };
     
     return toast.info(message, { ...defaultOptions, ...options });
@@ -651,7 +653,7 @@ export function showInfo(message: ToastContent, options: ToastOptionsExtended = 
  * @param options - 配置选项
  * @returns Toast实例ID
  */
-export function showLoading(message: ToastContent = 'Loading...', options: ToastOptionsExtended = {}): Id {
+export function showLoading(message: ToastContent = t('loading'), options: ToastOptionsExtended = {}): Id {
     const defaultOptions: ToastOptions = {
         theme: 'auto',
         position: 'top-right',
@@ -686,15 +688,19 @@ export function dismissAllToasts(): void {
     (toast as any).dismiss();
 }
 
+// 日期格式化器：缓存 Intl 实例，避免每次渲染都重新创建（列表页大量调用时开销明显）
+const DATE_FORMATTERS = {
+    zh: new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }),
+    en: new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+} as const
+
 export const formatDate = (dateString: string) => {
     if (!dateString) return t('unknownDate')
     try {
         const date = new Date(dateString)
-        const currentLang=getLanguage()
         if (isNaN(date.getTime())) return dateString
-        return currentLang === 'zh'
-            ? date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
-            : date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+        const formatter = getLanguage() === 'zh' ? DATE_FORMATTERS.zh : DATE_FORMATTERS.en
+        return formatter.format(date)
     } catch {
         return dateString
     }
@@ -719,8 +725,8 @@ interface PromptDialogOptions {
  */
 export function promptDialog(title: string, message: string, options: PromptDialogOptions = {}): Promise<string | null> {
     const defaultOptions = {
-        confirmText: '确定',
-        cancelText: '取消',
+        confirmText: t('confirm'),
+        cancelText: t('cancel'),
         inputType: 'text',
         placeholder: ''
     };
@@ -739,14 +745,12 @@ export function promptDialog(title: string, message: string, options: PromptDial
     });
 }
 
-// @ts-ignore
 export const getRepoInfo = (gitRepo:string=GIT_REPO) => {
     const parts = gitRepo.replace(/\/$/, '').split('/')
     if (parts.length >= 2) {
         return {
-            owner: parts[parts.length - 2],
-            //@ts-ignore
-            repo: parts[parts.length - 1].replace(/\.git$/, '')
+            owner: parts[parts.length - 2]!,
+            repo: parts[parts.length - 1]!.replace(/\.git$/, '')
         }
     }
     return null
@@ -778,10 +782,10 @@ export const toDev = async () => {
 
     // 显示编辑器选择对话框
     const editorOptions = [
-        { value: 'stackblitz', label: 'StackBlitz', description: '快速启动的在线 IDE，支持实时预览' },
-        { value: 'githubdev', label: 'GitHub.dev', description: 'GitHub 官方的轻量级 VSCode 在线版' },
-        { value: 'vscode', label: 'VSCode.dev', description: '完整的 VSCode 在线体验，功能丰富' },
-        { value: 'bolt', label: 'Bolt.new', description: 'AI 驱动的全栈开发环境' }
+        { value: 'stackblitz', label: 'StackBlitz', description: t('editorStackblitzDesc') },
+        { value: 'githubdev', label: 'GitHub.dev', description: t('editorGithubDevDesc') },
+        { value: 'vscode', label: 'VSCode.dev', description: t('editorVscodeDesc') },
+        { value: 'bolt', label: 'Bolt.new', description: t('editorBoltDesc') }
     ]
 
     const selectedEditor = await selectDialog(
@@ -812,17 +816,47 @@ export const toDev = async () => {
     }
 }
 
+// 拼接构建版本参数：CDN 若按 URL 缓存，构建版本变化即视为新资源
+function withVersion(url: string, version: string): string {
+    if (!version) return url
+    const separator = url.includes('?') ? '&' : '?'
+    return `${url}${separator}_v=${version}`
+}
+
+// 同一构建版本内复用已获取的响应，避免每次进入文章都重新下载完整导航数据。
+// Response 的 body 只能读一次，因此缓存 clone 供后续调用使用。
+const responseCache = new Map<string, Response>()
+const RESPONSE_CACHE_LIMIT = 8
+
+// Studio 保存文章后导航数据已更新，但 URL 在同一 dev 会话内不变，需要主动清空缓存
+export const clearFetchCache = () => {
+    responseCache.clear()
+}
+
 export const fetchWithFallback = async (urls: string[], dataType: string) => {
     let lastError: Error | null = null;
+    // 请求 URL 已带构建版本号，天然规避旧缓存；不再用 no-store 强制回源，让 HTTP 缓存生效
+    const version = typeof __APP_VERSION__ === 'string' ? __APP_VERSION__ : ''
 
     for (const url of urls) {
+        const requestUrl = withVersion(url, version)
+        const cached = responseCache.get(requestUrl)
+        if (cached) {
+            return cached.clone()
+        }
+
         try {
-            console.log(`尝试请求 ${dataType}: ${url}`);
-            const response = await fetch(url);
+            console.log(`尝试请求 ${dataType}: ${requestUrl}`);
+            const response = await fetch(requestUrl);
 
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
+
+            if (responseCache.size >= RESPONSE_CACHE_LIMIT) {
+                responseCache.clear()
+            }
+            responseCache.set(requestUrl, response.clone())
             return response;
         } catch (error) {
             console.warn(`请求失败 ${url}:`, error);

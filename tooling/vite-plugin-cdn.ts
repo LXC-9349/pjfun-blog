@@ -1,6 +1,6 @@
 import type { Plugin, ResolvedConfig } from 'vite';
 
-export default function vitePluginCdn(base:string): Plugin {
+export default function vitePluginCdn(base:string, version:string): Plugin {
   let config: ResolvedConfig;
 
   return {
@@ -53,13 +53,14 @@ export default function vitePluginCdn(base:string): Plugin {
         });
 
         // ========== STEP 2: 注入自定义加载逻辑 ==========
-        const pjJsResources = injectedBundleFiles.map((file: any) => `'${base}${file.fileName}'`).join(',');
+        const pjJsResources = injectedBundleFiles.map((file: any) => `'${base}${file.fileName}'`).join(',')
+        // pj_public.js 不带 hash，必须携带构建版本，否则会被 CDN 长期缓存
         const originalScriptTag = `
         <script>
             const pjJsResources=[${pjJsResources}]
         </script>
-        <script src="${base}pj_public.js"></script>
-        `;
+        <script src="${base}pj_public.js?v=${version}"></script>
+        `
 
         const scriptReplace = '<script replace />';
         html = html.replace(scriptReplace, originalScriptTag);

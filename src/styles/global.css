@@ -1,5 +1,57 @@
 /* 全局样式补充 — UnoCSS 无法覆盖的伪元素相关 */
 
+/* ===== 主题色变量 =====
+   默认暖橙，运行时由 src/utils/appearance.ts 写入完整色阶（RGB 三元组），
+   与 uno.config.ts 中的 orange / amber 色板对应 */
+:root {
+  --accent-50: 255 247 237;
+  --accent-100: 255 237 213;
+  --accent-200: 254 215 170;
+  --accent-300: 253 186 116;
+  --accent-400: 251 146 60;
+  --accent-500: 249 115 22;
+  --accent-600: 234 88 12;
+  --accent-700: 194 65 12;
+  --accent-800: 154 52 18;
+  --accent-900: 124 45 18;
+  --accent-950: 67 20 7;
+
+  --accent-alt-50: 255 251 235;
+  --accent-alt-100: 254 243 199;
+  --accent-alt-200: 253 230 138;
+  --accent-alt-300: 252 211 77;
+  --accent-alt-400: 251 191 36;
+  --accent-alt-500: 245 158 11;
+  --accent-alt-600: 217 119 6;
+  --accent-alt-700: 180 83 9;
+  --accent-alt-800: 146 64 14;
+  --accent-alt-900: 120 53 15;
+  --accent-alt-950: 69 26 3;
+
+  --app-font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+}
+
+body,
+#app {
+  font-family: var(--app-font-family);
+}
+
+/* ===== 鼠标样式 =====
+   由主题设置写入 html[data-cursor] 与 --app-cursor，
+   自定义 SVG 光标的颜色跟随主题色 */
+html[data-cursor],
+html[data-cursor] body {
+  cursor: var(--app-cursor, auto);
+}
+
+html[data-cursor] button,
+html[data-cursor] a,
+html[data-cursor] [role="button"],
+html[data-cursor] [role="switch"],
+html[data-cursor] .cursor-pointer {
+  cursor: var(--app-cursor, pointer);
+}
+
 /* 确保 router-link 始终可以接收点击事件 */
 a.router-link-active,
 a.router-link-exact-active,
@@ -10,7 +62,7 @@ router-link {
 
 /* ===== 可访问性：可见焦点状态 ===== */
 *:focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid rgb(var(--accent-500));
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -18,7 +70,7 @@ router-link {
 button:focus-visible,
 a:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid rgb(var(--accent-500));
   outline-offset: 2px;
 }
 
@@ -62,18 +114,40 @@ a,
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: #d8c8b6;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: #b3a08b;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #4b5563;
+  background: #3d352e;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #6b7280;
+  background: #4a4038;
+}
+
+/* ===== 卡片内部滚动条：滚动时显示，静止后自动隐藏 ===== */
+.card-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.card-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.card-scroll::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 9999px;
+}
+
+.card-scroll.is-scrolling::-webkit-scrollbar-thumb {
+  background-color: rgb(179 160 139 / 0.55);
+}
+
+.dark .card-scroll.is-scrolling::-webkit-scrollbar-thumb {
+  background-color: rgb(118 99 84 / 0.85);
 }

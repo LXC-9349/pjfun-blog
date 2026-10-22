@@ -1,30 +1,30 @@
 <template>
   <Teleport to="body">
-    <div v-if="isOpen" class="fixed inset-0 z-[9999] flex items-start justify-center pt-16 bg-black/50 backdrop-blur-sm" @click="isOpen = false" role="dialog" aria-modal="true" aria-label="搜索文章">
+    <div v-if="isOpen" class="fixed inset-0 z-[9999] flex items-start justify-center pt-16 bg-black/50 backdrop-blur-sm" @click="closeModal" role="dialog" aria-modal="true" :aria-label="t('searchArticles')">
       <div @click.stop class="w-full max-w-2xl mx-4 bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden transform transition-all duration-300 ease-out-expo"
            v-motion
            :initial="{ y: -80, opacity: 0, scale: 0.9 }"
            :enter="{ y: 0, opacity: 1, scale: 1, transition: { duration: 400 } }"
            :leave="{ y: -80, opacity: 0, scale: 0.9, transition: { duration: 300 } }">
         <div class="flex items-center gap-3 p-4 border-b border-gray-200 dark:border-gray-700">
-          <IconCarbonSearch class="w-5 h-5 text-blue-500 dark:text-blue-400 flex-shrink-0" aria-hidden="true" />
+          <IconCarbonSearch class="w-5 h-5 text-orange-500 dark:text-orange-400 flex-shrink-0" aria-hidden="true" />
           <input
               ref="searchInput"
               v-model="query"
               :placeholder="t('searchHint')"
               class="input input-ghost text-base flex-1 search-input bg-transparent py-1 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-0 border-none"
-              aria-label="搜索文章"
+              :aria-label="t('searchArticles')"
               autocomplete="off"
               autocapitalize="off"
               spellcheck="false"
               role="combobox"
               aria-expanded="true"
               aria-controls="search-results"
-              aria-activedescendant="search-result-${selectedIndex}"
+              :aria-activedescendant="selectedIndex >= 0 ? `search-result-${selectedIndex}` : undefined"
           />
           <kbd @click="closeModal" class="kbd kbd-xs hidden sm:block text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer">Esc</kbd>
         </div>
-        <div class="max-h-80 overflow-y-auto" role="listbox" id="search-results" aria-label="搜索结果">
+        <div class="max-h-80 overflow-y-auto" role="listbox" id="search-results" :aria-label="t('searchResultsLabel')">
           <template v-if="results.length">
             <router-link
                 v-for="(post, index) in results"
@@ -32,20 +32,20 @@
                 :to="post.path"
                 @click="isOpen = false"
                 class="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-0 transform transition-all duration-200"
-                :class="{ 'bg-blue-50 dark:bg-blue-900/20 scale-[1.02]': index === selectedIndex }"
+                :class="{ 'bg-orange-50 dark:bg-orange-900/20 scale-[1.02]': index === selectedIndex }"
                 @mouseenter="selectedIndex = index"
                 :id="`search-result-${index}`"
                 role="option"
                 :aria-selected="index === selectedIndex"
             >
-              <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center text-base font-bold text-white flex-shrink-0">
+              <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-700 rounded-lg flex items-center justify-center text-base font-bold text-white flex-shrink-0">
                 {{ post.title[0] }}
               </div>
               <div class="flex-1 min-w-0">
-                <h3 class="font-semibold text-gray-800 dark:text-white truncate text-sm transform transition-all duration-200 hover:text-blue-600">{{ post.title }}</h3>
+                <h3 class="font-semibold text-gray-800 dark:text-white truncate text-sm transform transition-all duration-200 hover:text-orange-600">{{ post.title }}</h3>
                 <p class="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">{{ post.excerpt || t('excerpt') }}</p>
                 <div v-if="post.tags && post.tags.length" class="flex flex-wrap gap-1 mt-1.5">
-                  <div v-for="tag in post.tags.slice(0, 3)" :key="tag" class="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-xs rounded transform transition-all hover:scale-110">
+                  <div v-for="tag in post.tags.slice(0, 3)" :key="tag" class="px-1.5 py-0.5 bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200 text-xs rounded transform transition-all hover:scale-110">
                     {{ tag }}
                   </div>
                   <div v-if="post.tags.length > 3" class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs rounded">
@@ -85,6 +85,7 @@
 import { ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { useMagicKeys, whenever } from '@vueuse/core'
 import { t } from '@/utils/i18n'
+import { SEARCH_CONFIG, STORAGE_KEYS } from '@/constants'
 import { useRouter } from 'vue-router'
 import { fetchWithFallback, getEnvVariable } from "@/utils/tool";
 
@@ -97,9 +98,9 @@ const selectedIndex = ref(-1)
 const searchInput = ref<HTMLInputElement | null>(null)
 
 // ==================== 搜索缓存 ====================
-const SEARCH_CACHE_KEY = 'pjfun_blog_search_cache'
-const NAV_DATA_CACHE_KEY = 'pjfun_blog_nav_data_cache'
-const CACHE_TTL = 5 * 60 * 1000 // 缓存有效期5分钟
+const SEARCH_CACHE_KEY = STORAGE_KEYS.searchCache
+const NAV_DATA_CACHE_KEY = STORAGE_KEYS.navDataCache
+const CACHE_TTL = SEARCH_CONFIG.cacheTtl
 
 interface CacheEntry<T> {
   data: T
@@ -130,17 +131,37 @@ const setCache = <T>(key: string, data: T): void => {
   }
 }
 
-// 搜索结果缓存
-const getSearchCache = (q: string): any[] | null => {
-  const cache = getCache<Record<string, any[]>>(SEARCH_CACHE_KEY)
-  if (!cache) return null
-  return cache[q.toLowerCase()] || null
+// 搜索结果缓存：内存优先，避免每次按键都 JSON.parse / stringify 整个缓存
+let memorySearchCache: Record<string, any[]> | null = null
+let searchCacheTimer: number | null = null
+
+const loadSearchCache = () => {
+  if (!memorySearchCache) {
+    memorySearchCache = getCache<Record<string, any[]>>(SEARCH_CACHE_KEY) || {}
+  }
+  return memorySearchCache
+}
+
+const getSearchCache = (q: string): any[] | null => loadSearchCache()[q.toLowerCase()] || null
+
+const persistSearchCache = () => {
+  if (searchCacheTimer) window.clearTimeout(searchCacheTimer)
+  searchCacheTimer = window.setTimeout(() => {
+    searchCacheTimer = null
+    if (memorySearchCache) setCache(SEARCH_CACHE_KEY, memorySearchCache)
+  }, 800)
 }
 
 const setSearchCache = (q: string, results: any[]): void => {
-  const cache = getCache<Record<string, any[]>>(SEARCH_CACHE_KEY) || {}
-  cache[q.toLowerCase()] = results
-  setCache(SEARCH_CACHE_KEY, cache)
+  const cache = loadSearchCache()
+  const key = q.toLowerCase()
+  cache[key] = results
+  const keys = Object.keys(cache)
+  // 限制缓存条数，避免 localStorage 持续膨胀
+  if (keys.length > SEARCH_CONFIG.cacheEntries) {
+    delete cache[keys[0] as string]
+  }
+  persistSearchCache()
 }
 
 // 导航数据缓存
@@ -206,21 +227,23 @@ const navigateToPost = (path: string) => {
   router.push(path)
 }
 
-watch(query, async (q) => {
-  if (!q.trim()) {
-    results.value = []
-    selectedIndex.value = -1
-    return
-  }
+let searchTimer: number | null = null
+// 请求序号：丢弃落后于当前输入的响应
+let searchSeq = 0
+
+const runSearch = async (rawQuery: string) => {
+  const q = rawQuery.trim()
+  if (!q) return
 
   // 优先检查搜索结果缓存
-  const cached = getSearchCache(q.trim())
+  const cached = getSearchCache(q)
   if (cached) {
     results.value = cached
     selectedIndex.value = -1
     return
   }
 
+  const seq = ++searchSeq
   try {
     const navName = getEnvVariable('PJ_BLOG_NAV_NAME')
     const base = getEnvVariable('VITE_BASE') || '/'
@@ -237,27 +260,47 @@ watch(query, async (q) => {
     }
 
     if (!all) {
-      results.value = []
+      if (seq === searchSeq) results.value = []
       return
     }
 
+    if (seq !== searchSeq) return
+
+    const keyword = q.toLowerCase()
     results.value = all
       .filter((p: any) =>
-        (p.title && String(p.title).toLowerCase().includes(q.toLowerCase())) ||
-        (p.excerpt && String(p.excerpt).toLowerCase().includes(q.toLowerCase())) ||
-        (p.tags && Array.isArray(p.tags) && p.tags.some((tag: unknown) => typeof tag === 'string' && tag.toLowerCase().includes(q.toLowerCase())))
+        (p.title && String(p.title).toLowerCase().includes(keyword)) ||
+        (p.excerpt && String(p.excerpt).toLowerCase().includes(keyword)) ||
+        (p.tags && Array.isArray(p.tags) && p.tags.some((tag: unknown) => typeof tag === 'string' && tag.toLowerCase().includes(keyword)))
       )
-      .slice(0, 10)
+      .slice(0, SEARCH_CONFIG.maxResults)
 
     // 写入搜索缓存
     if (results.value.length > 0) {
-      setSearchCache(q.trim(), results.value)
+      setSearchCache(q, results.value)
     }
     selectedIndex.value = -1
   } catch (e) {
-    console.error('搜索出错:', e)
-    results.value = []
+    if (seq === searchSeq) {
+      console.error('搜索出错:', e)
+      results.value = []
+    }
   }
+}
+
+watch(query, (q) => {
+  // 输入防抖：连续输入时只跑最后一次，避免逐字符全量过滤与写缓存
+  if (searchTimer) window.clearTimeout(searchTimer)
+
+  if (!q.trim()) {
+    results.value = []
+    selectedIndex.value = -1
+    return
+  }
+
+  searchTimer = window.setTimeout(() => {
+    void runSearch(q)
+  }, SEARCH_CONFIG.debounceMs)
 })
 
 const handleOpenSearchModal = () => {
@@ -269,8 +312,7 @@ const handleOpenSearchModal = () => {
 
 // a11y: 焦点陷阱 - 防止 Tab 键跳出模态框
 const handleFocusTrap = (e: KeyboardEvent) => {
-  if (!isOpen.value || e.key !== 'Tab') return
-  
+  if (!isOpen.value || e.key !== 'Tab') return  
   const focusableElements = document.querySelectorAll(
     '[role="dialog"] button, [role="dialog"] [href], [role="dialog"] input, [role="dialog"] select, [role="dialog"] textarea, [role="dialog"] [tabindex]:not([tabindex="-1"])'
   )
@@ -288,14 +330,22 @@ const handleFocusTrap = (e: KeyboardEvent) => {
   }
 }
 
+const handleEscape = (e: KeyboardEvent) => {
+  if (isOpen.value && e.key === 'Escape') closeModal()
+}
+
 onMounted(() => {
   window.addEventListener('open-search-modal', handleOpenSearchModal)
   window.addEventListener('keydown', handleFocusTrap)
+  window.addEventListener('keydown', handleEscape)
 })
 
 onUnmounted(() => {
   window.removeEventListener('open-search-modal', handleOpenSearchModal)
   window.removeEventListener('keydown', handleFocusTrap)
+  window.removeEventListener('keydown', handleEscape)
+  if (searchTimer) window.clearTimeout(searchTimer)
+  if (searchCacheTimer) window.clearTimeout(searchCacheTimer)
 })
 
 

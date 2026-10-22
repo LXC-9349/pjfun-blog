@@ -1,16 +1,16 @@
 <template>
   <div class="w-full flex flex-col">
     <div v-if="loading" class="flex flex-col items-center justify-center h-full p-8 text-center">
-      <div class="w-12 h-12 border-4 border-gray-200 border-l-blue-500 rounded-full animate-spin mb-4"></div>
+      <div class="w-12 h-12 border-4 border-gray-200 border-l-orange-500 rounded-full animate-spin mb-4"></div>
       <p>{{ t('loadingDocument') }}</p>
     </div>
     
     <div v-else-if="error" class="flex flex-col items-center justify-center h-full p-8 text-center">
       <p>{{ t('documentLoadError') }}</p>
-      <button @click="retryLoad" class="mt-4 px-6 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow">{{ t('retry') }}</button>
+      <button @click="retryLoad" class="mt-4 px-6 py-3 rounded-lg bg-orange-600 text-white hover:bg-orange-700 transition-colors shadow">{{ t('retry') }}</button>
     </div>
-    <pdf-to-html v-else-if="isPdf" :src="props.url" :path="props.path" :fileName="props.title"/>
-    <excel :src="props.url" :fileName="props.title" v-else-if="isExcel"/>
+    <pdf-viewer v-else-if="isPdf" :src="props.url" :path="props.path" :fileName="props.title"/>
+    <excel-viewer :src="props.url" :fileName="props.title" v-else-if="isExcel"/>
     <div v-else class="document-content">
       <div v-if="convertedHtml" class="html-viewer p-4 overflow-auto h-full" v-html="sanitizedHtml"></div>
       
@@ -22,10 +22,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, defineAsyncComponent } from 'vue'
 import { t } from '@/utils/i18n'
 import sanitizeHtml from 'dompurify'
-import Excel from "@/components/preview/Excel.vue";
+import { ensureCdnLib } from '@/utils/cdn'
+
+// PDF / Excel 预览器体积很大且只在文档页使用，改为异步组件：
+// PdfViewer 需要先就绪 pdfjs 全局库再加载组件，避免 external 模块初始化时拿到 undefined
+const PdfViewer = defineAsyncComponent(async () => {
+  await ensureCdnLib('pdfjs-dist')
+  const mod = await import('@/components/preview/PdfToHtml.vue')
+  return mod.default
+})
+const ExcelViewer = defineAsyncComponent(() => import('@/components/preview/Excel.vue'))
 
 const props = defineProps<{
   url: string
@@ -43,8 +52,9 @@ const sanitizedHtml = computed(() => {
 })
 
 const isPdf = computed(() => props.extension === 'pdf')
-const isWord = computed(() => props.extension === 'doc' || props.extension === 'docx')
-const isExcel = computed(() => props.extension === 'xls' || props.extension === 'xlsx')
+// mammoth 只支持 .docx；旧版 .doc / .xls 不再交给解析器，直接提示不支持
+const isWord = computed(() => props.extension === 'docx')
+const isExcel = computed(() => props.extension === 'xlsx')
 const isSupportedFormat = computed(() => isPdf.value || isWord.value || isExcel.value)
 
 const retryLoad = () => {
@@ -58,6 +68,13 @@ const retryLoad = () => {
 }
 
 const loadDocument = async () => {
+  // PDF 由 PdfViewer 自行取流渲染，Excel 由 Luckysheet 引擎解析，
+  // 这里只处理 Word 转换，避免 PDF 被重复下载一遍
+  if (!isWord.value) {
+    loading.value = false
+    return
+  }
+
   try {
     if (!isSupportedFormat.value) {
       throw new Error('Unsupported document format')
@@ -70,15 +87,13 @@ const loadDocument = async () => {
     }
 
     const arrayBuffer = await response.arrayBuffer()
-    
-    if (isWord.value) {
-      const { convertWordToHtml } = await import('@/utils/document-convert')
-      convertedHtml.value = await convertWordToHtml(arrayBuffer)
-    } else if (isExcel.value) {
-    }
-    
+
+    // mammoth 为按需库，先确保全局就绪再动态导入转换器
+    await ensureCdnLib('mammoth')
+    const { convertWordToHtml } = await import('@/utils/document-convert')
+    convertedHtml.value = await convertWordToHtml(arrayBuffer)
+
     loading.value = false
-    
   } catch (err) {
     console.error('Document loading/conversion error:', err)
     error.value = true

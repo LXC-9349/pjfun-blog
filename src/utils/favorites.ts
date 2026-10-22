@@ -1,6 +1,7 @@
 /**
  * 收藏管理工具
  */
+import { STORAGE_KEYS } from '@/constants'
 
 // 收藏项类型定义
 export interface FavoriteItem {
@@ -12,7 +13,7 @@ export interface FavoriteItem {
   excerpt?: string;
 }
 
-const FAVORITES_KEY = 'pjfun_blog_favorites';
+const FAVORITES_KEY = STORAGE_KEYS.favorites;
 
 /**
  * 获取所有收藏的文章

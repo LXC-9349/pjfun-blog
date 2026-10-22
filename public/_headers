@@ -1,0 +1,54 @@
+# 缓存策略（Cloudflare Pages / Netlify / ESA Pages 等支持 _headers 的平台）
+# 原则：只对带 hash 的产物做长期缓存，入口 HTML 与数据类资源必须回源
+
+# SPA 入口：每次协商，否则发布新版后用户仍会拿到旧入口
+/
+  Cache-Control: no-cache, must-revalidate
+
+/index.html
+  Cache-Control: no-cache, must-revalidate
+
+# 构建版本号：版本检查依赖它，任何缓存都会让更新检测失效
+/version.json
+  Cache-Control: no-store, no-cache, must-revalidate
+
+# 导航/树级数据：文件名已带构建版本，仍禁止中间层缓存旧内容
+/generated/*
+  Cache-Control: no-cache, must-revalidate
+
+# 文章原始文件：同名内容可能被更新，给短缓存
+/content/*
+  Cache-Control: public, max-age=600
+
+# 不带 hash 的入口类脚本，被长期缓存会导致加载逻辑与 SW 注册永远不更新
+/pj_public.js
+  Cache-Control: no-cache, must-revalidate
+
+/registerSW.js
+  Cache-Control: no-cache, must-revalidate
+
+/sw.js
+  Cache-Control: no-cache, must-revalidate
+
+/sw-*.js
+  Cache-Control: no-cache, must-revalidate
+
+/manifest.webmanifest
+  Cache-Control: no-cache, must-revalidate
+
+# 带 hash 的构建产物：可安全长期缓存
+/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# 图片、背景、字体等静态媒体
+/img/*
+  Cache-Control: public, max-age=604800
+
+/bg/*
+  Cache-Control: public, max-age=604800
+
+/video/*
+  Cache-Control: public, max-age=604800

@@ -3,7 +3,7 @@
     <div class="w-full max-w-md">
       <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
         <div class="text-center mb-8">
-          <div class="mx-auto w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center mb-4">
+          <div class="mx-auto w-16 h-16 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 flex items-center justify-center mb-4">
             <IconCarbonLocked class="w-8 h-8 text-white" />
           </div>
           <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">{{ t('passwordProtected') }}</h1>
@@ -20,7 +20,7 @@
               v-model="password"
               type="password"
               :placeholder="t('enterPassword')"
-              class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               required
             />
           </div>
@@ -32,7 +32,7 @@
           <button
             type="submit"
             :disabled="loading"
-            class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-70 cursor-pointer"
+            class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-70 cursor-pointer"
           >
             <span v-if="!loading">{{ t('access') }}</span>
             <span v-else class="flex items-center justify-center">
@@ -57,6 +57,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { t } from '@/utils/i18n'
+import { STORAGE_KEYS } from '@/constants'
 import { passwordApi } from '@/utils/password'
 
 const password = ref('')
@@ -66,7 +67,7 @@ const router = useRouter()
 
 const handleLogin = async () => {
   if (!password.value.trim()) {
-    error.value = t('passwordRequired') || '请输入密码'
+    error.value = t('passwordRequired')
     return
   }
 
@@ -79,16 +80,16 @@ const handleLogin = async () => {
 
     if (result.success) {
       // 密码正确，保存到 localStorage 并重定向到主页
-      localStorage.setItem('blog-access-pwd', password.value)
+      localStorage.setItem(STORAGE_KEYS.accessPassword, password.value)
       // 跳转到之前尝试访问的页面或者首页
-      const redirectPath = sessionStorage.getItem('redirect-after-login') || '/'
-      sessionStorage.removeItem('redirect-after-login')
+      const redirectPath = sessionStorage.getItem(STORAGE_KEYS.redirectAfterLogin) || '/'
+      sessionStorage.removeItem(STORAGE_KEYS.redirectAfterLogin)
       router.push(redirectPath)
     } else {
-      error.value = result.message || (t('incorrectPassword') || '密码错误')
+      error.value = result.message || t('incorrectPassword')
     }
   } catch (err) {
-    error.value = t('loginError') || '登录时发生错误，请稍后重试'
+    error.value = t('loginError')
     console.error('Login error:', err)
   } finally {
     loading.value = false

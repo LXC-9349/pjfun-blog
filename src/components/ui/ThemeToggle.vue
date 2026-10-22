@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { t } from '@/utils/i18n'
+import { STORAGE_KEYS } from '@/constants'
 
 const toggleDark = () => {
   const html = document.documentElement
@@ -16,7 +17,7 @@ const toggleDark = () => {
   }
   // 同步 data-theme 属性和 localStorage
   html.setAttribute('data-theme', isDark ? 'dark' : 'light')
-  localStorage.setItem('theme', isDark ? 'dark' : 'light')
+  localStorage.setItem(STORAGE_KEYS.theme, isDark ? 'dark' : 'light')
   
   // 触发自定义事件，通知其他组件主题已更改
   window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme: isDark ? 'dark' : 'light' } }))
@@ -27,27 +28,11 @@ const toggleDark = () => {
   });
 }
 
-// 监听系统主题变化
-const handleSystemThemeChange = (e: MediaQueryListEvent) => {
-  const html = document.documentElement
-  const isDark = e.matches
-
-  html.classList.toggle('dark', isDark)
-  html.setAttribute('data-theme', isDark ? 'dark' : 'light')
-  localStorage.setItem('theme', isDark ? 'dark' : 'light')
-
-  // 触发自定义事件，通知其他组件主题已更改
-  window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme: isDark ? 'dark' : 'light' } }))
-
-  // 更新所有 markdown-body 元素的 data-theme 属性
-  document.querySelectorAll('.markdown-body').forEach(el => {
-    el.setAttribute('data-theme', isDark ? 'dark' : 'light');
-  });
-}
+// 系统主题变化由 main.ts 统一监听并广播 theme-change，这里不再重复注册，避免多次挂载后监听器累积
 
 onMounted(() => {
   // 页面加载时从 localStorage 恢复主题设置
-  const savedTheme = localStorage.getItem('theme')
+  const savedTheme = localStorage.getItem(STORAGE_KEYS.theme)
   const html = document.documentElement
   
   if (savedTheme === 'dark') {
@@ -63,22 +48,19 @@ onMounted(() => {
     html.classList.add('dark')
     html.classList.remove('light')
     html.setAttribute('data-theme', 'dark')
-    localStorage.setItem('theme', 'dark')
+    localStorage.setItem(STORAGE_KEYS.theme, 'dark')
   } else {
     // 默认使用浅色主题
     html.classList.add('light')
     html.classList.remove('dark')
     html.setAttribute('data-theme', 'light')
-    localStorage.setItem('theme', 'light')
+    localStorage.setItem(STORAGE_KEYS.theme, 'light')
   }
   
   // 设置初始 markdown-body 的 data-theme 属性
   document.querySelectorAll('.markdown-body').forEach(el => {
     el.setAttribute('data-theme', savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
   });
-  
-  // 监听系统主题变化
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', handleSystemThemeChange)
 })
 </script>
 

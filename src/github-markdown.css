@@ -251,10 +251,10 @@ html *::after {
   .markdown-body{
     /* light */
     color-scheme: light;
-    --focus-outlineColor: #0969da;
+    --focus-outlineColor: #c2410c;
     --fgColor-default: #1f2328;
     --fgColor-muted: #59636e;
-    --fgColor-accent: #0969da;
+    --fgColor-accent: #c2410c;
     --fgColor-success: #1a7f37;
     --fgColor-attention: #9a6700;
     --fgColor-danger: #d1242f;
@@ -266,7 +266,7 @@ html *::after {
     --borderColor-default: #d1d9e0;
     --borderColor-muted: #d1d9e0b3;
     --borderColor-neutral-muted: #d1d9e0b3;
-    --borderColor-accent-emphasis: #0969da;
+    --borderColor-accent-emphasis: #c2410c;
     --borderColor-success-emphasis: #1a7f37;
     --borderColor-attention-emphasis: #9a6700;
     --borderColor-danger-emphasis: #cf222e;

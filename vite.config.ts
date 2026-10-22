@@ -1,4 +1,4 @@
-import {defineConfig, type Plugin} from 'vite'
+import {defineConfig, loadEnv, type Plugin} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import UnoCSS from 'unocss/vite'
 import Pages from 'vite-plugin-pages'
@@ -6,40 +6,71 @@ import Icons from 'unplugin-icons/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import createExternal from 'vite-plugin-external'
-import {genNavPlugin} from './vite-plugin-gen-nav'
+import {genNavPlugin} from './tooling/vite-plugin-gen-nav'
+import {studioPlugin} from './tooling/vite-plugin-studio'
+import {genBackgroundsPlugin} from './tooling/vite-plugin-gen-backgrounds'
 import path, {resolve} from "path";
+import {readFile, writeFile} from 'node:fs/promises'
 import IconsResolver from 'unplugin-icons/resolver'
 import {ViteImageOptimizer} from 'vite-plugin-image-optimizer'
-import {getCDN} from './package/build_cdn'
-import vitePluginCdn from './package/vite-plugin-cdn'
+import {getCDN} from './tooling/build_cdn'
+import vitePluginCdn from './tooling/vite-plugin-cdn'
 import {createHtmlPlugin} from 'vite-plugin-html'
-import { rssPlugin } from './package/vite-plugin-rss'
-import { sitemapPlugin } from './package/vite-plugin-sitemap'
+import { rssPlugin } from './tooling/vite-plugin-rss'
+import { sitemapPlugin } from './tooling/vite-plugin-sitemap'
 import {VitePWA} from 'vite-plugin-pwa'
-import {SITE_CONFIG} from "./src/constants";
+import {createSiteConfig} from "./src/constants/site";
 import {createSvgIconsPlugin} from "vite-plugin-svg-icons";
-import {autoPasswordHashPlugin} from './vite-plugin-auto-password-hash';
+import {autoPasswordHashPlugin} from './tooling/vite-plugin-auto-password-hash';
 
 export default defineConfig((config) => {
 
-    // 加载环境变量
+    // 加载环境变量（config 钩子早于 Vite 内部的 loadEnv，需在此显式读取）
+    const env = loadEnv(config.mode, process.cwd(), '')
+    const readEnv = (key: string, fallback: string): string => env[key] || process.env[key] || fallback
     const isProduction = config.mode === 'production';
-    // 获取 VITE_BASE 环境变量，如果未设置则根据是否为生产环境决定默认值
-    const base = process.env.VITE_BASE || '/';
+    // 获取 VITE_BASE 环境变量，统一补齐尾部斜杠
+    const rawBase = readEnv('VITE_BASE', '/')
+    const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`
+    // 构建期站点信息同样以 .env 为准（不能使用在 config 阶段被提前求值的 SITE_CONFIG）
+    const site = createSiteConfig(readEnv)
     // const base = '/pjfun-blog/';
     console.log('base:', base)
+    // 构建版本号：同时注入客户端（__APP_VERSION__）与 version.json，保证版本来源一致
+    // 通过进程环境变量缓存：Vite 会多次解析配置，重复取 Date.now() 会让 index.html 与产物文件名错位
+    const buildVersion = process.env.PJ_BUILD_VERSION || (process.env.PJ_BUILD_VERSION = String(Date.now()))
     //开启cdn打包
     const openCdn = isProduction;
     const cdnConfig = getCDN(!isProduction)
-    let externalsKey = [
+    const externalsKey = [
         'vue-router',
-        'highlight.js',
     ]
 
-    const PJ_BLOG_NAV_NAME='nav'+generateRandomString()+'.json'
-    const PJ_BLOG_TREE_NAME='tree'+generateRandomString()+'.json'
+    // 文章页专用的解析类依赖：单独成块，首屏不加载
+    const MARKDOWN_PKGS = ['marked', 'marked-gfm-heading-id', 'dompurify']
+    // 重型懒加载库：只被异步 chunk 引用，独立成块后不会进入首屏
+    const HEAVY_PKGS: Record<string, string> = {
+        'highlight.js': 'vendor.highlight',
+        'pdfjs-dist': 'vendor.pdf',
+        'mammoth': 'vendor.mammoth'
+    }
+    // mammoth 的依赖树（jszip / pako 等）：一并归入 Word 预览 chunk，避免被 vendor.more 拽进首屏
+    const MAMMOTH_PKGS = new Set([
+        'xmldom-xmldom', 'argparse', 'base64-js', 'dingbat-to-unicode',
+        'jszip', 'lop', 'underscore', 'xmlbuilder', 'sprintf-js',
+        'lie', 'immediate', 'pako', 'readable-stream', 'setimmediate',
+        'inherits', 'string_decoder', 'util-deprecate', 'safe-buffer',
+        'core-util-is', 'process-nextick-args', 'isarray'
+    ])
+
+    // 导航数据文件名与构建版本绑定：每次发布都是全新 URL，CDN / SW 缓存无法命中旧内容
+    const PJ_BLOG_NAV_NAME=`nav-version-${buildVersion}.json`
+    const PJ_BLOG_TREE_NAME=`tree-version-${buildVersion}.json`
     return {
         base, // 设置 base 路径
+        define: {
+            __APP_VERSION__: JSON.stringify(buildVersion)
+        },
         plugins: [
             vue(),
             Pages({dirs: 'src/pages'}),
@@ -47,6 +78,7 @@ export default defineConfig((config) => {
                 iconDirs: [resolve(process.cwd(), 'src/assets/icons')],
                 symbolId: 'icon-[name]'
             }),
+            genBackgroundsPlugin(),
             AutoImport({
                 imports: ['vue', 'vue-router'],
                 dts: 'src/auto-imports.d.ts',
@@ -63,18 +95,54 @@ export default defineConfig((config) => {
             UnoCSS(),
             Icons({compiler: 'vue3', autoInstall: true}),  // 新增：自动按需加载所有 iconify-icon
             genNavPlugin(PJ_BLOG_NAV_NAME,PJ_BLOG_TREE_NAME,base),
+            // 本地创作台：仅 dev server 生效，生产构建自动排除
+            studioPlugin(),
             VitePWA({
                 registerType: 'autoUpdate',
+                // 注册代码内联进 index.html：避免固定 URL 的 registerSW.js 被 CDN 长期缓存
+                injectRegister: 'inline',
                 workbox: {
-                    globPatterns: ['**/*.{js,css,html,ico,png,svg,webp}'],
+                    // 不预缓存 index.html：SPA 入口必须走网络，否则 SW 会一直返回旧页面
+                    globPatterns: ['**/*.{js,css,ico,svg}'],
+                    // 图片体积大且已有 image-cache 运行时缓存，不进入预缓存清单，避免拖慢 SW 安装
+                    globIgnores: [
+                        '**/img/**',
+                        '**/bg/**',
+                        // 重型懒加载库不预缓存，避免安装 SW 时下载数 MB
+                        '**/vendor.highlight-*.js',
+                        '**/vendor.pdf-*.js',
+                        '**/vendor.mammoth-*.js'
+                    ],
+                    // 关闭离线导航回退，保证每次导航都拿到最新入口 HTML
+                    navigateFallback: undefined,
+                    cleanupOutdatedCaches: true,
+                    skipWaiting: true,
+                    clientsClaim: true,
                     maximumFileSizeToCacheInBytes: 5000000, // 5MB
-                    // 优化缓存策略：优先缓存导航数据和文章
+                    // 数据类资源一律 NetworkFirst：先取网络最新数据，失败或超时才回退缓存
                     runtimeCaching: [
                         {
+                            // SPA 导航请求：在线拿最新 HTML，离线回退缓存，不走预缓存
+                            urlPattern: ({ request }) => request.mode === 'navigate',
+                            handler: 'NetworkFirst',
+                            options: {
+                                cacheName: 'html-cache',
+                                networkTimeoutSeconds: 3,
+                                expiration: {
+                                    maxEntries: 5,
+                                    maxAgeSeconds: 60 * 60 * 24
+                                },
+                                cacheableResponse: {
+                                    statuses: [0, 200]
+                                }
+                            }
+                        },
+                        {
                             urlPattern: /^.*\/generated\/.*\.json$/i,
-                            handler: 'StaleWhileRevalidate',
+                            handler: 'NetworkFirst',
                             options: {
                                 cacheName: 'nav-data-cache',
+                                networkTimeoutSeconds: 5,
                                 expiration: {
                                     maxEntries: 10,
                                     maxAgeSeconds: 60 * 60 * 24 // 24 小时
@@ -86,9 +154,10 @@ export default defineConfig((config) => {
                         },
                         {
                             urlPattern: /^.*\/content\/.*$/i,
-                            handler: 'CacheFirst',
+                            handler: 'NetworkFirst',
                             options: {
                                 cacheName: 'article-content-cache',
+                                networkTimeoutSeconds: 10,
                                 expiration: {
                                     maxEntries: 50,
                                     maxAgeSeconds: 60 * 60 * 24 * 7 // 7 天
@@ -115,20 +184,23 @@ export default defineConfig((config) => {
                     ]
                 },
                 strategies: 'generateSW',
-                filename: `sw-${Date.now()}.js`,
+                filename: `sw-${buildVersion}.js`,
                 manifest: {
-                    name: SITE_CONFIG.title,
-                    short_name: SITE_CONFIG.title,
-                    description: SITE_CONFIG.description,
-                    theme_color: '#ffffff',
+                    name: site.title,
+                    short_name: site.title,
+                    description: site.description,
+                    start_url: base,
+                    scope: base,
+                    lang: 'zh-CN',
+                    theme_color: '#fff7ed',
                     icons: [
                         {
-                            src: '/img/192x192.png',
+                            src: `${base}img/192x192.png`,
                             sizes: '192x192',
                             type: 'image/png',
                         },
                         {
-                            src: '/img/512x512.png',
+                            src: `${base}img/512x512.png`,
                             sizes: '512x512',
                             type: 'image/png',
                         },
@@ -164,7 +236,7 @@ export default defineConfig((config) => {
                 interop: 'auto',
                 externals: cdnConfig.global
             }),
-            openCdn && vitePluginCdn(base),
+            openCdn && vitePluginCdn(base, buildVersion),
             createHtmlPlugin({
                 minify: true,
                 // template: './index.html',
@@ -175,15 +247,27 @@ export default defineConfig((config) => {
                         cssList: cdnConfig.css || [],
                         mainJsList: cdnConfig.mainJs || [],
                         jsList: cdnConfig.js || [],
+                        // 按需库（PDF / Word / 代码高亮）：写入 window.PJ_LAZY_LIBS，不参与首屏加载
+                        lazyLibs: cdnConfig.lazy || {},
                         PJ_BLOG_NAV_NAME,
-                        PJ_BLOG_TREE_NAME
+                        PJ_BLOG_TREE_NAME,
+                        buildVersion,
+                        basePath: base,
+                        // 站点文案统一来源于 constants
+                        siteTitle: site.title,
+                        siteIcon: site.icon,
+                        siteUrl: site.url,
+                        loadingText: site.loadingText,
+                        jsDisabledNotice: site.jsDisabledNotice,
+                        globalTexts: site.publicTexts
                     }
                 }
             }),
-            isProduction&&versionPlugin (),
+            isProduction&&versionPlugin (buildVersion),
             autoPasswordHashPlugin(),
-            rssPlugin(),
-            sitemapPlugin(),
+            rssPlugin(site),
+            sitemapPlugin(site),
+            isProduction && inject404BasePlugin(base),
         ].filter(Boolean),
         assetsInclude: ['**/*.pdf', '**/*.doc', '**/*.docx', '**/*.xls', '**/*.xlsx'],
         server: {
@@ -267,9 +351,20 @@ export default defineConfig((config) => {
                                 const pkgName = getPkg(id, 'node_modules', 'vendor.others')
                                 if (externalsKey.includes(pkgName)) {
                                     return `vendor.${pkgName}`
-                                } else {
-                                    return 'vendor.more'
                                 }
+                                // Markdown 解析 / 净化只在文章详情页使用，单独拆出避免进入首屏共享 chunk
+                                if (MARKDOWN_PKGS.includes(pkgName)) {
+                                    return 'vendor.markdown'
+                                }
+                                // 代码高亮 / PDF / Word 解析器：仅异步 chunk 引用
+                                const heavyChunk = HEAVY_PKGS[pkgName]
+                                if (heavyChunk) {
+                                    return heavyChunk
+                                }
+                                if (MAMMOTH_PKGS.has(pkgName)) {
+                                    return 'vendor.mammoth'
+                                }
+                                return 'vendor.more'
                             }
                             if (id.includes('src/utils')) {
                                 return `pjt.tool`
@@ -300,32 +395,37 @@ function getPkg(id: string, path: string, def: string) {
     return match[0].replace(/^@/, '').replace(/\//, '-')
 }
 
-function generateRandomString(haveMin:boolean= false): string {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-
-    if(haveMin){
-        return `_${year}${month}${day}${hours}${minutes}`;
-    }else{
-        return `_${year}${month}${day}${hours}`;
+/** 把 404.html 中的 __BASE_PATH__ 替换为构建时的部署基础路径 */
+function inject404BasePlugin (base: string): Plugin {
+  let outDir = 'dist'
+  return {
+    name: 'pjfun:inject-404-base',
+    apply: 'build',
+    configResolved (config) {
+      outDir = path.resolve(config.root, config.build.outDir || 'dist')
+    },
+    async closeBundle () {
+      const file = path.resolve(outDir, '404.html')
+      try {
+        const html = await readFile(file, 'utf-8')
+        await writeFile(file, html.split('__BASE_PATH__').join(base), 'utf-8')
+      } catch (error) {
+        console.warn('[404-base] 404.html 处理失败：', error)
+      }
     }
+  }
 }
 
-function versionPlugin (): Plugin  {
-    return {
+function versionPlugin (version: string): Plugin  {    return {
         name: 'generate-version',
         apply: 'build',
         async generateBundle (_, bundle) {
-            const version = {
-                v: Date.now()
+            const payload = {
+                v: version
             }
             bundle['version.json'] = {
                 fileName: 'version.json',
-                source: JSON.stringify(version, null, 2),
+                source: JSON.stringify(payload, null, 2),
                 type: 'asset' as const,
                 name: undefined,
                 names: [],

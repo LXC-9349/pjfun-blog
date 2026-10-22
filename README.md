@@ -1,1544 +1,558 @@
-# PJ Blog - 现代化个人博客系统
+# PJ Blog - 零后端纯静态博客系统
 
-<div align="center" style="display: flex;gap: 2px; justify-content: center; align-items: center;">
-
-  <img src="https://img.shields.io/badge/Vue-3.x-brightgreen" alt="Vue Version">
-  <img src="https://img.shields.io/badge/TypeScript-Support-blue" alt="TypeScript">
-  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
-   <a target="_blank" style="display: grid" href="https://zread.ai/LXC-9349/pjfun-blog">
-   <img src="https://img.shields.io/badge/Ask_Zread-_.svg?style=flat&color=00b0aa&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTg0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff" alt="License">
-   </a>  
-</div>
 <div align="center">
-    <p>
-        <a href="https://github.com/LXC-9349/pjfun-blog/blob/main/README.md">简体中文</a> | <a href="https://github.com/LXC-9349/pjfun-blog/blob/main/README.en.md">English</a> | <a href="https://pjfun.top">主页</a>
-    </p>
+
+  <img src="https://img.shields.io/badge/Vue-3.5-brightgreen" alt="Vue Version">
+  <img src="https://img.shields.io/badge/TypeScript-5.9-blue" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Vite-7-purple" alt="Vite">
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
+  <a href="https://zread.ai/LXC-9349/pjfun-blog">
+    <img src="https://img.shields.io/badge/Ask_Zread-_.svg?style=flat&color=00b0aa&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTg0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff" alt="Ask Zread">
+  </a>
+
+  <p>
+    <a href="README.md">简体中文</a> | <a href="README.en.md">English</a> | <a href="https://cnblog.pjfun.top">在线示例</a>
+  </p>
 </div>
 
 [![zread](https://img.shields.io/badge/Ask_Zread-_.svg?style=for-the-badge&color=00b0aa&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTg0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff)](https://zread.ai/LXC-9349/pjfun-blog)
 
 
-## 🌟 简介
+## 🌟 项目简介
 
-PJ Blog 是一个零后端、纯静态、顶级动效、全球秒开的现代化个人博客系统。它采用最新的前端技术栈构建，具有响应式设计、暗黑模式、平滑滚动、动画效果等特性，让你轻松拥有一个高性能的技术博客。
+PJ Blog 是一个**零后端、纯静态、顶级动效、全球秒开**的个人博客系统。文章以文件形式存放在 `public/content`，构建时由插件扫描成导航数据，运行时按需拉取并渲染，因此不需要数据库、不需要服务端，部署到任意静态托管即可上线。
 
-只需在 `public/content` 目录下放置 `.md`、`.html`、`.txt`、PDF、Word 或 Excel 文件 → 运行 `pnpm build` → 部署到任何静态网站托管服务即可拥有属于自己的顶级技术站。
+它不只“能写文章”：还提供主题设置（背景 / 字体 / 主题色 / 鼠标 / 飘落特效）、全屏屏保（本地视频与 B 站视频）、RSS 与 Sitemap、PWA 离线、Giscus 评论、不蒜子统计、构建版本守卫等一整套站点能力。
+
+- 在线示例：<https://cnblog.pjfun.top>
+- 英文文档：[README.en.md](README.en.md)
+- 站内完整手册（写作 / 配置 / 部署）：[public/content/2025/blog.md](public/content/2025/blog.md)
+- 更新日志：[change.md](change.md)
+
+## ✨ 功能特性
+
+### 内容与格式
+
+- **多格式文档** — Markdown / HTML / TXT / PDF / Word / Excel 统一管理
+- **Markdown 增强** — YAML Frontmatter、GFM 标题锚点、代码高亮、表格
+- **非 Markdown 元数据** — 同名 `.desc.json` / `.desc.yaml` 配置标题、封面、标签
+- **自动目录树** — 构建时扫描目录生成 `nav.json` / `tree.json`
+- **置顶与标签** — `sticky` 置顶、标签筛选、热门标签自动统计
+- **草稿忽略** — 以 `_` 开头的文件或目录不会被收录
+
+### 外观与动效
+
+- **主题设置面板** — 背景、字体、主题色、鼠标样式、页面特效、屏保六个分组
+- **13 种字体** — 系统字体与 10 种在线中文字体（jsdmirror 主源、unpkg 降级）
+- **主题色实时调节** — HSL 滑杆 + 6 套预设，全站色阶同步变化
+- **背景系统** — `public/bg` 自动扫描、双层交叉淡入、自动轮播、Ken Burns 缩放、遮罩浓度
+- **飘落特效** — 银杏 / 樱花 / 枫叶 / 梅花 / 羽毛 / 星星，可多选、可调数量与速度、点击生成发光粒子
+- **屏保模式** — 全屏播放视频或图片，支持 B 站视频、静音、暂停、仅图片切换，ESC 退出
+
+### 阅读与交互
+
+- **Ctrl+K 全文搜索** — 标题 / 摘要 / 标签匹配，键盘上下选择
+- **阅读进度** — 顶部进度条 + 滚动位置记忆 + 最近浏览
+- **文章目录** — IntersectionObserver 滚动高亮
+- **代码块** — 语言标签 + 一键复制
+- **图片灯箱** — 点击放大预览
+- **上一篇 / 下一篇** — 按钮、方向键与移动端左右滑动
+- **分享面板** — 微信二维码、微博、QQ、X、Facebook、LinkedIn、Telegram、邮件
+- **归档时间线** — 年份徽章 + 月份圆点
+- **收藏夹** — 本地存储收藏，移动端抽屉布局
+
+### 站点能力
+
+- **国际化** — 中英文界面一键切换
+- **Giscus 评论** — 基于 GitHub Discussions
+- **密码保护** — 构建期 PBKDF2-SHA256 哈希（10 万次迭代 + 随机盐）
+- **PWA** — 可安装、离线回退、数据请求优先走网络
+- **SEO** — 结构化数据、Open Graph、Twitter Cards、sitemap.xml
+- **RSS** — 构建生成 rss.xml / atom.xml / feed.json
+- **站点统计** — 不蒜子访客数 / 访问量 + ping0 访客信息卡
+- **版本守卫** — `version.json` 对比 + 轮询提示刷新，规避 CDN 旧缓存
+- **数据管理入口** — 一键打开 StackBlitz / GitHub.dev / VSCode.dev / Bolt.new 在线编辑
 
 ## 🚀 技术栈
 
-- [Vue 3](https://v3.vuejs.org/) - 渐进式 JavaScript 框架
-- [TypeScript](https://www.typescriptlang.org/) - JavaScript 的超集，添加了静态类型
-- [Vite](https://vitejs.dev/) - 下一代前端构建工具
-- [UnoCSS](https://unocss.dev/) - 即时按需原子 CSS 引擎
-- [Marked](https://marked.js.org/) - 高性能 Markdown 解析器
-- [Highlight.js](https://highlightjs.org/) - 代码高亮工具
-- [Vue Router](https://router.vuejs.org/) - Vue.js 官方路由管理器
-- [DOMPurify](https://github.com/cure53/DOMPurify) - DOM XSS 清理工具
-- [Giscus](https://giscus.app/zh-CN) - 基于 GitHub Discussions 的评论系统
+| 类别 | 技术 |
+| --- | --- |
+| 框架 | Vue 3.5 + TypeScript 5.9 |
+| 构建 | Vite 7 + UnoCSS 66（presetWind3） |
+| 路由 | Vue Router 4 + vite-plugin-pages（文件系统路由） |
+| Markdown | Marked 17 + marked-gfm-heading-id + DOMPurify |
+| 代码高亮 | highlight.js 11（异步加载） |
+| 文档渲染 | pdfjs-dist（PDF）、mammoth（Word）、Luckysheet + LuckyExcel（Excel，CDN 加载） |
+| 滚动与动效 | Lenis、@vueuse/motion、@vueuse/core |
+| 图标 | Iconify Carbon（按需）+ 本地 SVG sprite |
+| 评论与订阅 | Giscus、feed |
+| PWA 与优化 | vite-plugin-pwa、vite-plugin-image-optimizer、sharp |
+| 质量 | ESLint 10、Prettier 3、Vitest 4、vue-tsc |
 
-## ✨ 特性
+## 🏗️ 工作原理
 
-- 📝 **Markdown 支持** - 使用 Markdown 编写文章，支持 Frontmatter
-- 🌗 **暗黑模式** - 自动适配系统主题或手动切换
-- 🌍 **国际化** - 支持中英文切换
-- 🔍 **全文搜索** - 快速搜索文章标题、摘要和标签（支持 Ctrl+K 快捷键）
-- 🖼️ **封面图片** - 为每篇文章设置封面图
-- 🏷️ **标签系统** - 为文章添加标签，方便分类和筛选
-- 💬 **评论系统** - 集成 Giscus 评论系统
-- 📱 **响应式设计** - 适配各种设备屏幕尺寸
-- ⚡ **高性能** - 静态站点，加载速度快
-- 🎨 **精美 UI** - 使用 UnoCSS 构建现代界面
-- 📚 **目录结构** - 自动生成文章目录树
-- 📈 **阅读时长** - 自动计算文章阅读时间
-- 📤 **代码复制** - 一键复制代码块
-- 🔝 **回到顶部** - 滚动时显示回到顶部按钮
-- 📖 **置顶文章** - 支持文章置顶功能
-- 📋 **文章目录** - 自动生成文章内目录导航
-- 🖼️ **图片灯箱** - 点击文章图片可放大预览
-- 📏 **字体大小调节** - 可在三种字体大小间切换
-- ⚙️ **SEO优化** - 支持结构化数据、Open Graph和Twitter Cards
-- 📡 **RSS支持** - 自动生成RSS、Atom和JSON Feed
-- 📱 **PWA支持** - 可安装为桌面应用
-- 🌐 **多格式支持** - 支持 Markdown、HTML、TXT、PDF、Word 和 Excel 文档
+**构建阶段**（`pnpm build`）：
 
-## ⚙️ 环境变量配置
-
-PJ Blog 支持通过环境变量自定义站点配置，无需修改代码即可个性化您的博客。
-
-### 站点基本信息
-
-在 `.env` 文件中配置以下变量：
-
-```env
-# 站点图标（显示在浏览器标签页）
-VITE_SITE_ICON=Pj
-
-# 站点标题
-VITE_SITE_TITLE=我的博客
-
-# 站点描述（用于 SEO）
-VITE_SITE_DESCRIPTION=一个现代化的个人博客和技术分享平台
-
-# 作者名称
-VITE_SITE_AUTHOR=张三
-
-# 站点关键词（用逗号分隔，用于 SEO）
-VITE_SITE_KEYWORDS=博客,技术分享,前端开发,Vue,TypeScript
-
-# 联系邮箱
-VITE_SITE_EMAIL=your-email@example.com
+```
+public/content 扫描 ──→ nav-version-<ver>.json / tree-version-<ver>.json
+public/bg 扫描     ──→ bg/backgrounds.json（jpg/png 转 WebP）
+BLOG_PASSWORD ──→ PBKDF2 哈希（明文不进入产物）
+依赖外置           ──→ vue / vue-router 多 CDN fallback 注入
+文章与站点数据     ──→ rss.xml / atom.xml / feed.json / sitemap.xml
+构建版本           ──→ __APP_VERSION__、version.json、sw-<ver>.js
 ```
 
-### 社交链接
+**运行阶段**：
 
-配置社交媒体链接，显示在页脚等位置：
+1. `vite-plugin-pages` 生成 `/`、`/archive`、`/favorites` 等路由，其余路径交给 `articleDetail.vue` 兜底
+2. 文章页先读取导航数据，按路径匹配文章 URL，再拉取原始文件（URL 带构建版本号，天然规避旧缓存）
+3. Markdown 经 `marked` 解析、`DOMPurify` 清洗、`highlight.js` 高亮后渲染；PDF / Word / Excel 走各自的预览组件
 
-```env
-# GitHub 仓库地址
-VITE_SOCIAL_GITHUB=https://github.com/yourusername/your-repo
+## ⚡ 快速开始
 
-# Telegram 频道
-VITE_SOCIAL_TELEGRAM=https://t.me/your-channel
-```
+### 环境要求
 
-### 页脚链接
+- Node.js ≥ 20（CI 使用 Node 20）
+- pnpm（仓库包含 `pnpm-lock.yaml`）
 
-```env
-# 页脚 GitHub 链接
-VITE_FOOT_GITHUB=https://github.com/yourusername/your-repo
-```
+### 一键启动（含 Node.js 自动安装）
 
-### Giscus 评论系统配置
+| 系统 | 操作 |
+| --- | --- |
+| Windows | 双击仓库根目录的 `start.bat`（或在终端执行 `start.bat`） |
+| Linux / macOS | 执行 `bash start.sh`（首次可先 `chmod +x start.sh`） |
 
-通过 [giscus.app](https://giscus.app/zh-CN) 获取配置信息后，在 `.env` 文件中设置：
+脚本会依次完成：检测 Node.js（缺失时下载免安装版到项目 `.tools/`，**不需要管理员 / sudo**）→ 检测 pnpm（缺失时依次尝试 corepack、`npm install -g pnpm`）→ 安装依赖 → 由 `.env.example` 生成 `.env` → 准备草稿目录 → 启动开发服务器并打开 <http://localhost:1022/>。
 
-```env
-# 是否启用评论系统 (true/false)
-VITE_GISCUS_ENABLED=true
-
-# GitHub 仓库 (owner/repo)
-VITE_GISCUS_REPO=yourusername/your-repo
-
-# 仓库 ID
-VITE_GISCUS_REPO_ID=R_kgDOxxxxxxxxx
-
-# Discussion 分类
-VITE_GISCUS_CATEGORY=Announcements
-
-# 分类 ID
-VITE_GISCUS_CATEGORY_ID=DIC_kwDOxxxxxxxxx
-
-# 映射方式 (pathname, url, title, og:title, specific)
-VITE_GISCUS_MAPPING=pathname
-
-# 严格匹配 (true/false)
-VITE_GISCUS_STRICT=false
-
-# 启用反应 (true/false)
-VITE_GISCUS_REACTIONS=true
-
-# 发送元数据 (true/false)
-VITE_GISCUS_METADATA=false
-
-# 输入框位置 (top, bottom)
-VITE_GISCUS_POSITION=top
-
-# 语言 (zh-CN, en, 等)
-VITE_GISCUS_LANG=zh-CN
-```
-
-### 热门标签配置
-
-自定义首页显示的热门标签列表（逗号分隔）：
-
-```env
-VITE_HOT_TAGS=Vue,React,前端开发,TypeScript,JavaScript,Node.js
-```
-
-### 配置优先级
-
-环境变量的优先级高于代码中的默认值：
-
-1. **系统环境变量**（最高优先级）
-2. **.env 文件**
-3. **代码默认值**（最低优先级）
-
-### 使用示例
-
-**场景一：快速部署自己的博客**
-
-只需修改 `.env` 文件，无需改动任何代码：
-
-```env
-VITE_SITE_TITLE=我的技术博客
-VITE_SITE_AUTHOR=李四
-VITE_SOCIAL_GITHUB=https://github.com/lisi/my-blog
-```
-
-**场景二：不同环境使用不同配置**
-
-创建多个环境文件：
-
-- `.env.development` - 开发环境配置
-- `.env.production` - 生产环境配置
-- `.env.staging` - 测试环境配置
-
-**场景三：CI/CD 中动态配置**
-
-在 GitHub Actions 或其他 CI/CD 平台中设置环境变量：
-
-```yaml
-# .github/workflows/deploy.yml
-env:
-  VITE_SITE_TITLE: ${{ secrets.SITE_TITLE }}
-  VITE_SITE_AUTHOR: ${{ secrets.SITE_AUTHOR }}
-```
-
-### 完整配置示例
-
-查看 `.env.example` 文件获取所有可配置的环境变量及其默认值。
-
-## 🔐 密码保护功能
-
-博客支持密码保护功能，可以通过环境变量启用。
-
-### 启用密码保护
-
-在各个pages中配置环境变量或者在.env中配置：
-
-```env
-# 方式一（推荐）：设置明文密码，构建时会自动生成SHA256哈希
-VITE_BLOG_PASSWORD=your_password_here
-
-# 方式二：直接设置预生成的SHA256哈希值
-VITE_BLOG_PASSWORD_HASH=your_sha256_password_hash_here
-```
-
-**⚠️ 优先级说明：**
-- **`VITE_BLOG_PASSWORD` 优先级高于 `VITE_BLOG_PASSWORD_HASH`**
-- 如果同时设置了两个变量，系统会优先使用 `VITE_BLOG_PASSWORD`，并忽略 `VITE_BLOG_PASSWORD_HASH`
-- 建议只使用其中一种方式，避免混淆
-
-### 生成密码哈希
-
-#### 方法一：自动哈希（推荐）
-只需在 `.env` 文件中设置 `VITE_BLOG_PASSWORD` 为明文密码，构建时会自动生成 SHA256 哈希值。
-
-```env
-VITE_BLOG_PASSWORD=your_password_here
-```
-
-#### 方法二：手动生成哈希
-如果需要手动生成哈希值，可以使用以下方法：
-
-##### 使用项目脚本生成SHA256密码哈希
 ```bash
-node scripts/generate-password-hash.js your_password_here
+# Windows
+start.bat            # 搭建并启动
+start.bat check      # 只检查环境，不写文件
+start.bat setup      # 只搭建环境
+start.bat build      # 搭建环境 + 生产构建
+
+# Linux / macOS
+bash start.sh            # 搭建并启动
+bash start.sh check      # 只检查环境
+bash start.sh setup      # 只搭建环境
+bash start.sh build      # 搭建环境 + 生产构建
+PJ_NODE_VERSION=22.14.0 bash start.sh   # 指定需要安装的 Node 版本
 ```
-这将输出密码的 SHA256 哈希值，您需要将该值添加到 `.env` 文件中的 `VITE_BLOG_PASSWORD_HASH` 变量。
 
-##### 使用在线工具生成SHA256密码哈希
-- [https://www.convertstring.com/zh_CN/Hash/SHA256](https://www.convertstring.com/zh_CN/Hash/SHA256)
+说明：
 
-**步骤：**
-1. 访问上述网站
-2. 在输入框中输入您的密码
-3. 点击"Hash"按钮生成SHA256哈希值
-4. 复制生成的哈希值
-5. 将哈希值配置到环境变量中：
+- 默认安装 Node.js `22.14.0`（LTS），依次尝试 npmmirror 与 nodejs.org 镜像，可用 `PJ_NODE_VERSION` 覆盖
+- `.tools/` 已加入 `.gitignore`，下载的运行时不会污染仓库
+- Windows 若提示脚本被阻止：右键 `start.bat` → 属性 → 解除锁定；若 PowerShell 策略受限，用 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\bootstrap-node.ps1 -Version 22.14.0 -Dest .tools` 手动下载
+- 已安装过 Node / pnpm 的机器会直接复用，不会重复下载
+
+### 手动安装与运行
+
+```bash
+# 安装依赖
+pnpm install
+
+# 一键环境搭建（依赖 + .env + 草稿目录）
+pnpm bootstrap
+
+# 一键环境搭建并启动开发服务器
+pnpm start
+
+# 环境就绪后直接启动
+pnpm dev
+
+# 生产构建：先类型检查，再输出到 dist/
+pnpm build
+
+# 本地预览构建产物
+pnpm preview
+```
+
+> 启动后访问 <http://localhost:1022/>。首页右上角的钢笔按钮可进入创作台 `/studio`（仅开发环境显示）。
+
+### 常用脚本
+
+| 命令 | 作用 |
+| --- | --- |
+| `start.bat` / `bash start.sh` | 系统级一键启动（含 Node.js 自动安装） |
+| `pnpm start` | 一键环境搭建并启动开发服务器 |
+| `pnpm bootstrap` | 一键环境搭建（依赖 + `.env` + 草稿目录） |
+| `pnpm dev` | 启动开发服务器 |
+| `pnpm build` | `vue-tsc -b` 类型检查 + 生产构建 |
+| `pnpm preview` | 预览 `dist` |
+| `pnpm content:new` | 新建文章（支持 `--dir / --tags / --draft`） |
+| `pnpm content:check` | 批量检查文章、附件与路由冲突 |
+| `pnpm content:publish` | 把草稿发布到指定分类 |
+| `pnpm lint` / `pnpm lint:check` | ESLint 自动修复 / 仅检查 |
+| `pnpm format` / `pnpm format:check` | Prettier 格式化 / 检查 |
+| `pnpm test` / `pnpm test:run` | Vitest 监视 / 单次运行 |
+
+## ⚙️ 环境变量
+
+复制 `.env.example` 为 `.env` 后修改（`pnpm bootstrap` 会自动完成）。变量优先级：**系统环境变量 > `.env.*` 文件 > `src/constants` 代码默认值**。常用参数也可以直接在创作台「站点参数」页编辑。
+
+### 构建与站点
+
+| 变量 | 默认值 | 说明 |
+| --- | --- | --- |
+| `VITE_BASE` | `/` | 部署基础路径，子路径部署时必改（如 `/pjfun-blog/`） |
+| `VITE_APP_VERSION` | 空 | 页脚展示的语义化版本；留空显示构建日期 |
+| `VITE_SITE_ICON` | `Pj` | 站点图标首字符 |
+| `VITE_SITE_TITLE` | `Pjfun Blog` | 站点标题（标签页 / PWA） |
+| `VITE_SITE_DESCRIPTION` | 见 `.env.example` | SEO 与 PWA 描述 |
+| `VITE_SITE_AUTHOR` | `Simon` | 作者 |
+| `VITE_SITE_KEYWORDS` | 见 `.env.example` | SEO 关键词，英文逗号分隔 |
+| `VITE_SITE_EMAIL` | `admin@pjfun.com` | 页脚邮箱 |
+| `VITE_SITE_URL` | `https://pjfun.top` | 站点域名，供 RSS / sitemap / 结构化数据使用 |
+
+### 文案与链接
+
+| 变量 | 说明 |
+| --- | --- |
+| `VITE_LOADING_TEXT` | 首屏加载文案 |
+| `VITE_JS_DISABLED_NOTICE` | 禁用 JS 提示 |
+| `VITE_RESOURCE_LOAD_FAILED_TEXT` | CDN 资源加载失败提示 |
+| `VITE_REFRESH_REQUIRED_TEXT` | 需要刷新页面提示 |
+| `VITE_SOCIAL_GITHUB` | GitHub 仓库，同时用于解析在线编辑器地址 |
+| `VITE_SOCIAL_TELEGRAM` | Telegram 链接 |
+| `VITE_FOOT_GITHUB` | 页脚 GitHub 链接 |
+| `VITE_HOT_RANK_URL` | 首页「热榜新闻」入口地址 |
+
+### 评论、统计与标签
+
+| 变量 | 默认值 | 说明 |
+| --- | --- | --- |
+| `VITE_GISCUS_ENABLED` | `true` | 是否启用评论 |
+| `VITE_GISCUS_REPO` / `VITE_GISCUS_REPO_ID` | 见 `.env.example` | 评论仓库与 ID |
+| `VITE_GISCUS_CATEGORY` / `VITE_GISCUS_CATEGORY_ID` | 见 `.env.example` | Discussion 分类 |
+| `VITE_GISCUS_MAPPING` | `pathname` | 文章映射方式 |
+| `VITE_GISCUS_STRICT` / `REACTIONS` / `METADATA` | `false` / `true` / `false` | 严格匹配、表情回应、元数据 |
+| `VITE_GISCUS_POSITION` / `VITE_GISCUS_LANG` | `top` / `zh-CN` | 输入框位置与语言 |
+| `VITE_BUSUANZI_ENDPOINT` | 官方接口 | 不蒜子统计接口 |
+| `VITE_PING0_IMAGE_URL` | `https://ping0.cc/img1` | 访客信息图地址 |
+| `VITE_HOT_TAGS` | 空 | 手动热门标签；留空按频次自动生成 |
+| `VITE_HOT_TAGS_LIMIT` | `12` | 自动生成上限 |
+
+### 外观默认值
+
+`VITE_DEFAULT_*` 系列用于设置**首次访问的默认外观**：背景、字体、鼠标样式、主题色（HSL）、背景轮播、Ken Burns、遮罩、飘落特效的类型 / 数量 / 速度 / 层级。浏览器中已保存的用户配置优先级更高，用户可在「主题设置」面板随时覆盖。
+
+完整键名、取值范围与可选值见 [.env.example](.env.example)。
+
+## 🎛️ 系统参数
+
+除环境变量外，站点行为由 `src/constants` 下的文件集中管理（`index.ts` 仅做统一出口）。修改后需重新构建。
+
+| 文件 | 主要内容 |
+| --- | --- |
+| `site.ts` | 站点信息、Giscus、统计接口、热榜入口 |
+| `appearance.ts` | 外观默认值 `APPEARANCE_DEFAULTS`、可调范围 `APPEARANCE_LIMITS`、字体清单、主题色预设、鼠标预设、字体 CDN |
+| `screensaver.ts` | 屏保切换间隔、全屏开关、视频源（直链 MP4 / B 站 BV 号）、超时与重试 |
+| `home.ts` | 首页分页 12 篇、滚动阈值、背景轮播最小间隔、加载冷却 |
+| `search.ts` | 搜索缓存 5 分钟、最多 10 条、180ms 防抖 |
+| `article.ts` | 阅读进度节流 3s、滑动阈值 60px、目录生成延迟 200ms |
+| `ui.ts` | 对话框层级、Toast 时长、滚动条隐藏延时、回到顶部时长 |
+| `effects.ts` | 粒子鼠标避让半径、发光粒子上限、点击生成数量、DPR 上限 |
+| `preview.ts` | Luckysheet / LuckyExcel / jQuery 版本、PDF worker 多源 |
+| `security.ts` | PBKDF2 迭代次数与密钥长度 |
+| `bilibili.ts` | B 站代理地址、解析接口、超时与直链缓存 |
+| `misc.ts` | 热门标签上限、版本检查间隔 245s、稍后提醒 30 分钟 |
+| `storage.ts` | 全部 localStorage 键名与条数上限 |
+| `i18n.ts` | 中英文文案 |
+
+站内文章《PJ Blog 完整手册》（`public/content/2025/blog.md`）收录了本 README 的全部内容（项目简介、快速开始、内容写作与创作台、部署上线），并展开每个参数的默认值、取值范围与调优建议。
+
+## ✍️ 内容管理
+
+### 本地创作台（Studio）
+
+开发环境内置可视化写作台：首页右上角钢笔按钮，或直接访问 <http://localhost:1022/studio>。它仅在 `pnpm dev` 下存在，生产构建不会打包相关代码。
+
+- **三栏工作区**：左侧文章树（支持搜索、草稿箱）/ 中间 Markdown 编辑 + 实时预览 / 右侧文章设置与发布
+- **新建文章**：标题自动转拼音 slug，分类可直接输入新目录；支持先存草稿（`public/content/_drafts`，构建时自动忽略）
+- **封面**：点击上传、`Ctrl+V` 粘贴或拖入图片，统一保存到 `public/img/covers/`
+- **正文图片**：编辑区粘贴截图会自动保存到 `public/content/<分类>/<slug>/` 并插入引用
+- **附件**：上传 PDF / Word / Excel 后自动生成同名 `.desc.json` 元数据
+- **即时生效**：保存后 dev server 热重建导航，首页、归档、搜索立即更新，无需重启
+- **发布到线上**：先「保存版本」（git commit），再「发布到线上」（push，推送前二次确认）
+- **站点参数**：顶部「站点参数」页可编辑常用环境变量（站点信息、社交链接、外观默认值、Giscus、安全等），保存写入本地 `.env` 并自动重启
+- **部署导出**：本地 `.env` 不提交，站点参数页的「导出部署配置」可生成 `.env` / GitHub Actions YAML / JSON，并附 Vercel、EdgeOne、Netlify、Docker 的配置说明
+
+命令行写作同样可用：
+
+```bash
+pnpm content:new "文章标题" --dir 前端开发 --tags Vue,TypeScript
+pnpm content:check
+pnpm content:publish _drafts/xxx.md --dir 前端开发
+```
+
+### 支持的格式
+
+| 格式 | 扩展名 | 元数据方式 |
+| --- | --- | --- |
+| Markdown | `.md` | YAML Frontmatter |
+| HTML | `.html` | `.desc.json` / `.desc.yaml`，或 `<title>` 与 `<meta name="description">` |
+| 纯文本 | `.txt` | `.desc.json` / `.desc.yaml`，首行作为标题 |
+| PDF | `.pdf` | `.desc.json` / `.desc.yaml` |
+| Word | `.docx` | `.desc.json` / `.desc.yaml` |
+| Excel | `.xlsx` | `.desc.json` / `.desc.yaml` |
+
+### Markdown Frontmatter
+
+```markdown
+---
+title: 文章标题
+date: 2025-12-05
+cover: /img/d1.webp
+desc: 文章摘要，显示在首页卡片
+tags: [Vue, TypeScript, 教程]
+sticky: true
+---
+
+正文从这里开始。
+```
+
+| 字段 | 必填 | 说明 |
+| --- | --- | --- |
+| `title` | 否 | 缺省使用文件名 |
+| `date` | 否 | 缺省使用文件修改时间 |
+| `cover` | 否 | 封面图路径；留空时按格式回退到内置占位图 |
+| `desc` | 否 | 摘要；缺省取正文首行前 120 字符 |
+| `tags` | 否 | 标签数组 |
+| `sticky` | 否 | `true` 置顶 |
+
+### 非 Markdown 元数据
+
+与文档**同名**创建配置文件，例如 `sample.pdf` 对应 `sample.pdf.desc.json`：
+
+```json
+{
+  "title": "示例 PDF 文档",
+  "date": "2025-12-19",
+  "cover": "/img/d5.webp",
+  "tags": ["PDF", "阅读"],
+  "excerpt": "显示在首页卡片的摘要",
+  "sticky": false
+}
+```
+
+> 注意：非 Markdown 文件的摘要字段是 `excerpt`（Markdown 用的是 `desc`）。
+
+### 目录组织
+
+```
+public/content/
+├── 2025/
+│   ├── blog.md
+│   ├── pdf/     example.pdf + example.pdf.desc.json
+│   ├── word/    example.docx
+│   └── excel/   example.xlsx
+├── 前端开发/
+│   ├── vue3-reactivity-deep-dive.md
+│   └── typescript-advanced-patterns.md
+└── 笔记/
+    └── 读书笔记.md
+```
+
+- 目录层级即导航树层级，建议不超过 3 层
+- 文件名即路由（`/前端开发/vue3-reactivity-deep-dive`），日期与封面由元数据决定
+- 以 `_` 开头的文件或目录会被构建忽略，可用于存放草稿
+- 删除或重命名文章后重新构建即可，导航数据每次构建都会重建
+
+### 图片资源
+
+- 公共图片：`public/img/`，引用 `/img/d1.webp`
+- 封面上传：`public/img/covers/`，由创作台自动命名，引用 `/img/covers/xxx.png`
+- 文章专属图片：与文章同目录建文件夹，引用 `/content/2025/文章名/a.png`
+- 背景图：`public/bg/`，构建时自动扫描并转 WebP（最大宽 1920，质量 82），无需手写清单
+
+## 🌈 主题与屏保
+
+首页右上角「主题设置」按钮打开面板，包含六个分组：
+
+| 分组 | 可调项 |
+| --- | --- |
+| 背景 | 选择 `public/bg` 中的图片、遮罩浓度、自动轮播与间隔、缓慢缩放 |
+| 字体 | 系统默认 / 系统宋体 / 系统楷体 + 10 种在线中文字体，带预览与失败回退 |
+| 主题色 | 6 套预设 + 色相 / 饱和度 / 明度滑杆，全站色阶实时同步 |
+| 特效 | 飘落粒子类型（多选）、数量、旋转 / 水平 / 垂直速度、飘摆幅度、显示层级 |
+| 鼠标 | 系统默认、精致箭头、主题圆点、主题光环、主题准星、系统十字 |
+| 屏保 | 启动全屏屏保、设置说明与特效提示 |
+
+屏保默认播放视频（直链 MP4 与 B 站 BV 号，配置在 `src/constants/screensaver.ts`），可在屏保内切换「仅图片」、静音、暂停、下一张，按 ESC 或右上角关闭退出。视频加载失败会自动跳过并重试，B 站代理失败时回退第三方直链解析。
+
+个性化设置保存在浏览器 `localStorage`（`pjfun_blog_appearance`），不会影响其他访客。
+
+## 🔐 密码保护
+
+两种配置方式，二选一：
 
 ```env
-VITE_BLOG_PASSWORD_HASH=your_generated_sha256_hash_here
+# 方式一（推荐）：明文密码，构建时生成 PBKDF2-SHA256 哈希（10 万次迭代 + 128 位随机盐）
+# 注意：明文密码不要加 VITE_ 前缀，否则会被 Vite 打包进前端产物
+BLOG_PASSWORD=your_password
+
+# 方式二：直接填哈希
+# PBKDF2 格式：iterations$salt_base64$hash_base64
+# 兼容旧版 64 位 SHA256 十六进制
+VITE_BLOG_PASSWORD_HASH=your_hash
 ```
 
-#### 安全提醒
-⚠️ **重要**: 使用在线工具存在安全风险，因为您的密码会通过网络传输。建议仅在开发测试环境中使用，在生产环境中应使用本地脚本生成或直接使用 `VITE_BLOG_PASSWORD` 让系统自动生成哈希。
+- `BLOG_PASSWORD` 存在时优先使用，并覆盖 `VITE_BLOG_PASSWORD_HASH`
+- 旧版 `VITE_BLOG_PASSWORD` 仍兼容，但会在构建时从客户端环境移除，建议改用 `BLOG_PASSWORD`
+- 两项都为空则不启用密码保护
+- 启用后，未通过验证的访问会被重定向到 `/password`，验证通过后跳回原路径
+- 生成旧版 SHA256 哈希：`node scripts/generate-password-hash.js <密码>`
+- 密码保护是纯前端的访问门槛，适合个人站点简单防护，高安全需求请使用服务端鉴权
 
-### 使用密码保护
+## 💬 评论
 
-启用密码保护后，访问博客时会跳转到密码输入页面。输入正确的密码后即可访问博客内容。
+评论由 Giscus 提供，基于 GitHub Discussions。前往 [giscus.app](https://giscus.app/zh-CN) 生成配置，填入 `.env` 的 `VITE_GISCUS_*` 系列变量即可。`VITE_GISCUS_ENABLED=false` 可完全关闭。
 
-### 安全注意事项
+## 🧱 构建产物与缓存策略
 
-- 我们现在使用 SHA256 哈希算法来存储密码，比以前的明文存储更加安全
-- 生产环境中请使用强密码
-- 密码保护仅适用于简单场景，对于高安全性需求建议使用专业解决方案
+项目针对「静态托管 + CDN」做了完整的缓存规避设计：
+
+- **统一构建版本**：`PJ_BUILD_VERSION`（毫秒时间戳）同时注入 `__APP_VERSION__`、`version.json`、`sw-<ver>.js`
+- **数据文件版本化**：导航与目录数据输出为 `nav-version-<ver>.json`、`tree-version-<ver>.json`，每次发布都是全新 URL
+- **首屏版本守卫**：`index.html` 内联脚本对比 `version.json`，发现入口 HTML 落后时带版本参数重载（`sessionStorage` 防死循环）
+- **运行期轮询**：每 245 秒检查一次新版本，提示「立即更新 / 稍后提醒（30 分钟）」
+- **PWA 策略**：注册代码内联；不预缓存 `index.html`、`bg/`、`img/` 与重型 vendor chunk；关闭 `navigateFallback`
+- **运行时缓存**：导航 JSON 与文章内容 NetworkFirst，图片 CacheFirst（30 天）
+- **CDN 外置**：生产构建将 `vue`、`vue-router` 外置，按 jsdelivr → unpkg → esm.sh 及多个镜像依次回退；开发模式不启用
+- **代码分割**：Markdown 解析、highlight.js、pdfjs-dist、mammoth 各自独立 chunk，不进入首屏
+- **图片优化**：`vite-plugin-image-optimizer` 压缩资源；背景图构建期转 WebP 并清理原图
+
+## 🚀 部署
+
+构建产物在 `dist/`，包含 `index.html`、`static/`、`content/`、`bg/`、`rss.xml`、`atom.xml`、`feed.json`、`sitemap.xml`、`version.json`、`sw-<ver>.js`。
+
+| 平台 | 方式 | 说明 |
+| --- | --- | --- |
+| Vercel | [一键部署](https://vercel.com/new/clone?repository-url=https://github.com/LXC-9349/pjfun-blog) | 示例：<https://pjfun-blog.vercel.app/> |
+| EdgeOne Pages（国内） | [一键部署](https://console.cloud.tencent.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog) | 示例：<https://cnblog.pjfun.top/> |
+| EdgeOne Pages（国际） | [一键部署](https://console.tencentcloud.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog) | `esa.jsonc` 已配置 SPA 回退 |
+| Cloudflare Workers | [一键部署](https://deploy.workers.cloudflare.com/?url=https://github.com/LXC-9349/pjfun-blog/tree/main) | `wrangler.jsonc` 指向 `dist` |
+| Netlify | [一键部署](https://app.netlify.com/start/deploy?repository=https://github.com/LXC-9349/pjfun-blog) | `netlify.toml` 已配置构建命令 |
+| GitHub Pages | 推送 `main` 自动部署 | `.github/workflows/deploy.yml`，需设置 `VITE_BASE` |
+| Docker / Nginx | `docker build` + `deploy/nginx.conf` | 见下 |
+
+### GitHub Pages
+
+工作流已设置 `VITE_BASE: /pjfun-blog/`。如果你把仓库改名为其他名称，需同步修改该值，否则会出现白屏或资源 404。仓库 Settings → Pages → Source 选择 **GitHub Actions** 即可。
+
+### Docker
+
+```bash
+# .env 在构建阶段被复制进构建上下文；运行时容器只提供静态文件
+docker build -t pjfun-blog .
+docker run -d --restart=always --name blog -p 1022:80 pjfun-blog
+
+# 或使用 compose
+docker compose up -d
+```
+
+镜像基于 Nginx，`deploy/nginx.conf` 已包含 SPA 回退与静态资源缓存策略。修改 `.env` 后需要重新 `docker build`。
 
 ## 📁 项目结构
 
 ```
 pjfun-blog/
 ├── public/
-│   └── content/           # 文章目录 (支持 Markdown, HTML, TXT, PDF, Word, Excel)
-│       ├── 2025/
-│       ├── 学习/
-│       ├── 教程/
-│       └── 笔记/
+│   ├── bg/                     # 背景图，构建时自动生成 backgrounds.json 并转 WebP
+│   ├── content/                # 全部文章与文档（_drafts 为草稿）
+│   ├── generated/              # 构建产物：nav.json / tree.json（版本化文件名）
+│   ├── img/                    # 公共图片、PWA 图标；covers/ 为创作台上传的封面
+│   ├── favicon.ico             # 站点图标（兼容浏览器默认请求 /favicon.ico）
+│   ├── 404.html
+│   └── pj_public.js            # CDN 加载与多源回退
 ├── src/
-│   ├── assets/            # 静态资源
-│   │   └── icons/         # 本地 SVG 图标
-│   ├── components/        # Vue 组件
-│   │   ├── ui/            # UI 组件
-│   │   ├── Footer.vue     # 页脚组件
-│   │   ├── GiscusComment.vue # 评论组件
-│   │   ├── NavTree.vue    # 导航树组件
-│   │   └── PasswordProtection.vue # 密码保护组件
-│   ├── constants/         # 常量配置
-│   ├── pages/             # 页面组件
-│   │   ├── archive.vue    # 归档页面
-│   │   ├── articleDetail.vue # 文章详情页
-│   │   ├── favorites.vue  # 收藏页面
-│   │   └── index.vue      # 首页
-│   ├── plugins/           # 插件
-│   ├── styles/            # 全局样式
-│   ├── utils/             # 工具函数
-│   ├── App.vue            # 根组件
-│   └── main.ts            # 入口文件
-├── package/               # 构建相关工具
-│   ├── vite-plugin-rss.ts      # RSS 生成插件
-│   └── vite-plugin-cdn.ts      # CDN 注入插件
-├── index.html             # HTML 模板
-├── uno.config.ts          # UnoCSS 配置
-├── vite.config.ts         # Vite 配置
-├── vite-plugin-gen-nav.ts # 导航生成插件
-└── vite-plugin-auto-password-hash.ts # 密码哈希插件
-```
-
-## 🚀 快速开始
-
-### 环境要求
-
-- Node.js >= 20.18.1
-- pnpm >= 7
-
-### 安装依赖
-
-```bash
-pnpm install
-```
-
-### 开发模式
-
-```bash
-pnpm dev
-```
-
-默认会在 http://localhost:1022 启动开发服务器。
-
-### 构建生产版本
-
-```bash
-pnpm build
-```
-
-构建后的文件会输出到 `dist` 目录。
-
-### 预览生产版本
-
-```bash
-pnpm preview
-```
-
-## 🐳 Docker 部署
-
-### 使用 Docker 运行
-
-如果您更喜欢使用 Docker 来部署，可以使用以下命令：
-
-```bash
-# 构建并运行 Docker 容器
-docker build -t pjfun-blog .
-docker run -d --restart=always --name blog -p 1022:80 pjfun-blog
-```
-
-### 使用 Docker Compose 运行
-
-项目还提供了 docker-compose.yml 配置文件，可以使用以下命令运行：
-
-```bash
-# 构建并启动服务
-docker-compose up -d
-
-# 查看服务状态
-docker-compose ps
-
-# 停止服务
-docker-compose down
-```
-
-### 自定义配置
-
-您可以通过环境变量来配置应用，创建 `.env` 文件来配置密码保护等功能：
-
-```bash
-# 复制 .env.example 为 .env 并根据需要修改配置
-VITE_BLOG_PASSWORD_HASH=your_sha256_password_hash_here
-VITE_BASE=/
-```
-
-在 Docker 中使用自定义环境变量：
-
-```bash
-# 使用环境变量文件
-docker run -d --restart=always --name blog -p 1022:80 --env-file .env pjfun-blog
-```
-
-或者在 docker-compose 中使用环境变量：
-
-```bash
-# 编辑 .env 文件以配置您的设置
-vim .env  # 或使用您喜欢的编辑器
-
-# 使用 docker-compose 启动服务
-docker-compose up -d
-```
-
-## 📝 写作指南
-
-### 创建新文章
-
-1. 在 `public/content/` 目录下创建 Markdown、HTML、TXT、PDF、Word 或 Excel 文件
-2. 使用以下格式编写文章元数据（仅 Markdown 支持元数据，其他格式使用 `.desc.json` 或 `.desc.yaml` 配置文件）：
-
-> 对于非 Markdown 文件（如 PDF、Word、Excel），可以创建同名的 `.desc.json` 或 `.desc.yaml` 配置文件来设置元数据。
->
-> 例如：对于 `sample.pdf` 文件，可以创建 `sample.pdf.desc.json` 配置文件：
->
-> ```json
-> {
->   "title": "示例PDF文档",
->   "date": "2025-12-05",
->   "cover": "/image/sample-pdf-cover.jpg",
->   "desc": "这是一个示例PDF文档",
->   "tags": ["PDF", "文档", "示例"],
->   "sticky": false
-> }
-> ```
-
-```
----
-title: 文章标题
-date: 2025-12-05
-cover: /image/pbsh.jpg
-desc: 文章摘要
-tags: [Vite, Vue3, UnoCSS, Marked]
-sticky: true # 可选，设置为置顶文章
----
-
-# 标题
-
-文章内容...
-
-```
-
-### 目录结构
-
-推荐按照以下方式组织文章：
-
-```
-public/content/
-├── 2025/                 # 按年份分类
-│   ├── hello.md
-│   ├── excel/
-│   │   └── 示例Excel文件.xlsx
-│   ├── pdf/
-│   │   └── 示例PDF文件.pdf
-│   └── word/
-│       └── 示例Word文件.docx
-├── 学习/                 # 按主题分类
-│   ├── Vite构建工具/
-│   │   └── advanced-configurations.md
-│   └── Vue框架/
-│       └── introduction.md
-├── 教程/
-│   └── getting-started.md
-└── 笔记/
-    └── 个人思考/
-        └── on-writing.md
-```
-
-## 📚 博客文档数据管理
-
-PJ Blog 采用文件系统作为内容管理系统，所有博客文章和文档都存储在 `public/content` 目录下。系统支持多种文件格式，并提供灵活的元数据配置方式。
-
-### 支持的文件格式
-
-| 格式 | 扩展名 | 元数据配置方式 | 说明 |
-|------|--------|----------------|------|
-| Markdown | `.md` | Frontmatter（文件头部） | 推荐使用，支持完整的元数据配置 |
-| HTML | `.html` | 同名的 `.desc.json` 或 `.desc.yaml` | 适合富文本内容 |
-| 纯文本 | `.txt` | 同名的 `.desc.json` 或 `.desc.yaml` | 简单文本内容 |
-| PDF | `.pdf` | 同名的 `.desc.json` 或 `.desc.yaml` | 内置PDF阅读器支持 |
-| Word | `.docx` | 同名的 `.desc.json` 或 `.desc.yaml` | 自动转换为HTML显示 |
-| Excel | `.xlsx` | 同名的 `.desc.json` 或 `.desc.yaml` | 内置Excel查看器支持 |
-
-### Markdown 文件元数据配置
-
-Markdown 文件使用 YAML Frontmatter 格式在文件开头定义元数据：
-
-```markdown
----
-title: 文章标题
-date: 2025-12-05
-cover: /img/d1.webp
-desc: 文章摘要描述
-tags: [Vite, Vue3, UnoCSS]
-sticky: true
----
-
-# 文章内容从这里开始
-
-你的 Markdown 内容...
-```
-
-#### 元数据字段说明
-
-| 字段 | 类型 | 必填 | 说明 | 示例 |
-|------|------|------|------|------|
-| `title` | String | ✅ | 文章标题 | `"Hello World"` |
-| `date` | Date/String | ✅ | 发布日期 | `2025-12-05` 或 `"2025-12-05T10:30:00Z"` |
-| `cover` | String | ❌ | 封面图片路径 | `/img/cover.jpg` |
-| `desc` | String | ❌ | 文章摘要 | `"这是一篇关于...的文章"` |
-| `tags` | Array | ❌ | 标签列表 | `["Vue", "前端"]` |
-| `sticky` | Boolean | ❌ | 是否置顶 | `true` 或 `false` |
-
-### 非 Markdown 文件元数据配置
-
-对于非 Markdown 文件（PDF、Word、Excel、HTML、TXT），需要创建同名的配置文件来设置元数据。
-
-#### JSON 格式配置文件
-
-创建与文档文件同名的 `.desc.json` 文件：
-
-**文件结构示例：**
-```
-public/content/2025/pdf/
-├── 海奥华预言.pdf
-└── 海奥华预言.pdf.desc.json
-```
-
-**JSON 配置文件内容：**
-```json
-{
-  "title": "海奥华预言",
-  "date": "2025-12-19",
-  "cover": "/img/d5.webp",
-  "desc": "这是一本关于外星文明的书籍",
-  "tags": ["PDF", "阅读", "科幻"],
-  "sticky": false
-}
-```
-
-#### YAML 格式配置文件
-
-也可以使用 YAML 格式，创建 `.desc.yaml` 文件：
-
-```yaml
-title: 海奥华预言
-date: 2025-12-19
-cover: /img/d5.webp
-desc: 这是一本关于外星文明的书籍
-tags:
-  - PDF
-  - 阅读
-  - 科幻
-sticky: false
-```
-
-### 文件夹组织结构
-
-#### 1. 按时间分类
-
-适合日记、日志类内容：
-
-```
-public/content/
-├── 2024/
-│   ├── 01-january.md
-│   ├── 02-february.md
-│   └── 12-december.md
-├── 2025/
-│   ├── spring.md
-│   └── winter.md
-```
-
-#### 2. 按主题分类
-
-适合技术博客、知识库：
-
-```
-public/content/
-├── 前端开发/
-│   ├── Vue/
-│   │   ├── vue3-guide.md
-│   │   └── composition-api.md
-│   ├── React/
-│   │   └── hooks-tutorial.md
-│   └── TypeScript/
-│       └── advanced-types.md
-├── 后端开发/
-│   ├── Node.js/
-│   └── Python/
-└── DevOps/
-    ├── Docker/
-    └── Kubernetes/
-```
-
-#### 3. 混合分类
-
-结合时间和主题：
-
-```
-public/content/
-├── 2025/
-│   ├── 学习/
-│   │   ├── vite.md
-│   │   └── vue3.md
-│   └── 项目/
-│       └── blog-project.md
-├── 教程/
-│   └── getting-started.md
-└── 笔记/
-    └── personal-thoughts.md
-```
-
-### 图片资源管理
-
-#### 1. 全局图片资源
-
-将图片放在 `public/img` 目录下，通过绝对路径引用：
-
-```markdown
-cover: /img/d1.webp
-```
-
-#### 2. 文章专属图片
-
-为特定文章创建专属图片文件夹：
-
-```
-public/content/2025/
-├── my-article.md
-└── my-article-images/
-    ├── cover.jpg
-    ├── screenshot1.png
-    └── screenshot2.png
-```
-
-在 Markdown 中引用：
-
-```markdown
----
-cover: /content/2025/my-article-images/cover.jpg
----
-
-![截图1](/content/2025/my-article-images/screenshot1.png)
-```
-
-### 文档管理工作流
-
-#### 新增文章
-
-1. **确定分类**：选择合适的文件夹位置
-2. **创建文件**：新建 `.md` 或其他格式文件
-3. **编写元数据**：填写标题、日期、标签等信息
-4. **编写内容**：撰写文章正文
-5. **添加封面**（可选）：上传封面图片并配置路径
-6. **本地预览**：运行 `pnpm dev` 查看效果
-7. **构建发布**：运行 `pnpm build` 并部署
-
-#### 更新文章
-
-1. 直接修改对应的文件内容
-2. 如需修改元数据，编辑 Frontmatter 或 `.desc.json` 文件
-3. 重新构建：`pnpm build`
-
-#### 删除文章
-
-1. 删除对应的文档文件
-2. 如果存在配套的 `.desc.json` 或图片文件夹，一并删除
-3. 重新构建：`pnpm build`
-
-#### 批量导入
-
-可以将现有的文档批量复制到 `public/content` 目录的相应位置：
-
-```bash
-# 示例：批量导入 PDF 文件
-cp ~/Downloads/*.pdf public/content/2025/pdf/
-
-# 为每个 PDF 创建元数据配置文件
-# 可以编写脚本自动生成 .desc.json 文件
-```
-
-### 最佳实践
-
-#### 1. 命名规范
-
-- **文件名**：使用有意义的名称，避免中文特殊字符
-- **文件夹**：使用简短清晰的分类名称
-- **图片**：使用描述性名称，如 `vue3-composition-api.png`
-
-#### 2. 日期格式
-
-推荐使用 ISO 8601 格式：
-
-```yaml
-date: 2025-12-05              # 简洁格式
-date: 2025-12-05T10:30:00Z    # 完整时间戳
-```
-
-#### 3. 标签管理
-
-- 保持标签数量适中（3-5个为宜）
-- 使用统一的标签命名
-- 避免过于宽泛或过于具体的标签
-
-```yaml
-tags: [Vue, 前端开发, 教程]     # ✅ 推荐
-tags: [a, b, c, d, e, f, g]   # ❌ 过多
-tags: [Vue3CompositionAPIWithScriptSetupSyntaxSugar]  # ❌ 过长
-```
-
-#### 4. 封面图片优化
-
-- 推荐尺寸：1200x630 像素（16:9 比例）
-- 格式：WebP（首选）、PNG、JPG
-- 大小：控制在 500KB 以内
-- 使用在线工具压缩图片
-
-#### 5. 内容组织
-
-- 定期整理和归档旧文章
-- 使用文件夹层级不超过 3 层
-- 保持目录结构清晰一致
-
-### 高级功能
-
-#### 1. 置顶文章
-
-设置 `sticky: true` 将文章置顶显示：
-
-```yaml
----
-title: 重要公告
-sticky: true
----
-```
-
-#### 2. 草稿管理
-
-可以通过以下方式管理草稿：
-
-**方法一**：使用子文件夹
-```
-public/content/
-├── drafts/          # 草稿文件夹
-│   └── work-in-progress.md
-└── published/       # 已发布文章
-    └── hello.md
-```
-
-**方法二**：文件名前缀
-```
-public/content/
-├── DRAFT-hello.md   # 草稿
-└── hello.md         # 正式发布
-```
-
-#### 3. 多语言支持
-
-为不同语言创建独立的文件夹：
-
-```
-public/content/
-├── zh/              # 中文内容
-│   └── hello.md
-└── en/              # 英文内容
-    └── hello.md
-```
-
-### 故障排查
-
-#### 文章不显示
-
-1. 检查文件是否在 `public/content` 目录下
-2. 确认文件格式是否受支持
-3. 验证元数据格式是否正确
-4. 重新运行 `pnpm dev` 或 `pnpm build`
-
-#### 元数据不生效
-
-1. 检查 JSON/YAML 格式是否正确
-2. 确认配置文件名与文档文件名完全匹配
-3. 查看控制台是否有解析错误
-
-#### 图片无法加载
-
-1. 确认图片路径是否正确
-2. 检查图片是否存在于 `public` 目录下
-3. 验证路径是否以 `/` 开头（绝对路径）
-
-## ☁️ 在线数据管理
-
-虽然 PJ Blog 是一个纯静态博客系统，但您可以通过多种方式实现在线内容管理和同步。
-
-### 方案一：在线 IDE 直接编辑（⭐ 最推荐）
-
-**这是最简单、最高效的在线管理方式！** 项目内置了「一键打开在线编辑器」功能，无需任何配置即可开始写作。
-
-#### 使用方法
-
-1. **访问您的博客网站**
-2. **点击页脚或导航栏中的「在线编辑」按钮**（如果已启用）
-3. **选择您喜欢的在线编辑器**：
-   - **StackBlitz** - 快速启动，支持实时预览
-   - **GitHub.dev** - GitHub 官方的 VSCode Online
-   - **VSCode.dev** - 完整的 VSCode 体验
-   - **Bolt.new** - AI 辅助开发平台
-
-4. **开始编辑**：直接在浏览器中修改 `public/content` 目录下的文件
-5. **提交更改**：使用 Git 面板提交并推送更改
-6. **自动部署**：触发 CI/CD 自动构建和部署
-
-#### 优势
-
-- ✅ **零配置**：无需安装任何软件，打开浏览器即可使用
-- ✅ **实时预览**：部分平台支持热更新预览
-- ✅ **完整 Git 集成**：内置版本控制和协作功能
-- ✅ **跨设备**：在任何设备上都能访问和编辑
-- ✅ **免费使用**：所有推荐的在线 IDE 都有免费套餐
-
-#### 支持的在线编辑器对比
-
-| 编辑器 | 特点 | 适用场景 | 网址格式 |
-|--------|------|----------|----------|
-| StackBlitz | 启动快，支持 Node.js | 快速编辑和预览 | `https://stackblitz.com/github/{owner}/{repo}` |
-| GitHub.dev | GitHub 官方集成 | GitHub 用户首选 | `https://github.dev/{owner}/{repo}` |
-| VSCode.dev | 完整 VSCode 体验 | 需要高级功能 | `https://vscode.dev/github/{owner}/{repo}` |
-| Bolt.new | AI 辅助编程 | AI 辅助创作 | `https://bolt.new/github/{owner}/{repo}` |
-
-#### 工作流程示例
-
-```
-点击「在线编辑」 → 选择编辑器 → 浏览器打开 → 编辑文章 → Git 提交 → 自动部署
-```
-
-**整个过程只需几分钟，完全在浏览器中完成！**
-
-#### 自定义启用在线编辑功能
-
-如果您的博客还没有在线编辑按钮，可以手动添加：
-
-**在页面中添加链接：**
-
-```html
-<!-- 替换 {owner} 和 {repo} 为您的 GitHub 用户名和仓库名 -->
-<a href="https://github.dev/{owner}/{repo}" target="_blank">
-  📝 在线编辑
-</a>
-```
-
-**或使用项目内置的工具函数：**
-
-```javascript
-import { toDev } from '@/utils/tool'
-
-// 调用此函数会显示编辑器选择对话框
-toDev()
-```
-
-### 方案二：Git + GitHub/Gitee（传统方式）
-
-这是经典的内容管理方案，适合喜欢本地编辑的用户。
-
-#### 工作流程
-
-```
-本地编辑 → Git 提交 → 推送到远程仓库 → CI/CD 自动构建部署
-```
-
-#### 配置步骤
-
-**1. 初始化 Git 仓库**
-
-```bash
-cd pjfun-blog
-git init
-git add .
-git commit -m "Initial commit"
-```
-
-**2. 关联远程仓库**
-
-```bash
-# GitHub
-git remote add origin https://github.com/yourusername/pjfun-blog.git
-
-# Gitee（国内推荐）
-git remote add origin https://gitee.com/yourusername/pjfun-blog.git
-```
-
-**3. 配置自动化部署**
-
-项目已包含 GitHub Actions 配置文件 `.github/workflows/deploy.yml`，推送代码后会自动构建并部署到 GitHub Pages。
-
-#### 优势
-
-- ✅ 完全免费
-- ✅ 版本控制，可追溯历史
-- ✅ 支持多人协作
-- ✅ 自动化部署
-- ✅ 数据安全可靠
-
-#### 示例工作流
-
-```bash
-# 1. 拉取最新代码
-git pull origin main
-
-# 2. 创建新文章
-echo "---
-title: 我的新文章
-date: 2025-05-15
-tags: [Vue, 教程]
----
-
-# 文章内容
-" > public/content/2025/new-article.md
-
-# 3. 提交更改
-git add .
-git commit -m "Add new article: 我的新文章"
-
-# 4. 推送到远程（触发自动部署）
-git push origin main
-```
-
-### 方案三：云存储同步
-
-使用云盘服务同步 `public/content` 目录，实现多设备编辑。
-
-#### 支持的云服务
-
-| 服务 | 特点 | 适用场景 |
-|------|------|----------|
-| Dropbox | 稳定可靠，跨平台 | 国际用户 |
-| OneDrive | 与 Windows 集成好 | Windows 用户 |
-| iCloud Drive | Apple 生态最佳 | Mac/iOS 用户 |
-| 坚果云 | 国内速度快 | 国内用户 |
-| 百度网盘 | 容量大 | 大文件存储 |
-
-#### 配置方法
-
-**1. 将 content 目录移到云盘**
-
-```bash
-# 假设云盘路径为 ~/CloudStorage/Blog
-mkdir -p ~/CloudStorage/Blog
-mv public/content ~/CloudStorage/Blog/content
-ln -s ~/CloudStorage/Blog/content public/content
-```
-
-**2. 在其他设备上同步**
-
-安装对应的云盘客户端，登录同一账号即可自动同步。
-
-#### 注意事项
-
-- ⚠️ 确保云盘不会同步 `.git` 文件夹
-- ⚠️ 避免同时在多个设备编辑同一文件
-- ⚠️ 定期备份重要数据
-
-### 方案四：Headless CMS 集成
-
-通过 Headless CMS 管理内容，然后导出为静态文件。
-
-#### 推荐的 CMS 平台
-
-| CMS | 类型 | 价格 | 特点 |
-|-----|------|------|------|
-| Strapi | 自托管 | 免费 | 功能强大，可定制 |
-| Contentful | SaaS | 有免费层 | 成熟稳定 |
-| Sanity | SaaS | 有免费层 | 实时协作 |
-| Directus | 自托管 | 免费 | 数据库优先 |
-| Netlify CMS | 静态 | 免费 | 与 Git 集成 |
-
-#### Netlify CMS 配置示例
-
-**1. 创建配置文件**
-
-在 `public/admin/config.yml` 创建：
-
-```yaml
-backend:
-  name: git-gateway
-  branch: main
-
-media_folder: "public/img"
-public_folder: "/img"
-
-collections:
-  - name: "blog"
-    label: "Blog Posts"
-    folder: "public/content"
-    create: true
-    slug: "{{year}}/{{slug}}"
-    fields:
-      - {label: "Title", name: "title", widget: "string"}
-      - {label: "Date", name: "date", widget: "datetime"}
-      - {label: "Cover Image", name: "cover", widget: "image", required: false}
-      - {label: "Description", name: "desc", widget: "text", required: false}
-      - {label: "Tags", name: "tags", widget: "list", required: false}
-      - {label: "Sticky", name: "sticky", widget: "boolean", default: false}
-      - {label: "Body", name: "body", widget: "markdown"}
-```
-
-**2. 创建管理页面**
-
-在 `public/admin/index.html` 创建：
-
-```html
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Content Manager</title>
-</head>
-<body>
-  <!-- Include the script that builds the page and powers Netlify CMS -->
-  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
-</body>
-</html>
-```
-
-**3. 访问管理后台**
-
-部署后访问 `https://yourdomain.com/admin/` 即可使用可视化的内容编辑器。
-
-#### 优势
-
-- ✅ 可视化编辑界面
-- ✅ 非技术人员也可使用
-- ✅ 支持富文本编辑
-- ✅ 媒体资源管理
-
-### 方案五：API 驱动的动态内容
-
-对于需要动态内容的场景，可以结合 API 服务。
-
-#### 架构示意
-
-```
-静态博客（PJ Blog） + API 服务 = 混合架构
-```
-
-#### 实现方式
-
-**1. 使用 Serverless Functions**
-
-```javascript
-// vercel/functions/get-posts.js
-export default async function handler(req, res) {
-  // 从数据库或 CMS 获取最新文章
-  const posts = await fetchPostsFromAPI();
-  res.json(posts);
-}
-```
-
-**2. 前端调用 API**
-
-```javascript
-// 在 Vue 组件中
-import { ref, onMounted } from 'vue'
-
-const dynamicPosts = ref([])
-
-onMounted(async () => {
-  const response = await fetch('/api/get-posts')
-  dynamicPosts.value = await response.json()
-})
-```
-
-#### 适用场景
-
-- 评论系统（已集成 Giscus）
-- 实时统计数据
-- 用户交互功能
-- 动态推荐内容
-
-### 方案六：Webhook 自动化
-
-通过 Webhook 实现内容更新后自动触发构建。
-
-#### 配置示例（GitHub）
-
-**1. 创建 Webhook**
-
-在 GitHub 仓库设置中：
-- Settings → Webhooks → Add webhook
-- Payload URL: `https://api.vercel.com/v1/integrations/deploy/xxx`
-- Content type: `application/json`
-- Events: `Push events`
-
-**2. 接收 Webhook 的服务**
-
-可以使用以下平台：
-- Vercel（自动集成）
-- Netlify（自动集成）
-- Cloudflare Workers（自定义）
-- 自建服务器
-
-### 多设备同步最佳实践
-
-#### 1. 使用 Git 作为单一数据源
-
-```bash
-# 设备 A：编辑并提交
-git add . && git commit -m "Update articles" && git push
-
-# 设备 B：拉取最新内容
-git pull
-```
-
-#### 2. 分支策略
-
-```
-main (生产环境)
-  ├── dev (开发环境)
-  ├── draft (草稿区)
-  └── feature/xxx (新功能)
-```
-
-#### 3. 冲突解决
-
-当多个设备修改同一文件时：
-
-```bash
-# 1. 拉取最新代码
-git pull origin main
-
-# 2. 如果有冲突，手动解决
-git status  # 查看冲突文件
-# 编辑冲突文件，保留需要的内容
-
-git add .
-git commit -m "Resolve merge conflicts"
-git push
-```
-
-### 备份策略
-
-#### 1. 本地备份
-
-```bash
-# 定期备份整个项目
-tar -czf blog-backup-$(date +%Y%m%d).tar.gz pjfun-blog/
-
-# 只备份内容
-tar -czf content-backup-$(date +%Y%m%d).tar.gz public/content/
-```
-
-#### 2. 远程备份
-
-```bash
-# 推送到多个远程仓库
-git remote add backup https://gitee.com/username/pjfun-blog-backup.git
-git push backup main
-```
-
-#### 3. 自动化备份脚本
-
-创建 `scripts/backup.sh`：
-
-```bash
-#!/bin/bash
-DATE=$(date +%Y%m%d_%H%M%S)
-BACKUP_DIR="~/backups/blog"
-mkdir -p $BACKUP_DIR
-
-# 备份内容目录
-tar -czf "$BACKUP_DIR/content_$DATE.tar.gz" public/content/
-
-# 备份到云存储（示例：使用 rclone）
-rclone copy "$BACKUP_DIR" remote:blog-backups/
-
-# 删除30天前的备份
-find $BACKUP_DIR -name "*.tar.gz" -mtime +30 -delete
-
-echo "Backup completed: $DATE"
-```
-
-### 性能优化建议
-
-#### 1. 增量构建
-
-对于大型博客，只构建变更的文件：
-
-```bash
-# 使用 Vite 的增量构建特性
-pnpm build --watch
-```
-
-#### 2. CDN 加速
-
-将静态资源部署到 CDN：
-
-- 图片：使用 imgur、Cloudinary、阿里云 OSS
-- 文档：使用 GitHub Raw、jsDelivr
-
-```markdown
-cover: https://cdn.jsdelivr.net/gh/username/repo@main/public/img/cover.jpg
-```
-
-#### 3. 缓存策略
-
-配置浏览器缓存（已在 nginx.conf 中配置）：
-
-```nginx
-location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
-    expires 1y;
-    add_header Cache-Control "public, immutable";
-}
-```
-
-### 安全建议
-
-#### 1. 敏感信息保护
-
-不要将以下内容提交到 Git：
-
-- `.env` 文件（包含密码、密钥）
-- 私钥文件
-- 数据库凭证
-
-确保 `.gitignore` 包含：
-
-```gitignore
-.env
-.env.local
-*.key
-*.pem
-node_modules/
-dist/
-```
-
-#### 2. 访问控制
-
-- 使用强密码保护博客（已支持）
-- 启用 HTTPS
-- 限制管理后台访问 IP
-
-#### 3. 定期更新
-
-```bash
-# 定期更新依赖
-pnpm update
-
-# 检查安全漏洞
-pnpm audit
-```
-
-### 监控与分析
-
-#### 1. 访问统计
-
-集成分析工具：
-
-- Google Analytics
-- Umami（开源，注重隐私）
-- Plausible（轻量级）
-
-在 `index.html` 中添加跟踪代码：
-
-```html
-<!-- Umami 示例 -->
-<script async defer data-website-id="your-id" src="https://umami.example.com/script.js"></script>
-```
-
-#### 2. 错误监控
-
-- Sentry
-- LogRocket
-- 自建日志服务
-
-#### 3.  uptime 监控
-
-- UptimeRobot
-- StatusCake
-- Pingdom
-
-### 常见问题
-
-#### Q: 如何在不熟悉 Git 的情况下管理内容？
-
-A: 推荐使用 Netlify CMS 或 Gitee Web IDE，提供可视化编辑界面。
-
-#### Q: 多人协作时如何避免冲突？
-
-A: 
-1. 使用不同的文件夹分工
-2. 频繁拉取和推送代码
-3. 使用分支进行隔离
-4. 建立沟通机制
-
-#### Q: 如何处理大量图片资源？
-
-A:
-1. 使用图床服务（SM.MS、Imgur）
-2. 压缩图片（TinyPNG、Squoosh）
-3. 使用 WebP 格式
-4. 实施懒加载
-
-#### Q: 能否实现实时预览？
-
-A: 可以，运行 `pnpm dev` 启动开发服务器，支持热更新。
-
-#### Q: 如何迁移到其他平台？
-
-A: 由于是纯静态网站，只需将 `dist` 目录上传到新的托管服务即可。
-
----
-
-## 🎨 自定义配置
-
-### 站点信息
-
-编辑 `src/constants/index.ts` 文件来修改站点信息：
-
-```typescript
-export const SITE_CONFIG = {
-  icon: 'Pj',
-  title: 'Pjfun Blog',
-  description: '一个现代化的个人博客和技术分享平台',
-  author: 'Simon',
-  keywords: ['博客', '技术分享', '前端开发', 'Vue', 'TypeScript'],
-  email:'pjfun@aliyun.com',
-  socialLinks: {
-    github: 'https://github.com/LXC-9349/pjfun-blog',
-    Telegram: 'https://t.me/pjfun_top',
-  }
-}
-```
-
-### 国际化
-
-在同一个文件中可以修改中英文翻译：
-
-```typescript
-export const I18N_CONFIG = {
-  zh: {
-    // 中文翻译
-  },
-  en: {
-    // 英文翻译
-  }
-}
-```
-
-## 🔧 开发指南
-
-### 组件系统
-
-项目采用基于文件系统的路由方案，页面组件位于 `src/pages` 目录下。UI组件位于 `src/components/ui`，功能性组件位于 `src/components`。
-
-### 图标系统
-
-项目支持两种图标使用方式：
-1. 本地 SVG 图标：位于 `src/assets/icons` 目录，通过 `IconComponent` 组件使用
-2. Iconify 图标：通过 `unplugin-icons` 自动生成组件，如 `IconCarbonHome`
-
-推荐优先使用 Iconify 图标，因为它们提供更多选择并且自动按需加载。
-
-### 插件机制
-
-项目包含以下自定义插件：
-- `vite-plugin-gen-nav.ts` - 自动生成导航和目录结构
-- `vite-plugin-rss.ts` - 构建时生成 RSS、Atom 和 JSON Feed 订阅文件
-- `vite-plugin-sitemap.ts` - 构建时生成 sitemap.xml 站点地图
-- `vite-plugin-cdn.ts` - 多 CDN 自动 fallback 注入
-
-### 样式系统
-
-项目使用 UnoCSS 作为样式引擎，配置文件为 `uno.config.ts`。支持 Wind 风格的工具类和图标系统。
-
-### 国际化
-
-项目支持中英文切换，翻译内容定义在 `src/constants/index.ts` 文件中。
-
-### 密码保护
-
-博客支持简单的密码保护功能，可通过环境变量 `VITE_BLOG_PASSWORD_HASH` 启用。
-
-### 评论系统
-
-博客集成了 Giscus 评论系统，基于 GitHub Discussions。可以在 `src/constants/index.ts` 中配置相关参数。
-
-## 🌐 部署
-
-构建完成后，将 `dist` 目录中的内容部署到任何静态网站托管服务，例如：
-
-## 🔍 SEO & RSS 支持
-
-本项目现已支持SEO优化和RSS订阅：
-
-- 自动生成结构化数据（Schema.org）
-- 支持Open Graph和Twitter Cards
-- 自动生成RSS、Atom和JSON Feed
-- 自动生成Sitemap（站点地图）
-- RSS源文件位于 `/rss.xml`、`/atom.xml` 和 `/feed.json`
-
-## 📱 PWA 支持
-
-项目支持PWA（渐进式Web应用），用户可以将博客安装为桌面应用，提供类似原生应用的体验。
-
-- [Vercel](https://vercel.com/)
-- [Netlify](https://netlify.com/)
-- [GitHub Pages](https://pages.github.com/)
-- [EdgeOne Pages](https://edgeone.ai/products/pages)
-
-### 一键部署
-####  Vercel
-点击以下按钮即可将项目快速部署到 Vercel：
-
-<a href="https://vercel.com/new/clone?repository-url=https://github.com/LXC-9349/pjfun-blog&project-name=pjfun-blog&repository-name=pjfun-blog" target="_blank">
-  <img src="https://vercel.com/button" alt="Deploy with Vercel">
-</a>
-
-
-**注意**：请将按钮链接中的 `https://github.com/LXC-9349/pjfun-blog` 替换为你的实际 Git 仓库地址。
-**注意**：- vercel在国内被墙，请配合代理或绑定自定义域名使用_~~
-
-[示例网站：https://pjfun-blog.vercel.app/](https://pjfun-blog.vercel.app/)
-访问密码：123456
-
-#### 腾讯云(国内) edgeone pages
-
-<a href="https://console.cloud.tencent.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog&project-name=pjfun-blog&root-directory=.%2F" target="_blank">
-  <img src="https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg" alt="使用 EdgeOne Pages 部署">
-</a>
-
-[示例网站：https://cnblog.pjfun.top/](https://cnblog.pjfun.top/)
-
-
-
-#### 腾讯云(国际) edgeone pages
-
-<a href="https://console.tencentcloud.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog&project-name=pjfun-blog&root-directory=.%2F" target="_blank">
-  <img src="https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg" alt="使用 EdgeOne Pages 部署">
-</a>
-
-
-
-####  Cloudflare
-<a href="https://deploy.workers.cloudflare.com/?url=https://github.com/LXC-9349/pjfun-blog/tree/main" target="_blank">
-  <img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare Workers">
-</a>
-
-[示例网站：https://demoblog.pjfun.top/](https://demoblog.pjfun.top/)
-
-#### GitHub Pages
-
-要将项目部署到 GitHub Pages，您可以使用 GitHub Actions 自动化部署流程。我们已经为您准备好了一个工作流配置文件。
-
-##### 方法一：使用 GitHub Actions 自动部署（推荐）
-
-1. 将您的代码推送到 GitHub 仓库（确保分支名为 `main`）
-2. 提交并推送更改到 GitHub
-3. 在 GitHub 仓库中，进入 Settings > Pages
-4. 在 "Build and deployment" 部分，将 "Source" 设置为 "GitHub Actions"
-5. 等待 Actions 运行完成，您的网站将在 `https://<username>.github.io/<repository>/` 上线
-
-
-[示例网站：https://lxc-9349.github.io/pjfun-blog/](https://lxc-9349.github.io/pjfun-blog/)
-##### 方法二：手动部署
-
-如果您想手动部署到 GitHub Pages：
-
-1. 构建项目：
-   ```bash
-   pnpm build
-   ```
-
-2. 将 `dist` 目录的内容推送到 `gh-pages` 分支：
-   ```bash
-   # 安装 gh-pages 包（如果尚未安装）
-   pnpm add -D gh-pages
-   
-   # 添加部署脚本到 package.json
-   # 在 scripts 部分添加: "deploy": "gh-pages -d dist"
-   
-   # 部署
-   pnpm deploy
-   ```
-
-3. 在 GitHub 仓库中，进入 Settings > Pages
-4. 将 "Source" 设置为 "Deploy from a branch"
-5. 选择 `gh-pages` 分支并保存
-
-**注意**：请将 `<username>` 替换为您的 GitHub 用户名，将 `<repository>` 替换为您的仓库名称。
-
-
-####  Netlify(免费的不推荐)
-点击以下按钮即可将项目快速部署到 Netlify：
-
-<a href="https://app.netlify.com/start/deploy?repository=https://github.com/LXC-9349/pjfun-blog" target="_blank">
-  <img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify">
-</a>
-
-**注意**：请将按钮链接中的 `https://github.com/LXC-9349/pjfun-blog` 替换为你的实际 Git 仓库地址。
-
-
-[//]: # ([示例网站：https://stately-crisp-a560ad.netlify.app/]&#40;https://stately-crisp-a560ad.netlify.app/&#41;)
-
-
-#### Firebase Hosting
-
-安装 Firebase CLI 并运行以下命令：
-
-```bash
-firebase init hosting
-firebase deploy
-```
-
-**注意**：需要先在 Firebase 控制台创建项目，并安装 `firebase-tools`。
-
-#### Azure Static Web Apps
-
-<a href="https://portal.azure.com/#create/Microsoft.StaticApp" target="_blank">
-  <img style="height: 50px;" src="https://azurecomcdn.azureedge.net/cvt-4fd6fa9f1d5510b6339fa7243038120d6e3003656ac48e00c4e4e6e530abecba/images/page/services/static-web-apps/01-Overview/swa-button.svg" alt="Deploy to Azure Static Web Apps">
-</a>
-
-**注意**：需要 Azure 账户，在创建应用时指定源代码仓库。
-
-#### Surge.sh
-
-安装 Surge 并运行以下命令：
-
-```bash
-npm install -g surge
-surge dist/
-```
-
-**注意**：需要先安装 `surge` CLI 工具，并确保构建输出在 `dist` 目录。
+│   ├── studio/                 # 本地创作台：页面、编辑器、预览、设置与发布面板
+│   ├── components/
+│   │   ├── ui/                 # 搜索、分享、主题设置、屏保、粒子、主题切换
+│   │   ├── preview/            # PDF / Excel 预览
+│   │   ├── DocumentViewer.vue  # 文档分发
+│   │   ├── NavTree.vue         # 目录树
+│   │   ├── Footer.vue          # 页脚（版本、统计、数据管理入口）
+│   │   ├── GiscusComment.vue
+│   │   ├── PasswordProtection.vue
+│   │   ├── SiteStats.vue
+│   │   ├── Ping0VisitorCard.vue
+│   │   ├── HotTagList.vue
+│   │   ├── HotRankLink.vue
+│   │   └── RecentArticles.vue
+│   ├── constants/              # 全部配置常量（按职责拆分）
+│   ├── pages/                  # 首页 / 归档 / 收藏 / 文章详情
+│   ├── plugins/seo.ts
+│   ├── utils/                  # 外观、密码、B 站、统计、版本检查、文件转换等
+│   ├── styles/global.css
+│   ├── App.vue                 # 页面过渡、移动端底栏、更新提示
+│   └── main.ts                 # Lenis、主题、i18n、路由守卫、密码校验
+├── tooling/
+│   ├── build_cdn.ts            # CDN 源与依赖外置配置
+│   ├── vite-plugin-cdn.ts      # CDN 注入
+│   ├── vite-plugin-rss.ts      # RSS / Atom / JSON Feed
+│   ├── vite-plugin-sitemap.ts  # sitemap.xml
+│   ├── vite-plugin-gen-nav.ts  # 内容扫描 → 导航数据 + 通配路由
+│   ├── vite-plugin-gen-backgrounds.ts # 背景扫描 / WebP 转换
+│   ├── vite-plugin-studio.ts   # 创作台接口（仅 dev）
+│   ├── vite-plugin-auto-password-hash.ts # 构建期 PBKDF2
+│   ├── content-core.ts         # 内容扫描、校验、读写与导航生成（CLI / Studio 共用）
+│   ├── content-bus.ts          # dev 下导航重建与静默刷新通道
+│   └── env-config.ts           # 创作台「站点参数」的 .env 读写
+├── scripts/
+│   ├── setup.mjs               # 一键环境搭建 / 启动
+│   ├── bootstrap-node.ps1      # Windows 免安装 Node.js 下载引导
+│   ├── content-cli.ts          # 内容命令行（new / check / publish）
+│   ├── generate-password-hash.js
+│   └── worker.js               # Cloudflare Workers 入口
+├── deploy/
+│   └── nginx.conf              # Nginx 站点配置（由 Dockerfile 引用）
+├── start.bat / start.sh        # Windows / Linux・macOS 一键启动入口
+├── change.md                   # 变更日志
+├── Dockerfile / docker-compose.yml
+├── netlify.toml / wrangler.jsonc / esa.jsonc
+└── vite.config.ts / uno.config.ts / vitest.config.ts
+```
+
+## ❓ 常见问题
+
+**文章没有出现在列表里？**
+确认文件在 `public/content` 下、扩展名受支持、元数据格式正确；文件名以 `_` 开头会被忽略。使用创作台保存时会自动重建导航；手工修改文件后运行 `pnpm dev` 或 `pnpm build`。
+
+**创作台打不开？**
+创作台只在开发环境提供：先运行 `pnpm dev`，再访问 `/studio`；生产环境访问 `/studio` 会回到首页。局域网访问需要在 `.env` 中设置 `STUDIO_TOKEN` 并在页面输入口令。
+
+**站点参数保存后没生效？**
+参数写入本地 `.env`，dev server 会自动重启；刷新页面即可。部署平台（Vercel / EdgeOne / GitHub Pages 等）不会读取本地 `.env`，请在站点参数页点「导出部署配置」，把生成的变量同步到平台的环境变量中。
+
+**封面不显示？**
+路径需以 `/` 开头（相对 `public` 目录），或使用完整 URL。子路径部署时，相对封面会自动拼接 `VITE_BASE`。
+
+**部署到子路径后白屏？**
+`VITE_BASE` 必须与访问路径一致（如 `/pjfun-blog/`），修改后重新构建。
+
+**发布后访问到的还是旧页面？**
+项目已通过版本化文件名、`version.json` 守卫与 PWA 策略规避缓存。若仍异常，检查托管平台是否为 `index.html` 设置了强缓存，并确认 `sw-<ver>.js` 正常更新。
+
+**密码不生效？**
+确认构建时环境变量已传入（CI 中需配置 Secrets / Variables），且未同时残留旧的 `VITE_BLOG_PASSWORD_HASH`。明文密码请使用 `BLOG_PASSWORD`（不要加 `VITE_` 前缀）。
+
+**统计不显示？**
+不蒜子或 ping0 不可用时对应区域会自动降级或隐藏，不影响其他功能；可通过 `VITE_BUSUANZI_ENDPOINT`、`VITE_PING0_IMAGE_URL` 更换地址。
+
+**屏保视频不播放？**
+部分直链视频或 B 站代理不稳定，组件会自动跳过失败源并重试；可在 `src/constants/screensaver.ts` 中替换为自有视频地址。
 
 ## 🤝 贡献
 
-欢迎提交 Issue 和 Pull Request 来帮助改进这个项目。
+欢迎提交 Issue 与 Pull Request：
 
 1. Fork 本仓库
-2. 创建您的特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交您的更改 (`git commit -m 'Add some amazing feature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启一个 Pull Request
+2. 创建分支：`git checkout -b feature/your-feature`
+3. 提交更改：`git commit -m "feat: ..."`
+4. 推送分支并发起 Pull Request
 
 ## 📄 许可证
 
-此项目采用 MIT 许可证。详见 [LICENSE](LICENSE) 文件。
-
-<video controls preload="metadata" style="width: 100%; height: auto; border-radius: 8px;">
-  <source src="https://img-baofun.zhhainiao.com/pcwallpaper_ugc/preview/8ded43cfacffefec1c681f99859543cd_preview.mp4" type="video/mp4">
-  <source src="https://img-baofun.zhhainiao.com/pcwallpaper_ugc/preview/fd39802e5f1c034fb556b29b3f5c329b_preview.mp4" type="video/mp4">
-  您的浏览器不支持视频播放。
-</video>
+本项目基于 [MIT License](LICENSE) 开源。

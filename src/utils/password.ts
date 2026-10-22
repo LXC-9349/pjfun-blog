@@ -1,10 +1,11 @@
 import {getEnvVariable} from "@/utils/tool";
 import { t } from '@/utils/i18n';
+import { STORAGE_KEYS, PASSWORD_CONFIG } from '@/constants';
 import CryptoJS from 'crypto-js';
 
 // PBKDF2 参数
-const PBKDF2_ITERATIONS = 100000;
-const PBKDF2_KEY_SIZE = 256 / 32; // 256 bits
+const PBKDF2_ITERATIONS = PASSWORD_CONFIG.pbkdf2Iterations;
+const PBKDF2_KEY_SIZE = PASSWORD_CONFIG.keySizeWords; // 256 bits
 const PBKDF2_HASHER = CryptoJS.algo.SHA256;
 
 /**
@@ -114,7 +115,7 @@ export const passwordApi = {
    * 退出登录（清除密码并跳转）
    */
   logout(): void {
-    localStorage.removeItem('blog-access-pwd')
-    window.location.href = '/password'
+    localStorage.removeItem(STORAGE_KEYS.accessPassword)
+    window.location.href = `${import.meta.env.BASE_URL}password`
   }
 }

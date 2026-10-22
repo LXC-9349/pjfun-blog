@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# 一键启动脚本下载的免安装 Node / pnpm
+.tools/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

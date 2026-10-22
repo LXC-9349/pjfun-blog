@@ -6,9 +6,9 @@
     <script>
       // 使用 sessionStorage 保存最后一次尝试访问的 URL
       sessionStorage.setItem('redirectUrl', location.pathname + location.search + location.hash);
-      
-      // 重定向到首页，让前端路由处理
-      location.replace('/');
+
+      // 重定向到站点首页，让前端路由处理；构建时 __BASE_PATH__ 会替换为 VITE_BASE
+      location.replace('__BASE_PATH__');
     </script>
   </head>
   <body>

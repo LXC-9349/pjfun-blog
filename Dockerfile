@@ -37,7 +37,7 @@ RUN mkdir -p /var/log/nginx /var/tmp/nginx /run/nginx && \
     ln -sf /dev/stderr /var/log/nginx/error.log
 
 # 复制自定义 nginx 配置（必须包含 load_module）
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY deploy/nginx.conf /etc/nginx/nginx.conf
 
 # 复制前端构建产物
 COPY --from=frontend-builder /app/dist /usr/share/nginx/html

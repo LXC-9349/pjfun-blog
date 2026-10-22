@@ -28,23 +28,21 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        # 版本由 package.json 的 packageManager 字段提供，不能再传 version
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'        # 你项目要求 >=20，必须用 20+
-#          cache: 'npm'
+          node-version: '22'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm install
-
-      # sharp 在 Linux 上需要额外处理（你用了 vite-plugin-image-optimizer）
-      - name: Install sharp dependencies (Linux)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libvips-dev
+        run: pnpm install
 
       - name: Build
-        run: npm run build
+        run: pnpm build
         env:
           VITE_BASE: /pjfun-blog/
 

@@ -4,6 +4,9 @@
       <div 
         @click.stop 
         class="w-full max-w-md mx-4 bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden"
+        role="dialog"
+        aria-modal="true"
+        :aria-label="t('share')"
         v-motion 
         :initial="{ y: -40, opacity: 0, scale: 0.95 }"
         :enter="{ y: 0, opacity: 1, scale: 1, transition: { duration: 400, ease: 'easeOutQuart' } }"
@@ -53,7 +56,7 @@
               />
               <button 
                 @click="copyLink"
-                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-r-lg font-medium text-sm transition-colors flex items-center gap-1 cursor-pointer"
+                class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-r-lg font-medium text-sm transition-colors flex items-center gap-1 cursor-pointer"
               >
                 <IconCarbonCopy class="w-4 h-4" />
                 {{ copied ? t('copied') : t('copy') }}
@@ -67,8 +70,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { t } from '@/utils/i18n'
+import { SHARE_ENDPOINTS } from '@/constants'
 import {showSuccess} from "@/utils/tool";
 
 const props = defineProps<{
@@ -83,57 +87,77 @@ const emit = defineEmits<{
 
 const copied = ref(false)
 const urlInput = ref<HTMLInputElement | null>(null)
+let copiedTimer: ReturnType<typeof setTimeout> | null = null
 
-const platforms = [
+const handleKeydown = (event: KeyboardEvent) => {
+  if (props.isOpen && event.key === 'Escape') {
+    event.preventDefault()
+    closeModal()
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleKeydown)
+  if (copiedTimer) clearTimeout(copiedTimer)
+})
+
+const platforms: Array<{
+  name: string
+  label: string
+  bgColor: string
+  shareUrl: (url: string, title: string) => string
+}> = [
   {
     name: 'wechat',
     label: t('wechat'),
     bgColor: 'bg-green-500',
-    //@ts-ignore
-    shareUrl: (url: string, title: string) => `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`
+    shareUrl: (url: string) => SHARE_ENDPOINTS.qrcode(url)
   },
   {
     name: 'weibo',
     label: t('weibo'),
     bgColor: 'bg-red-500',
-    shareUrl: (url: string, title: string) => `https://service.weibo.com/share/share.php?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`
+    shareUrl: (url: string, title: string) => SHARE_ENDPOINTS.weibo(url, title)
   },
   {
     name: 'qq',
     label: t('qq'),
     bgColor: 'bg-blue-500',
-    shareUrl: (url: string, title: string) => `https://connect.qq.com/widget/shareqq/index.html?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`
+    shareUrl: (url: string, title: string) => SHARE_ENDPOINTS.qq(url, title)
   },
   {
     name: 'x',
     label: t('twitter'),
     bgColor: 'bg-sky-500',
-    shareUrl: (url: string, title: string) => `https://x.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`
+    shareUrl: (url: string, title: string) => SHARE_ENDPOINTS.x(url, title)
   },
   {
     name: 'facebook',
     label: t('facebook'),
     bgColor: 'bg-blue-600',
-    //@ts-ignore
-    shareUrl: (url: string, title: string) => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
+    shareUrl: (url: string) => SHARE_ENDPOINTS.facebook(url)
   },
   {
     name: 'linkedin',
     label: t('linkedin'),
     bgColor: 'bg-blue-700',
-    shareUrl: (url: string, title: string) => `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`
+    shareUrl: (url: string, title: string) => SHARE_ENDPOINTS.linkedin(url, title)
   },
   {
     name: 'telegram',
     label: t('telegram'),
     bgColor: 'bg-sky-400',
-    shareUrl: (url: string, title: string) => `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`
+    shareUrl: (url: string, title: string) => SHARE_ENDPOINTS.telegram(url, title)
   },
   {
     name: 'email',
     label: t('email'),
     bgColor: 'bg-gray-500',
-    shareUrl: (url: string, title: string) => `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`
+    shareUrl: (url: string, title: string) => SHARE_ENDPOINTS.email(url, title)
   }
 ]
 
@@ -158,8 +182,10 @@ const copyLink = () => {
     urlInput.value.select()
     document.execCommand('copy')
     copied.value = true
-    setTimeout(() => {
+    if (copiedTimer) clearTimeout(copiedTimer)
+    copiedTimer = setTimeout(() => {
       copied.value = false
+      copiedTimer = null
     }, 2000)
     showSuccess(t('linkCopied'))
   }

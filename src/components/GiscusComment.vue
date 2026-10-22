@@ -6,6 +6,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { GISCUS_CONFIG, STORAGE_KEYS } from '@/constants'
 
 const props = defineProps<{
   repo: string
@@ -32,7 +33,7 @@ const initGiscus = () => {
 
   // 创建 script 标签
   const script = document.createElement('script')
-  script.src = 'https://giscus.app/client.js'
+  script.src = GISCUS_CONFIG.clientSrc
   script.async = true
   script.crossOrigin = 'anonymous'
   script.setAttribute('data-repo', props.repo)
@@ -49,7 +50,7 @@ const initGiscus = () => {
   script.setAttribute('data-reactions-enabled', String(props.reactionsEnabled !== false))
   script.setAttribute('data-emit-metadata', String(props.emitMetadata === true))
   script.setAttribute('data-input-position', props.inputPosition || 'top')
-  let  theme=typeof localStorage !== 'undefined' && localStorage.getItem('theme') === 'dark' ? 'dark_high_contrast' : 'preferred_color_scheme'
+  let  theme=typeof localStorage !== 'undefined' && localStorage.getItem(STORAGE_KEYS.theme) === 'dark' ? 'dark_high_contrast' : 'preferred_color_scheme'
   script.setAttribute('data-theme', theme || 'preferred_color_scheme')
   script.setAttribute('data-lang', props.lang || 'zh-CN')
   script.setAttribute('data-loading', props.loading || 'lazy')
@@ -69,7 +70,7 @@ const handleThemeChange = (event: CustomEvent) => {
   if (iframe?.contentWindow) {
     iframe.contentWindow.postMessage(
       { giscus: { setConfig: { theme: theme === 'dark' ? 'dark_high_contrast' : 'preferred_color_scheme' } } },
-      'https://giscus.app'
+      GISCUS_CONFIG.origin
     )
   }
 }

@@ -13,7 +13,19 @@ interface Post {
   sticky?: boolean
 }
 
-export function rssPlugin(): Plugin {
+interface FeedSiteConfig {
+  title: string
+  description: string
+  url: string
+}
+
+const toDate = (value: unknown): Date | null => {
+  if (!value) return null
+  const date = new Date(String(value))
+  return Number.isNaN(date.getTime()) ? null : date
+}
+
+export function rssPlugin(site: FeedSiteConfig): Plugin {
   let config: any
 
   return {
@@ -25,7 +37,7 @@ export function rssPlugin(): Plugin {
     async closeBundle() {
       if (config.command === 'build') {
         try {
-          const siteUrl = process.env.VITE_SITE_URL || 'https://pjfun.top'
+          const siteUrl = site.url.replace(/\/+$/, '')
 
           // 读取导航数据
           const navPath = path.resolve(config.root, 'public/generated/nav.json')
@@ -33,8 +45,8 @@ export function rssPlugin(): Plugin {
 
           // 创建 Feed 实例
           const feed = new Feed({
-            title: process.env.VITE_SITE_TITLE || 'Pjfun Blog',
-            description: process.env.VITE_SITE_DESCRIPTION || '一个现代化的个人博客和技术分享平台',
+            title: site.title,
+            description: site.description,
             id: siteUrl,
             link: siteUrl,
             language: 'zh-CN',
@@ -43,14 +55,20 @@ export function rssPlugin(): Plugin {
             copyright: `All rights reserved ${new Date().getFullYear()}`,
           })
 
-          // 添加文章到 Feed
-          navData.slice(0, 20).forEach(post => {
+          // 按日期倒序取最新 20 篇；无效日期直接跳过，避免输出 Invalid Date
+          const latest = navData
+            .map(post => ({ post, date: toDate(post.date) }))
+            .filter((item): item is { post: Post; date: Date } => item.date !== null)
+            .sort((a, b) => b.date.getTime() - a.date.getTime())
+            .slice(0, 20)
+
+          latest.forEach(({ post, date }) => {
             feed.addItem({
               title: post.title,
               description: post.excerpt,
               id: `${siteUrl}${post.path}`,
               link: `${siteUrl}${post.path}`,
-              date: new Date(post.date),
+              date,
               image: post.cover ? (post.cover.startsWith('http') ? post.cover : `${siteUrl}${post.cover}`) : undefined,
             })
           })

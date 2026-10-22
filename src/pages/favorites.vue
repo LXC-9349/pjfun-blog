@@ -12,10 +12,12 @@
           <router-link 
             to="/" 
             class="badge"
+            :aria-label="t('backToHome')"
+            :title="t('backToHome')"
           >
             <span class="text-white font-bold text-lg">{{ SITE_CONFIG.icon }}</span>
           </router-link>
-          <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+          <h1 class="text-xl font-bold bg-gradient-to-r from-orange-600 to-amber-500 bg-clip-text text-transparent">
             {{ t('favoritesTitle') }}
           </h1>
         </div>
@@ -23,10 +25,10 @@
         <div class="flex items-center space-x-4">
           <button @click="toggleLanguage" class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer">
             <IconCarbonLanguage class="w-4 h-4" />
-            {{ currentLang === 'zh' ? 'EN' : '中文' }}
+            {{ currentLang === 'zh' ? t('switchLanguageToEn') : t('switchLanguageToZh') }}
           </button>
           <ThemeToggle />
-          <button @click="toggleMobileMenu" class="lg:hidden dark:text-gray-300 p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer">
+          <button @click="toggleMobileMenu" class="lg:hidden dark:text-gray-300 p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer" :aria-label="t('navigation')" :title="t('navigation')">
             <IconCarbonMenu class="w-6 h-6" />
           </button>
         </div>
@@ -42,21 +44,21 @@
         <div class="h-full flex flex-col p-6">
           <div class="flex-shrink-0 flex justify-between items-center mb-8">
             <h2 class="text-lg font-bold dark:text-white">{{ t('navigation') }}</h2>
-            <button @click="toggleMobileMenu" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer">
+            <button @click="toggleMobileMenu" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer" :aria-label="t('close')" :title="t('close')">
               <IconCarbonClose class="w-5 h-5" />
             </button>
           </div>
           <nav class="flex-1 overflow-y-auto space-y-2">
             <router-link to="/" @click="toggleMobileMenu" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors dark:text-white">
-              <IconCarbonHome class="w-5 h-5 text-blue-500" />
+              <IconCarbonHome class="w-5 h-5 text-orange-500" />
               {{ t('home') }}
             </router-link>
             <router-link to="/archive" @click="toggleMobileMenu" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors dark:text-white">
-              <IconCarbonArchive class="w-5 h-5 text-blue-500" />
+              <IconCarbonArchive class="w-5 h-5 text-orange-500" />
               {{ t('archive') }}
             </router-link>
             <router-link to="/favorites" @click="toggleMobileMenu" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors dark:text-white">
-              <IconCarbonStar class="w-5 h-5 text-blue-500" />
+              <IconCarbonStar class="w-5 h-5 text-orange-500" />
               {{ t('favorites') }}
             </router-link>
           </nav>
@@ -67,7 +69,7 @@
       <div class="flex justify-between items-center mb-8">
         <h2 class="text-2xl font-bold  dark:text-white">
           {{ t('yourFavorites') }}
-          <span class="text-blue-600">({{ favorites.length }})</span>
+          <span class="text-orange-600">({{ favorites.length }})</span>
         </h2>
         <button 
           v-if="favorites.length > 0" 
@@ -111,9 +113,9 @@
                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 loading="lazy"
               >
-              <div v-else class="w-full h-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
+              <div v-else class="w-full h-full bg-gradient-to-br from-orange-500 to-orange-700 flex items-center justify-center">
                 <div class="text-white/80 text-3xl font-bold">
-                  {{ fav.title?.substring(0, 2) || '博客' }}
+                  {{ fav.title?.substring(0, 2) || t('siteFallbackInitial') }}
                 </div>
               </div>
               <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
@@ -126,21 +128,25 @@
                 @click.prevent="removeFavorite(fav.path)"
                 class="absolute top-4 right-4 p-2 bg-black/30 hover:bg-black/50 backdrop-blur rounded-full text-white transition-colors"
                 :aria-label="t('removeFromFavorites')"
+                :title="t('removeFromFavorites')"
               >
                 <IconCarbonClose class="w-4 h-4" />
               </button>
             </div>
 
             <div class="p-6 flex flex-col flex-1">
-              <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed line-clamp-3 flex-1">
-                {{ fav.excerpt || t('noExcerpt') }}
-              </p>
+              <!-- 摘要包在普通块级容器里，避免作为 flex item 时多行截断失效 -->
+              <div class="flex-1 min-w-0">
+                <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed line-clamp-3">
+                  {{ fav.excerpt || t('noExcerpt') }}
+                </p>
+              </div>
 
               <div class="flex flex-wrap gap-2 mt-4">
                 <span
                   v-for="tag in (fav.tags || []).slice(0, 3)"
                   :key="tag"
-                  class="px-3 py-1 text-xs rounded-full bg-blue-100 dark:bg-blue-900/40 text-gray-800 dark:text-blue-300"
+                  class="px-3 py-1 text-xs rounded-full bg-orange-100 dark:bg-orange-900/40 text-gray-800 dark:text-orange-300"
                 >
                   {{ tag }}
                 </span>
@@ -151,7 +157,7 @@
                   <IconCarbonTime class="w-4 h-4 mr-1" />
                   {{ formatDate(fav.date) }}
                 </time>
-                <span class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-800 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 rounded-full group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors">
+                <span class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-800 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/30 rounded-full group-hover:bg-orange-100 dark:group-hover:bg-orange-900/50 transition-colors">
                   {{ t('readMore') }}
                   <IconCarbonArrowRight class="w-4 h-4 ml-1 group-hover:translate-x-0.5 transition-transform duration-200" />
                 </span>
@@ -168,7 +174,7 @@
         <p class="mt-2 text-gray-500 dark:text-gray-400">{{ t('noFavoritesDesc') }}</p>
         <router-link 
           to="/" 
-          class="mt-6 inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-xl hover:from-blue-700 hover:to-blue-900 transition-all shadow-sm"
+          class="mt-6 inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-600 to-amber-500 text-white rounded-xl hover:from-orange-700 hover:to-amber-600 transition-all shadow-sm"
         >
           <IconCarbonArrowLeft class="w-5 h-5 mr-2" />
           {{ t('browseArticles') }}
@@ -182,7 +188,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { getFavorites, removeFavorite as removeFavoriteUtil } from '@/utils/favorites'
 import { t, getLanguage } from '@/utils/i18n'
-import { SITE_CONFIG } from '@/constants'
+import { SITE_CONFIG, STORAGE_KEYS } from '@/constants'
 import {confirmDialog, formatDate} from "@/utils/tool";
 
 const favorites = ref<any[]>([])
@@ -214,7 +220,7 @@ const removeFavorite = (path: string) => {
 const clearAllFavorites = () => {
   confirmDialog('',t('confirmClearAll')).then(b=>{
     if (b) {
-      localStorage.removeItem('pjfun_blog_favorites')
+      localStorage.removeItem(STORAGE_KEYS.favorites)
       loadFavorites()
     }
   });
@@ -223,7 +229,7 @@ const clearAllFavorites = () => {
 const toggleLanguage = () => {
   const newLang = currentLang.value === 'zh' ? 'en' : 'zh'
   currentLang.value = newLang
-  localStorage.setItem('language', newLang)
+  localStorage.setItem(STORAGE_KEYS.language, newLang)
   location.reload()
 }
 

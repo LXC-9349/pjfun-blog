@@ -7,6 +7,10 @@ declare global {
     DOMPurify: typeof import('dompurify');
     hljs: typeof import('highlight.js');
     pdfjsLib: typeof import('pdfjs-dist');
+    // 不蒜子统计数据（由 src/utils/site-stats.ts 写入）
+    site_pv?: number;
+    page_pv?: number;
+    site_uv?: number;
   }
 }
 

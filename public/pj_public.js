@@ -1,4 +1,6 @@
 const loadedResources = new Set()
+// 提示文案统一由 index.html 从 src/constants 注入
+const publicTexts = (typeof window !== 'undefined' && window.PJ_PUBLIC_TEXTS) || {}
 
 function loadPublicResource (resourceName, type = 'js', callback) {
   // 输入验证
@@ -25,6 +27,9 @@ function loadPublicResource (resourceName, type = 'js', callback) {
   return tryLoadResources(resourceUrls, type === 'js', callback)
 }
 
+// 暴露给业务代码：PDF / Word / 代码高亮等按需库复用同一套多源回退逻辑
+window.pjLoadResource = loadPublicResource
+
 async function tryLoadResources (urls, isJs, callback) {
   let lastError = null
 
@@ -42,8 +47,8 @@ async function tryLoadResources (urls, isJs, callback) {
   // 所有 URL 都失败
   console.error('All resource URLs failed to load')
   const loadingText = document.querySelector('.loading-text')
-  if (loadingText) {
-    loadingText.textContent = '资源加载失败,请刷新'
+  if (loadingText && publicTexts.resourceLoadFailed) {
+    loadingText.textContent = publicTexts.resourceLoadFailed
   }
   if (callback) callback(false, urls[ urls.length - 1 ])
   throw lastError || new Error('All resource URLs failed')
@@ -115,18 +120,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (mainJs.length) {
         await Promise.all(mainJs.map(js => loadPublicResource(js, 'js')))
       }
-      // 并行加载 CSS 和 JS 资源
+      // 并行加载样式与全局库（当前只剩 vue-router 等轻量依赖）
       await Promise.all([
         ...cssResources.map(css => loadPublicResource(css, 'css')),
         ...jsResources.map(js => loadPublicResource(js, 'js'))
       ])
-      console.log('Core resources loaded successfully')
-      // 加载 pjJsResources（如果存在）
+      // 应用入口引用 Vue / VueRouter 等全局变量，必须等上面的库就绪后再加载
       if (pjJsResources.length) {
-        await Promise.all(
-          pjJsResources.map(js => loadPublicResource(js, 'js')))
-        console.log('Additional pjJsResources loaded successfully')
+        await Promise.all(pjJsResources.map(js => loadPublicResource(js, 'js')))
       }
+      console.log('Core resources loaded successfully')
 
       // 清除超时计时器
       clearTimeout(timeoutId)
@@ -142,8 +145,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!window.pjfun || window.pjfun.loaded !== true) {
           // 通知用户需要刷新页面
           const loadingText = document.querySelector('.loading-text')
-          if (loadingText) {
-            loadingText.textContent = '页面需要刷新以完成更新...'
+          if (loadingText && publicTexts.refreshRequired) {
+            loadingText.textContent = publicTexts.refreshRequired
           }
           console.warn(
             'Vue app not loaded successfully, reloading page in 2 seconds')
