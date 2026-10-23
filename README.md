@@ -11,7 +11,7 @@
   </a>
 
   <p>
-    <a href="README.md">简体中文</a> | <a href="README.en.md">English</a> | <a href="https://cnblog.pjfun.top">在线示例</a>
+    <a href="README.md">简体中文</a> | <a href="README.en.md">English</a> | <a href="https://blog.pjfun.top">在线示例</a>
   </p>
 </div>
 
@@ -28,7 +28,7 @@ PJ Blog 是一个**零后端、纯静态、顶级动效、全球秒开**的个�
 
 它不只“能写文章”：还提供主题设置（背景 / 字体 / 主题色 / 鼠标 / 飘落特效）、全屏屏保（本地视频与 B 站视频）、RSS 与 Sitemap、PWA 离线、Giscus 评论、不蒜子统计、构建版本守卫等一整套站点能力。
 
-- 在线示例：<https://cnblog.pjfun.top>
+- 在线示例：<https://blog.pjfun.top>
 - 英文文档：[README.en.md](README.en.md)
 - 站内完整手册（写作 / 配置 / 部署）：[public/content/2025/blog.md](public/content/2025/blog.md)
 - 更新日志：[change.md](change.md)
@@ -434,7 +434,7 @@ VITE_BLOG_PASSWORD_HASH=your_hash
 | 平台 | 方式 | 说明 |
 | --- | --- | --- |
 | Vercel | [一键部署](https://vercel.com/new/clone?repository-url=https://github.com/LXC-9349/pjfun-blog) | 示例：<https://pjfun-blog.vercel.app/> |
-| EdgeOne Pages（国内） | [一键部署](https://console.cloud.tencent.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog) | 示例：<https://cnblog.pjfun.top/> |
+| EdgeOne Pages（国内） | [一键部署](https://console.cloud.tencent.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog) | 示例：<https://blog.pjfun.top/> |
 | EdgeOne Pages（国际） | [一键部署](https://console.tencentcloud.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog) | `esa.jsonc` 已配置 SPA 回退 |
 | Cloudflare Workers | [一键部署](https://deploy.workers.cloudflare.com/?url=https://github.com/LXC-9349/pjfun-blog/tree/main) | `wrangler.jsonc` 指向 `dist` |
 | Netlify | [一键部署](https://app.netlify.com/start/deploy?repository=https://github.com/LXC-9349/pjfun-blog) | `netlify.toml` 已配置构建命令 |

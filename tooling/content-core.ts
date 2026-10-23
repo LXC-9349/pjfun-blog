@@ -32,6 +32,7 @@ export interface NavPost {
   wordCount?: number
 }
 
+/** 目录树节点：children 由 scanContent 排好序（文件夹优先 + 最新文章日期倒序） */
 export type NavTreeNode =
   | { type: 'folder'; title: string; path: string; children: NavTreeNode[] }
   | { type: 'post'; title: string; path: string }
@@ -145,6 +146,19 @@ function extensionOf(file: string): string {
   return (file.split('.').pop() || '').toLowerCase()
 }
 
+/** 日期折算为时间戳：Date / 字符串 / 文件 mtime 均可，非法或缺失返回 0（排到最末） */
+function dateTime(value: unknown): number {
+  if (value instanceof Date) {
+    const time = value.getTime()
+    return Number.isNaN(time) ? 0 : time
+  }
+  if (typeof value === 'string' && value.trim()) {
+    const time = new Date(value).getTime()
+    return Number.isNaN(time) ? 0 : time
+  }
+  return 0
+}
+
 /** 归一化分类目录：去掉首尾斜杠，拒绝 .. 与 _ 开头的隐藏目录 */
 export function normalizeDir(dir: string): string {
   const value = (dir || '').replace(/\\/g, '/').replace(/^\/+|\/+$/g, '').trim()
@@ -164,14 +178,26 @@ export function normalizeDir(dir: string): string {
  * 扫描 public/content 生成导航数据。
  * 解析规则与历史实现严格保持一致（HTML / TXT / 二进制文档的默认标题、封面、标签），
  * 修改前请先跑一遍 nav.json 差异对比。
+ *
+ * 输出顺序：目录树每层「文件夹优先」，双方各自按最新文章日期倒序（并列按标题兜底）；
+ * nav 按发布日期倒序。日期缺失时回退文件 mtime。
  */
 export async function scanContent(root: string, baseUrl = '/'): Promise<ContentScan> {
   const contentDir = resolveContentRoot(root)
   const nav: NavPost[] = []
   const tree: NavTreeNode = { type: 'folder', title: '根目录', path: '/', children: [] }
+  /** 节点时间戳：文章取发布日期，文件夹取所有后代文章的最大值 */
+  const stamps = new Map<NavTreeNode, number>()
 
-  async function scan(dir: string, parent: Extract<NavTreeNode, { type: 'folder' }>, base = '') {
+  /** 递归扫描，返回本目录（含子目录）最新一篇文章的时间戳 */
+  async function scan(
+    dir: string,
+    parent: Extract<NavTreeNode, { type: 'folder' }>,
+    base = ''
+  ): Promise<number> {
     const entries = await readdir(dir)
+    let latest = 0
+
     for (const entry of entries) {
       // 下划线开头 = 草稿 / 隐藏资源，构建不收录
       if (entry.startsWith('_')) continue
@@ -186,7 +212,9 @@ export async function scanContent(root: string, baseUrl = '/'): Promise<ContentS
           children: []
         }
         parent.children.push(node)
-        await scan(fullPath, node, `${base}/${entry}`)
+        const childLatest = await scan(fullPath, node, `${base}/${entry}`)
+        stamps.set(node, childLatest)
+        latest = Math.max(latest, childLatest)
         continue
       }
 
@@ -224,7 +252,8 @@ export async function scanContent(root: string, baseUrl = '/'): Promise<ContentS
           title: data.title ? String(data.title) : slug,
           path: route,
           url: fileUrl,
-          date: data.date,
+          // 缺失日期时回退文件修改时间，避免排序键为空
+          date: data.date || lastModifyTime,
           cover: data.cover ? String(data.cover) : '',
           // YAML 会把 2026 之类的标签解析为 number，导航数据统一成字符串
           tags: normalizeTags(data.tags),
@@ -300,11 +329,29 @@ export async function scanContent(root: string, baseUrl = '/'): Promise<ContentS
       }
 
       nav.push(itemData)
-      parent.children.push({ type: 'post', title: itemData.title, path: route })
+      const postNode: NavTreeNode = { type: 'post', title: itemData.title, path: route }
+      parent.children.push(postNode)
+      const stamp = dateTime(itemData.date)
+      stamps.set(postNode, stamp)
+      latest = Math.max(latest, stamp)
     }
+
+    // 文件夹优先分组，组内按最新文章时间倒序；并列时按标题兜底，
+    // 否则不同系统 readdir 顺序不同会让产物顺序漂移
+    parent.children.sort((a, b) => {
+      if (a.type !== b.type) return a.type === 'folder' ? -1 : 1
+      const diff = (stamps.get(b) || 0) - (stamps.get(a) || 0)
+      return diff !== 0 ? diff : a.title.localeCompare(b.title, 'zh-CN')
+    })
+
+    return latest
   }
 
   await scan(contentDir, tree as Extract<NavTreeNode, { type: 'folder' }>)
+  // nav 与目录树同一口径：按发布日期倒序，上一篇/下一篇沿时间轴切换
+  nav.sort(
+    (a, b) => dateTime(b.date) - dateTime(a.date) || a.title.localeCompare(b.title, 'zh-CN')
+  )
   return { nav, tree }
 }
 

@@ -754,9 +754,13 @@ onMounted(async () => {
       // 如果两个都是或都不是置顶文章，则按日期排序
       return new Date(b.date).getTime() - new Date(a.date).getTime()
     })
+    // latestPosts 只按日期排序，不受置顶影响
+    const sortedByDate = [...posts].sort((a: any, b: any) => {
+      return new Date(b.date).getTime() - new Date(a.date).getTime()
+    })
 
     allPosts.value = sorted
-    latestPosts.value = sorted.slice(0, 10)
+    latestPosts.value = sortedByDate.slice(0, 10)
     tree.value = await treeRes.json()
   } catch (err) {
     console.error('加载失败:', err)

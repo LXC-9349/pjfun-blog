@@ -430,7 +430,7 @@ The project is built for static hosting behind CDNs:
 | Platform | How | Notes |
 | --- | --- | --- |
 | Vercel | [Deploy](https://vercel.com/new/clone?repository-url=https://github.com/LXC-9349/pjfun-blog) | Demo: <https://pjfun-blog.vercel.app/> |
-| EdgeOne Pages (China) | [Deploy](https://console.cloud.tencent.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog) | Demo: <https://cnblog.pjfun.top/> |
+| EdgeOne Pages (China) | [Deploy](https://console.cloud.tencent.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog) | Demo: <https://blog.pjfun.top/> |
 | EdgeOne Pages (Global) | [Deploy](https://console.tencentcloud.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog) | `esa.jsonc` enables SPA fallback |
 | Cloudflare Workers | [Deploy](https://deploy.workers.cloudflare.com/?url=https://github.com/LXC-9349/pjfun-blog/tree/main) | `wrangler.jsonc` serves `dist` |
 | Netlify | [Deploy](https://app.netlify.com/start/deploy?repository=https://github.com/LXC-9349/pjfun-blog) | `netlify.toml` defines the build |

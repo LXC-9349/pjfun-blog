@@ -2,8 +2,8 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
-import { scanContent } from './content-core'
+import { dirname, join } from 'node:path'
+import { scanContent, type NavTreeNode } from './content-core'
 
 const roots: string[] = []
 
@@ -12,6 +12,19 @@ async function createRoot(): Promise<string> {
   roots.push(root)
   await mkdir(join(root, 'public', 'content', '2026'), { recursive: true })
   return root
+}
+
+async function createBareRoot(): Promise<string> {
+  const root = await mkdtemp(join(tmpdir(), 'pjfun-content-'))
+  roots.push(root)
+  await mkdir(join(root, 'public', 'content'), { recursive: true })
+  return root
+}
+
+async function writePost(root: string, relFile: string, title: string, date: string) {
+  const abs = join(root, 'public', 'content', ...relFile.split('/'))
+  await mkdir(dirname(abs), { recursive: true })
+  await writeFile(abs, `---\ntitle: ${title}\ndate: ${date}\n---\n正文\n`, 'utf-8')
 }
 
 afterEach(async () => {
@@ -44,5 +57,34 @@ describe('scanContent', () => {
 
     const { nav } = await scanContent(root)
     expect(nav).toHaveLength(0)
+  })
+
+  it('目录树：文件夹优先，双方按最新文章日期倒序', async () => {
+    const root = await createBareRoot()
+    await writePost(root, 'older/a.md', 'A', '2026-01-01')
+    await writePost(root, 'newer/nested/b.md', 'B', '2026-03-01')
+    await writePost(root, 'root-post.md', 'C', '2026-02-01')
+
+    const { tree } = await scanContent(root)
+    const children = (tree as Extract<NavTreeNode, { type: 'folder' }>).children
+    expect(children.map(node => `${node.type}:${node.title}`)).toEqual([
+      'folder:newer',
+      'folder:older',
+      'post:C'
+    ])
+
+    // 子目录的最新日期向上聚合：newer 自身没有文章，靠 nested 里的 B
+    const newer = children[0] as Extract<NavTreeNode, { type: 'folder' }>
+    expect(newer.children.map(node => `${node.type}:${node.title}`)).toEqual(['folder:nested'])
+  })
+
+  it('nav 按发布日期倒序，同日期按标题稳定排序', async () => {
+    const root = await createBareRoot()
+    await writePost(root, '2026/beta.md', 'Beta', '2026-02-01')
+    await writePost(root, '2026/alpha.md', 'Alpha', '2026-02-01')
+    await writePost(root, '2026/gamma.md', 'Gamma', '2026-03-01')
+
+    const { nav } = await scanContent(root)
+    expect(nav.map(post => post.title)).toEqual(['Gamma', 'Alpha', 'Beta'])
   })
 })

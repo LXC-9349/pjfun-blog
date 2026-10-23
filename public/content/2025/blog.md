@@ -11,7 +11,7 @@ sticky: true
 
 本文是 PJ Blog 的完整使用手册，既包含 [README](https://github.com/LXC-9349/pjfun-blog/blob/main/README.md) 的全部内容（项目简介、功能特性、技术栈、快速开始、内容管理、部署上线），也在其基础上展开**系统参数**：每个环境变量的默认值与影响范围、`src/constants` 中可调常量的含义与取值边界、构建与缓存策略、密码保护机制，以及调优与排查建议。
 
-- 在线示例：<https://cnblog.pjfun.top>
+- 在线示例：<https://blog.pjfun.top>
 - 项目仓库：<https://github.com/LXC-9349/pjfun-blog>
 - 英文文档：<https://github.com/LXC-9349/pjfun-blog/blob/main/README.en.md>
 
@@ -831,7 +831,7 @@ PJ Blog 针对「静态托管 + CDN + PWA」易出现的旧版本问题做了多
 | 平台 | 方式 | 说明 |
 | --- | --- | --- |
 | Vercel | [一键部署](https://vercel.com/new/clone?repository-url=https://github.com/LXC-9349/pjfun-blog) | 示例：<https://pjfun-blog.vercel.app/> |
-| EdgeOne Pages（国内） | [一键部署](https://console.cloud.tencent.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog) | 示例：<https://cnblog.pjfun.top/> |
+| EdgeOne Pages（国内） | [一键部署](https://console.cloud.tencent.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog) | 示例：<https://blog.pjfun.top/> |
 | EdgeOne Pages（国际） | [一键部署](https://console.tencentcloud.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog) | `esa.jsonc` 已配置 SPA 回退 |
 | Cloudflare Workers | [一键部署](https://deploy.workers.cloudflare.com/?url=https://github.com/LXC-9349/pjfun-blog/tree/main) | `wrangler.jsonc` 指向 `dist` |
 | Netlify | [一键部署](https://app.netlify.com/start/deploy?repository=https://github.com/LXC-9349/pjfun-blog) | `netlify.toml` 已配置构建命令 |
@@ -1013,7 +1013,7 @@ pjfun-blog/
 
 **相关链接**
 
-- 在线示例：<https://cnblog.pjfun.top>
+- 在线示例：<https://blog.pjfun.top>
 - 仓库地址：<https://github.com/LXC-9349/pjfun-blog>
 - 更新日志：<https://github.com/LXC-9349/pjfun-blog/blob/main/change.md>
 - 问题反馈：<https://github.com/LXC-9349/pjfun-blog/issues>
