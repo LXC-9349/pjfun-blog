@@ -556,3 +556,10 @@ pjfun-blog/
 ## 📄 许可证
 
 本项目基于 [MIT License](LICENSE) 开源。
+
+### 👨‍💻 关于作者
+
+如果你对这个项目的实现细节感兴趣，或者想交流技术：
+
+* **个人主页：** [https://pjfun.top](https://pjfun.top)
+* **闲鱼主页：** [点击跳转](https://www.goofish.com/personal?userId=863031346) 

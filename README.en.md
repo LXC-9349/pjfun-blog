@@ -556,3 +556,10 @@ Issues and pull requests are welcome:
 ## 📄 License
 
 Released under the [MIT License](LICENSE).
+
+### 👨‍💻 关于作者
+
+如果你对这个项目的实现细节感兴趣，或者想交流技术：
+
+* **个人主页：** [https://pjfun.top](https://pjfun.top)
+* **闲鱼主页：** [点击跳转](https://www.goofish.com/personal?userId=863031346) 
