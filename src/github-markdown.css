@@ -1406,3 +1406,223 @@ html *::after {
   display: none;
 }
 
+/* ===== 中文长文阅读排版 =====
+   目标：单行 40-46 字、行高 1.85、段落留白、标题层级分明；
+   来源引用（.md-source）与金句（.md-quote）分开排版，由文章页渲染后打标 */
+
+/* 正文节奏 */
+.markdown-body p,
+.markdown-body li {
+  line-height: 1.85;
+}
+
+.markdown-body p {
+  margin: 0 0 1.15em;
+}
+
+.markdown-body li > p {
+  margin-bottom: 0.6em;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  margin: 0 0 1.4em;
+  padding-left: 1.4em;
+}
+
+.markdown-body li + li {
+  margin-top: 0.35em;
+}
+
+/* 标题层级：h2 板块 / h3 条目，间距逐级递减 */
+.markdown-body h2 {
+  margin: 2.4em 0 0.9em;
+  padding-bottom: 0.35em;
+  font-size: 1.5em;
+  line-height: 1.4;
+  border-bottom: 1px solid var(--borderColor-muted);
+}
+
+.markdown-body h2:first-child {
+  margin-top: 0.6em;
+}
+
+.markdown-body h3 {
+  margin: 2em 0 0.7em;
+  padding-left: 0.6em;
+  font-size: 1.15em;
+  line-height: 1.5;
+  border-left: 3px solid rgb(249 115 22 / 0.5);
+}
+
+.markdown-body h4 {
+  margin: 1.6em 0 0.5em;
+  font-size: 1em;
+}
+
+.markdown-body h2 + p,
+.markdown-body h3 + p {
+  margin-top: 0;
+}
+
+/* 引用块：默认按「金句」排版 */
+.markdown-body blockquote {
+  margin: 1.8em 0;
+  padding: 0.85em 1.15em;
+  border-left: 3px solid rgb(249 115 22 / 0.55);
+  border-radius: 0 10px 10px 0;
+  background: rgb(249 115 22 / 0.06);
+  color: var(--fgColor-default);
+}
+
+.markdown-body blockquote p {
+  margin: 0;
+  font-size: 1.02em;
+}
+
+/* 引用块：来源引用，弱化成脚注，不再和金句抢注意力 */
+.markdown-body blockquote.md-source {
+  margin: 0.9em 0 2.2em;
+  padding: 0.15em 0 0.15em 0.9em;
+  border-left: 2px solid var(--borderColor-muted);
+  border-radius: 0;
+  background: transparent;
+  font-size: 0.82em;
+  color: #6b7280;
+}
+
+.dark .markdown-body blockquote.md-source {
+  color: #9ca3af;
+}
+
+.markdown-body blockquote.md-source p {
+  font-size: inherit;
+  line-height: 1.7;
+}
+
+/* 表格：整宽、紧凑，数字列右对齐由 Markdown 的 ---: 控制 */
+.markdown-body table {
+  display: table;
+  width: 100%;
+  margin: 1.7em 0;
+  font-size: 0.92em;
+}
+
+.markdown-body th,
+.markdown-body td {
+  padding: 8px 12px;
+}
+
+.markdown-body th {
+  white-space: nowrap;
+}
+
+/* 分隔线：板块切换的呼吸感 */
+.markdown-body hr {
+  height: 1px;
+  margin: 2.8em 0;
+  border: 0;
+  background-color: var(--borderColor-muted);
+}
+
+/* ===== 代码块顶栏与横向溢出 ===== */
+/* 顶栏：整条浅色栏 + 左侧三点（v-html 内容不吃 scoped 样式，所以放在全局） */
+.markdown-body pre {
+  padding-top: 2.5rem !important;
+}
+
+.markdown-body pre::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2.5rem;
+  background-color: #f3f4f6;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 12px 12px 0 0;
+  pointer-events: none;
+}
+
+.dark .markdown-body pre::before {
+  background-color: #1f2937;
+  border-bottom-color: #374151;
+}
+
+.markdown-body pre::after {
+  content: "";
+  position: absolute;
+  top: 15.5px;
+  left: 16px;
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  background: #ff5f57;
+  box-shadow: 15px 0 0 #febc2e, 30px 0 0 #28c840;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.dark .markdown-body pre::after {
+  opacity: 0.75;
+}
+
+/* 代码超宽时，右边缘渐隐，提示可以横向滚动 */
+.markdown-body pre.is-scrollable {
+  background-image: linear-gradient(to left, rgb(0 0 0 / 7%), rgb(0 0 0 / 0%) 26px);
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: 26px 100%;
+}
+
+.dark .markdown-body pre.is-scrollable {
+  background-image: linear-gradient(to left, rgb(255 255 255 / 6%), rgb(255 255 255 / 0%) 26px);
+}
+
+/* 表格：窄屏横向滚动而不是挤压列宽，宽屏恢复整宽 */
+.markdown-body table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* 窄屏：单元格不换行，整表横向滚动，避免每行都折成两行 */
+@media (max-width: 1023px) {
+  .markdown-body table th,
+  .markdown-body table td {
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: 1024px) {
+  .markdown-body table {
+    display: table;
+    width: 100%;
+    overflow: visible;
+  }
+}
+
+/* 图片：居中展示，避免小图贴左 */
+.markdown-body img {
+  display: block;
+  margin: 1.6em auto;
+  border-radius: 12px;
+}
+
+/* 中文字体优先：Windows 下避免回退到宋体/黑体导致字形不统一 */
+.markdown-body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "Noto Sans SC", "Noto Sans", Helvetica, Arial, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/* 列表符号用主题色，和标题竖条呼应 */
+.markdown-body ul > li::marker {
+  color: rgb(249 115 22 / 0.6);
+}
+
+.markdown-body ol > li::marker {
+  color: rgb(107 114 128 / 0.9);
+  font-variant-numeric: tabular-nums;
+}

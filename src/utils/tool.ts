@@ -853,6 +853,13 @@ export const fetchWithFallback = async (urls: string[], dataType: string) => {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
 
+            // 静态托管常把 404 回退成 index.html（HTTP 200 + HTML），
+            // 这里提前识别，避免把 HTML 当 JSON 解析后整页报错，转而走下一个地址
+            const contentType = response.headers.get('content-type') || ''
+            if (dataType === 'json' && /text\/html/i.test(contentType)) {
+                throw new Error(`返回了 HTML 而不是 JSON：${requestUrl}`);
+            }
+
             if (responseCache.size >= RESPONSE_CACHE_LIMIT) {
                 responseCache.clear()
             }

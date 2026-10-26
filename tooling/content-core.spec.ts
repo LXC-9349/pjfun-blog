@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
-import { scanContent, type NavTreeNode } from './content-core'
+import { isAcceptableContentName, scanContent, type NavTreeNode } from './content-core'
 
 const roots: string[] = []
 
@@ -86,5 +86,16 @@ describe('scanContent', () => {
 
     const { nav } = await scanContent(root)
     expect(nav.map(post => post.title)).toEqual(['Gamma', 'Alpha', 'Beta'])
+  })
+})
+
+describe('isAcceptableContentName', () => {
+  it('放行中文文件名与拼音 slug，拦截空格与特殊字符', () => {
+    expect(isAcceptableContentName('2026-10-26-新闻轴')).toBe(true)
+    expect(isAcceptableContentName('瀑布流相册')).toBe(true)
+    expect(isAcceptableContentName('数据压缩Web性能')).toBe(true)
+    expect(isAcceptableContentName('hello-world-2')).toBe(true)
+    expect(isAcceptableContentName('has space')).toBe(false)
+    expect(isAcceptableContentName('bad!name')).toBe(false)
   })
 })

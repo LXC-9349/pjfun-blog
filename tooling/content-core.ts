@@ -16,6 +16,17 @@ export const SUPPORTED_EXT_RE = /\.(md|html|txt|pdf|docx?|xlsx?)$/i
 /** 二进制文档：不读取正文，由同名 .desc.json / .desc.yaml 提供元数据 */
 const BINARY_EXTENSIONS = ['pdf', 'doc', 'docx', 'xls', 'xlsx']
 
+/**
+ * 已有文章的命名放行规则：站点路由与目录名本来就支持中文（如 `开发技术/web服务器`、
+ * 定时任务产出的 `2026-10-26-新闻轴`），所以校验只拦空格与特殊字符；
+ * 新建文章仍由 slugifyTitle 生成拼音 slug，保持链接干净。
+ */
+const CONTENT_NAME_RE = /^[\p{Script=Han}A-Za-z0-9][\p{Script=Han}A-Za-z0-9-]*$/u
+
+export function isAcceptableContentName(name: string): boolean {
+  return isValidSlug(name) || CONTENT_NAME_RE.test(name)
+}
+
 // ==================== 类型定义 ====================
 
 export interface NavPost {
@@ -507,8 +518,8 @@ export async function savePost(
   }
   const abs = resolveContentFile(root, file)
   const slug = path.basename(file).replace(/\.md$/i, '')
-  if (!isValidSlug(slug)) {
-    throw new ContentError('invalid', `文件名需要是英文短横线格式：${slug}`)
+  if (!isAcceptableContentName(slug)) {
+    throw new ContentError('invalid', `文件名只能包含中文、字母、数字与连字符：${slug}`)
   }
 
   let extra: Record<string, unknown> = {}
@@ -732,8 +743,8 @@ export async function validatePost(
   if (!content.trim()) {
     issues.push({ level: 'warn', code: 'empty', message: '正文为空' })
   }
-  if (!isValidSlug(slug)) {
-    issues.push({ level: 'error', code: 'slug', message: '文件名需要是英文短横线格式（小写字母 / 数字 / -）' })
+  if (!isAcceptableContentName(slug)) {
+    issues.push({ level: 'error', code: 'slug', message: '文件名只能包含中文、字母、数字与连字符' })
   }
 
   // 路由冲突：同名路径已被其他文章占用

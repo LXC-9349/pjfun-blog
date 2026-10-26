@@ -25,7 +25,8 @@
   </div>
 
   <!-- 将返回按钮和主题切换按钮放在一起 -->
-  <div class="fixed lg:hidden top-4 left-4 z-[60]">
+  <div class="fixed lg:hidden top-4 left-4 z-[60] transition-all duration-300"
+       :class="hideFloatingChrome ? '-translate-y-16 opacity-0 pointer-events-none' : 'opacity-100'">
     <router-link
         to="/"
         class="flex items-center gap-2 px-3 py-3 bg-black/20 dark:bg-white/20 backdrop-blur-md rounded-full hover:bg-black/30 dark:hover:bg-white/30 transition-colors border border-white/20 dark:border-white/30 text-white"
@@ -47,60 +48,20 @@
     @touchstart.passive="handleTouchStart"
     @touchend.passive="handleTouchEnd"
   >
-    <!-- 封面部分 -->
-    <div v-if="cover" class="relative h-[60vh] min-h-[400px] overflow-hidden group">
-      <img :src="cover" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 filter brightness-90" :alt="t('coverAlt')">
-      <div class="absolute inset-0 bg-gradient-to-t from-[#16120f] via-transparent to-black/60"></div>
-
-      <!-- 封面中的标题信息 -->
-      <div class="absolute bottom-0 left-0 w-full p-8 md:p-16 text-white z-10 max-w-7xl mx-auto">
-        <div class="flex flex-wrap gap-3 mb-6 opacity-0 animate-slide-up" style="animation-delay: 0.1s">
-          <span v-for="tag in articleMeta.tags" :key="tag" class="px-4 py-1.5 bg-orange-500/20 hover:bg-orange-500/40 border border-orange-500/30 backdrop-blur-md rounded-full text-xs font-semibold tracking-wide transition-colors cursor-pointer">
-            #{{ tag }}
-          </span>
+    <!-- 封面：只做横幅，不承载文字。标题放到正文区，任何主题下都清晰可读 -->
+    <!-- GitHub 的 OG 图是 1200×630 的卡片，直接裁切会只剩半截标题，因此改为「模糊底 + 完整卡片」 -->
+    <div v-if="cover && !coverBroken" class="relative overflow-hidden group bg-gray-100 dark:bg-[#1b1713]"
+         :class="isOgCover ? 'h-[168px] md:h-[210px]' : 'h-[26vh] md:h-[34vh] min-h-[150px] md:min-h-[210px] max-h-[340px]'">
+      <template v-if="isOgCover">
+        <img :src="cover" class="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-70" alt="" aria-hidden="true" @error="coverBroken = true">
+        <div class="absolute inset-0 flex items-center justify-center p-3 md:p-4">
+          <img :src="cover" class="max-h-full max-w-full object-contain rounded-lg shadow-xl ring-1 ring-black/10" :alt="t('coverAlt')">
         </div>
-        <h1 class="text-3xl md:text-4xl font-extrabold leading-tight mb-8 opacity-0 animate-slide-up tracking-tight" style="animation-delay: 0.2s">
-          {{ articleMeta.title }}
-        </h1>
-        <div class="flex items-center gap-6 text-sm md:text-base font-medium opacity-0 animate-slide-up text-gray-300" style="animation-delay: 0.3s">
-          <time class="flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-3 2v12a2 2 0 002 2z" />
-            </svg>
-            {{ articleMeta.date }}
-          </time>
-          <span v-if="readingTime.length>0" class="w-1 h-1 bg-gray-500 rounded-full"></span>
-          <span v-if="readingTime.length>0" class="flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            {{ readingTime }}
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <!-- 无封面时显示的标题 -->
-    <div v-else class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8 text-center">
-      <h1 class="text-3xl md:text-3xl font-extrabold leading-tight mb-8 tracking-tight text-gray-800 dark:text-white animate-fade-in-down">
-        {{ articleMeta.title }}
-      </h1>
-      <div class="flex dark:text-white dark:text-warmGray flex-wrap justify-center gap-3 mb-2 opacity-0 animate-slide-up" style="animation-delay: 0.1s">
-        <span v-for="tag in articleMeta.tags" :key="tag" class="px-4 py-1.5 bg-orange-500/20 hover:bg-orange-500/40 border border-orange-500/30 backdrop-blur-md rounded-full text-xs font-semibold tracking-wide transition-colors cursor-pointer">
-          #{{ tag }}
-        </span>
-      </div>
-      <div class="flex items-center justify-center gap-6 text-base font-medium text-gray-500 dark:text-gray-400">
-        <time class="flex items-center gap-2">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-3 2v12a2 2 0 002 2z" />
-          </svg>
-          {{ articleMeta.date }}
-        </time>
-        <span v-if="readingTime.length>0" class="w-1 h-1 bg-gray-500 rounded-full"></span>
-        <span v-if="readingTime.length>0" class="flex items-center gap-2">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          {{ readingTime }}
-        </span>
-      </div>
+      </template>
+      <template v-else>
+        <img :src="cover" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-[1.02]" :alt="t('coverAlt')" @error="coverBroken = true">
+      </template>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/5"></div>
     </div>
 
     <div class="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-5">
@@ -178,8 +139,44 @@
             class="flex-1 w-full" 
             :class="currentFileExtension && ['pdf', 'doc', 'docx', 'xls', 'xlsx'].includes(currentFileExtension) 
               ? 'max-w-full mx-auto' 
-              : 'max-w-4xl mx-auto min-w-0'"
+              : 'max-w-[45rem] mx-auto min-w-0'"
           >
+          <!-- 文章头部：栏目 → 标题 → 元信息 → 标签，与正文同宽左对齐 -->
+          <header v-if="!loading" :class="cover ? 'pt-10' : 'pt-14'" class="pb-7 mb-3 border-b border-gray-100 dark:border-gray-800">
+            <div v-if="articleCategory" class="flex items-center gap-1.5 mb-4 text-xs font-medium tracking-wide text-orange-600 dark:text-orange-400 animate-slide-up" style="animation-fill-mode: both">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+              </svg>
+              <span>{{ articleCategory }}</span>
+            </div>
+            <h1 class="text-[1.85rem] md:text-[2.3rem] font-extrabold leading-[1.32] tracking-tight text-gray-900 dark:text-gray-50 mb-5 text-balance animate-slide-up" style="animation-delay: 0.05s; animation-fill-mode: both">
+              {{ articleMeta.title }}
+            </h1>
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-500 dark:text-gray-400 animate-slide-up" style="animation-delay: 0.12s; animation-fill-mode: both">
+              <time class="flex items-center gap-1.5">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-3 2v12a2 2 0 002 2z" />
+                </svg>
+                {{ articleMeta.date }}
+              </time>
+              <template v-if="articleMeta.chars > 0">
+                <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+                <span>{{ articleMeta.chars }} {{ t('wordCount') }}</span>
+              </template>
+              <template v-if="readingTime.length > 0">
+                <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+                <span class="flex items-center gap-1.5">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  {{ readingTime }}
+                </span>
+              </template>
+            </div>
+            <div v-if="articleMeta.tags.length > 0" class="flex flex-wrap gap-2 mt-4 animate-slide-up" style="animation-delay: 0.18s; animation-fill-mode: both">
+              <span v-for="tag in articleMeta.tags" :key="tag" class="px-2.5 py-0.5 rounded-md text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-100/70 dark:bg-white/5 hover:text-orange-600 dark:hover:text-orange-400 transition-colors cursor-pointer">
+                #{{ tag }}
+              </span>
+            </div>
+          </header>
           <!-- 骨架屏：更贴近真实内容布局 -->
           <div v-if="loading" class="space-y-10 animate-pulse max-w-3xl mx-auto">
             <!-- 封面占位 -->
@@ -288,16 +285,16 @@
             <div v-if="!nextArticle" class="invisible"></div>
           </div>
 
-          <div class="flex flex-col md:flex-row justify-between items-center gap-8 bg-gray-100/50 dark:bg-gray-800/30 p-6 rounded-2xl border border-gray-200 dark:border-gray-700/50">
-            <div class="flex items-center gap-3" v-if="articleMeta.tags.length>0">
-              <span class="text-gray-500 font-medium">{{ t('tags') }}:</span>
+          <div class="flex flex-col md:flex-row md:flex-wrap justify-between items-center gap-6 md:gap-8 bg-gray-100/50 dark:bg-gray-800/30 p-6 rounded-2xl border border-gray-200 dark:border-gray-700/50">
+            <div class="flex items-start gap-3 min-w-0 flex-wrap" v-if="articleMeta.tags.length>0">
+              <span class="text-gray-500 font-medium whitespace-nowrap leading-7">{{ t('tags') }}:</span>
               <div class="flex flex-wrap gap-2">
                 <span v-for="tag in articleMeta.tags" :key="tag" class="text-sm px-3 py-1 rounded-md bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 cursor-pointer transition">#{{ tag }}</span>
               </div>
             </div>
-            <div class="flex gap-3">
+            <div class="flex flex-wrap gap-3 shrink-0">
               <button @click="handlePrint"
-                  class="flex items-center gap-2 px-6 py-2.5 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors print:hidden" :aria-label="t('print')">
+                  class="flex items-center gap-2 px-6 py-2.5 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors print:hidden whitespace-nowrap shrink-0" :aria-label="t('print')">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                 </svg>
@@ -305,7 +302,7 @@
               </button>
               <button 
                 @click="toggleFavorite"
-                class="flex items-center gap-2 px-6 py-2.5 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors font-medium" 
+                class="flex items-center gap-2 px-6 py-2.5 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors font-medium whitespace-nowrap shrink-0" 
                 :aria-label="isFavorited ? t('removeFromFavorites') : t('addToFavorites')"
                 :class="{ 'bg-red-700': isFavorited }"
               >
@@ -325,7 +322,7 @@
                 </svg>
                 {{ isFavorited ? t('favorited') : t('favorite') }}
               </button>
-              <button @click="openShareModal" class="flex items-center gap-2 px-6 py-2.5 bg-orange-600 text-white rounded-full hover:bg-orange-700 transition-colors font-medium" :aria-label="t('share')">
+              <button @click="openShareModal" class="flex items-center gap-2 px-6 py-2.5 bg-orange-600 text-white rounded-full hover:bg-orange-700 transition-colors font-medium whitespace-nowrap shrink-0" :aria-label="t('share')">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                 </svg>
@@ -342,17 +339,19 @@
               {{ t('noExcerpt') }}
             </div>
             <ul v-else class=" relative">
-              <li v-for="h in headings" :key="h.id" class="relative">
+              <li v-for="h in headings" :key="h.id" v-show="isTocVisible(h)" class="relative">
                 <div v-if="activeHeadingId === h.id" class="absolute -left-[21px] top-1 bottom-1 w-[3px] bg-orange-600 rounded-r-md transition-all"></div>
                 <button
+                    :data-toc-id="h.id"
                     @click="scrollToHeading(h.id)"
-                    class="text-left text-sm py-1.5 transition-all duration-200 block w-full truncate leading-relaxed"
+                    class="text-left text-[13px] py-1.5 transition-all duration-200 block w-full line-clamp-2 leading-[1.5]"
                     :class="[
                     activeHeadingId === h.id
-                      ? 'text-orange-600 font-semibold pl-1'
-                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                      ? 'text-orange-600 font-semibold'
+                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200',
+                    h.level === 2 ? 'mt-2.5 font-medium' : ''
                   ]"
-                    :style="{ paddingLeft: (h.level - 1) * 1 + 'rem' }"
+                    :style="{ paddingLeft: (h.level - 1) * 0.75 + 'rem' }"
                     :aria-current="activeHeadingId === h.id ? 'true' : 'false'"
                 >
                   {{ h.text }}
@@ -365,7 +364,8 @@
     </div>
   </article>
 
-  <div class="fixed bottom-10 right-1 flex flex-col gap-4 z-40 items-center">
+  <div class="fixed bottom-10 right-1 flex flex-col gap-4 z-40 items-center transition-all duration-300"
+       :class="hideFloatingChrome || scrollYValue < 200 ? 'translate-y-6 opacity-0 pointer-events-none' : 'opacity-100'">
     <button
         v-if="headings.length > 0"
         @click="showMobileToc = true"
@@ -428,7 +428,9 @@
   </Transition>
 
   <!-- 移动端文章操作浮动栏 -->
-  <div class="fixed bottom-[60px] left-0 right-0 z-40 lg:hidden flex justify-center pointer-events-none" style="bottom: calc(60px + env(safe-area-inset-bottom, 0px));">
+  <div class="fixed bottom-[60px] left-0 right-0 z-40 lg:hidden flex justify-center pointer-events-none transition-all duration-300"
+       :class="hideFloatingChrome || scrollYValue < 200 ? 'translate-y-24 opacity-0' : 'opacity-100'"
+       style="bottom: calc(60px + env(safe-area-inset-bottom, 0px));">
     <div class="flex items-center gap-1 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg rounded-full shadow-xl border border-gray-200 dark:border-gray-700 px-3 py-2 pointer-events-auto transform transition-all duration-300">
       <button @click="handleBackToTop" class="icon-btn-sm" :aria-label="t('backToTop')">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
@@ -485,8 +487,17 @@ const html = ref('')
 const title = ref(t('loading'))
 const loading = ref(true)
 const cover = ref('')
+// 远程封面（GitHub OG 图 / picsum）可能超时或 404，失败时收起横幅，避免留下一块空白
+const coverBroken = ref(false)
+watch(cover, () => { coverBroken.value = false })
+// GitHub 栏目用 opengraph 卡片当封面，比例 1200×630，需要整张展示而不是裁切
+const isOgCover = computed(() => cover.value.includes('opengraph.githubassets.com'))
 const readingTime = ref('')
 const showBackToTop = ref(false)
+// 移动端悬浮操作栏是否收起（向下滚动时收起）
+const hideFloatingChrome = ref(false)
+const scrollYValue = ref(0)
+let lastScrollForChrome = 0
 
 // 用于上一篇/下一篇导航
 const allArticles = ref<any[]>([])
@@ -514,6 +525,7 @@ const articleMeta = ref({
   tags: [] as string[],
   excerpt: '',
   cover: '',
+  chars: 0,
   extension: '' // 添加扩展字段
 })
 const documentUrl = ref('')
@@ -581,6 +593,7 @@ function resetArticleView() {
     tags: [],
     excerpt: '',
     cover: '',
+    chars: 0,
     extension: ''
   }
   if (tocTimer) {
@@ -755,6 +768,7 @@ async function renderFromHtml() {
     generateTOC()
     setupScrollSpy()
     addCopyButtons()
+    classifyBlockquotes()
   } catch (error) {
     if (seq !== renderSeq) return
     console.error('Content parsing error:', error)
@@ -786,17 +800,22 @@ const addCopyButtons = () => {
     const langClass = classes.find(cls => cls.startsWith('language-'));
     const language = langClass ? langClass.replace('language-', '') : '';
 
-    // 添加语言标签
+    // 语言标签
     if (language) {
       const langLabel = document.createElement('span');
       langLabel.className =
-          'lang-label absolute top-0 left-3 h-[2.0rem] text-[9px] font-mono font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 select-none z-10';
+          'lang-label absolute top-0 left-[68px] h-[2.5rem] text-[10px] font-mono font-semibold uppercase tracking-[0.14em] text-gray-400 dark:text-gray-500 select-none z-10';
       langLabel.textContent = language;
       pre.appendChild(langLabel);
     }
 
+    // 横向溢出时给右侧加渐隐，提示还能继续横向滚动
+    if (pre.scrollWidth - pre.clientWidth > 4) {
+      pre.classList.add('is-scrollable');
+    }
+
     const button = document.createElement('button');
-    button.className = 'copy-button absolute top-0 right-2 h-[2.5rem] flex items-center justify-center p-1.5 rounded-md hover:bg-white/30 dark:hover:bg-gray-600/50 transition-all duration-200 opacity-0 group-hover:opacity-100 z-10';
+    button.className = 'copy-button absolute top-0 right-2 h-[2.5rem] flex items-center justify-center p-1.5 rounded-md hover:bg-white/50 dark:hover:bg-gray-600/50 transition-all duration-200 opacity-40 group-hover:opacity-100 z-10';
     button.innerHTML = `<svg class="w-4 h-4 text-gray-600 dark:text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
     button.title = t('copyCode');
     button.onclick = () => copyCodeToClipboard(codeBlock.textContent || '', button);
@@ -810,6 +829,14 @@ const addCopyButtons = () => {
 
 let copyToastTimer: ReturnType<typeof setTimeout> | null = null;
 
+// 区分两类引用块：来源引用（md-source）与金句（md-quote），分别排版
+const classifyBlockquotes = () => {
+  document.querySelectorAll('.markdown-body blockquote').forEach((bq) => {
+    const text = (bq.textContent || '').trim()
+    bq.classList.remove('md-source', 'md-quote')
+    bq.classList.add(/^来源/.test(text) ? 'md-source' : 'md-quote')
+  })
+}
 const copyCodeToClipboard = async (text: string, button: HTMLElement) => {
   const original = button.innerHTML;
   try {
@@ -887,9 +914,21 @@ const updateProgress = () => {
     rafId = null
     const winScroll = document.documentElement.scrollTop || document.body.scrollTop
     lastScrollY = winScroll
+    scrollYValue.value = winScroll
     const height = document.documentElement.scrollHeight - document.documentElement.clientHeight
     progress.value = height > 0 ? (winScroll / height) * 100 : 0
     showBackToTop.value = winScroll > ARTICLE_DETAIL_CONFIG.backToTopThreshold
+
+    // 向下阅读时收起悬浮操作栏，避免遮挡正文；向上滚动或回到顶部时重新出现
+    const delta = winScroll - lastScrollForChrome
+    if (winScroll < 160) {
+      hideFloatingChrome.value = false
+    } else if (delta > 8) {
+      hideFloatingChrome.value = true
+    } else if (delta < -8) {
+      hideFloatingChrome.value = false
+    }
+    lastScrollForChrome = winScroll
 
     // 显示进度条
     showProgress.value = true
@@ -961,8 +1000,32 @@ const handleKeydown = (e: KeyboardEvent) => {
 }
 
 // ==================== 目录生成与高亮 ====================
-const headings = ref<Array<{ text: string; level: number; id: string }>>([])
+const headings = ref<Array<{ text: string; level: number; id: string; section: number }>>([])
 const activeHeadingId = ref('')
+
+// 目录过长时（长文 / 新闻合集）只展开当前板块下的条目，避免右侧变成一堵墙
+const activeSection = computed(() => {
+  const current = headings.value.find((h) => h.id === activeHeadingId.value)
+  return current ? current.section : -1
+})
+const tocCollapsed = computed(() => headings.value.length > 14)
+
+// 当前高亮项超出目录可视区时，把它滚进来（只滚目录容器，不动页面）
+watch(activeHeadingId, (id) => {
+  if (!id) return
+  const container = document.querySelector('.toc-scrollbar') as HTMLElement | null
+  const item = container?.querySelector(`[data-toc-id="${id}"]`) as HTMLElement | null
+  if (!container || !item) return
+  const cRect = container.getBoundingClientRect()
+  const iRect = item.getBoundingClientRect()
+  if (iRect.top < cRect.top + 8) {
+    container.scrollTop -= cRect.top - iRect.top + 12
+  } else if (iRect.bottom > cRect.bottom - 8) {
+    container.scrollTop += iRect.bottom - cRect.bottom + 12
+  }
+})
+const isTocVisible = (h: { level: number; section: number }) =>
+  !tocCollapsed.value || h.level <= 2 || h.section === activeSection.value
 let observer: IntersectionObserver | null = null // 优化: 声明 observer 实例用于清理
 
 const generateTOC = () => {
@@ -974,7 +1037,7 @@ const generateTOC = () => {
     if (!container) return
 
     const elements = container.querySelectorAll('h1, h2, h3, h4, h5, h6')
-    headings.value = Array.from(elements)
+    const raw = Array.from(elements)
         .filter(el => el.textContent && el.id)
         .map(el => {
           const element = el as HTMLHeadingElement
@@ -985,6 +1048,13 @@ const generateTOC = () => {
           }
         })
         .filter(item => item.text.length > 0)
+
+    // 给每个标题标上所属板块序号（最近的上级 h2），目录过长时按板块折叠 h3
+    let sectionIndex = -1
+    headings.value = raw.map((item) => {
+      if (item.level <= 2) sectionIndex += 1
+      return { ...item, section: sectionIndex }
+    })
   }, ARTICLE_DETAIL_CONFIG.tocGenerateDelay)
 }
 
@@ -1071,6 +1141,26 @@ const handlePrint = () => {
 }
 
 const artPath=ref<string>('')
+
+// 文章所属栏目：取路由路径去掉最后一段（/新闻轴/2026-10-26-新闻轴 → 新闻轴）
+const articleCategory = computed(() =>
+  artPath.value.split('/').filter(Boolean).slice(0, -1).join(' / ')
+)
+
+// 中文阅读统计：汉字按 400 字/分钟、英文按 200 词/分钟，代码块与链接不计入
+function computeReadingStats(text: string) {
+  const plain = text
+    .replace(/^---[\s\S]*?---/, '')
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/!?\[[^\]]*\]\([^)]*\)/g, ' ')
+  const cjk = (plain.match(/[\u4e00-\u9fa5]/g) || []).length
+  const latin = (plain.replace(/[\u4e00-\u9fa5]/g, ' ').match(/[A-Za-z0-9][A-Za-z0-9'-]*/g) || []).length
+  return {
+    chars: cjk,
+    minutes: Math.max(1, Math.ceil(cjk / 400 + latin / 200)),
+  }
+}
+
 let loadSeq = 0
 // ==================== 加载文章逻辑 ====================
 const loadArticle = async (filePath: string) => {
@@ -1207,8 +1297,9 @@ const loadArticle = async (filePath: string) => {
     articleMeta.value.cover = articleInfo.cover || '';
     articleMeta.value.tags = articleInfo.tags || [];
     articleMeta.value.excerpt = articleInfo.excerpt || ''
-    const words = content.trim().split(/\s+/).length
-    readingTime.value = Math.ceil(words / 200) + ' ' + t('readingTime')
+    const stats = computeReadingStats(content)
+    articleMeta.value.chars = stats.chars
+    readingTime.value = stats.minutes + ' ' + t('readingTime')
 
     if (!isMarkdown) {
       if (actualFilePath.endsWith('.html')) {
@@ -1222,8 +1313,9 @@ const loadArticle = async (filePath: string) => {
       }
 
       // 计算 TXT 和 HTML 文件的阅读时间
-      const words = contentText.trim().split(/\s+/).length;
-      readingTime.value = Math.ceil(words / 200) + ' ' + t('readingTime');
+      const stats = computeReadingStats(contentText);
+      articleMeta.value.chars = stats.chars
+      readingTime.value = stats.minutes + ' ' + t('readingTime');
     }else{
       // 移除 BOM 字符和开头空白后匹配 frontmatter
       const trimmedContent = contentText.replace(/^\uFEFF/, '').trimStart()
@@ -1443,28 +1535,6 @@ const scrollToHeading = (id: string) => {
 
 .dark .toc-scrollbar:hover::-webkit-scrollbar-thumb {
   background: #4a4038;
-}
-
-/* Mac 风格代码块顶部装饰 */
-.markdown-body pre {
-  padding-top: 2.5rem !important;
-}
-
-.markdown-body pre::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2.5rem;
-  background-color: rgb(243 244 246);
-  border-bottom: 1px solid rgb(209 213 219);
-  border-radius: 12px 12px 0 0;
-}
-
-.dark .markdown-body pre::before {
-  background-color: rgb(31 41 55);
-  border-bottom-color: rgb(55 65 81);
 }
 
 /* 工具提示 */
