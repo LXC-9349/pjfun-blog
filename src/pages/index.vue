@@ -108,7 +108,7 @@
     </header>
 
     <!-- 主体布局：左侧目录 + 中间内容 + 右侧最新文章 -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow min-w-0 w-full">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow min-w-0 w-full">
       <div class="flex flex-col lg:flex-row gap-8 min-w-0">
         <!-- 左侧目录树（移动端抽屉） -->
         <aside
@@ -200,7 +200,7 @@
         <main
             id="article-list"
             ref="listEl"
-            class="flex-none lg:flex-1 min-w-0 overflow-y-auto card-scroll pr-1 overscroll-contain h-[calc(100dvh-10rem)] min-h-[320px] lg:h-[calc(100dvh-6rem)]"
+            class="flex-none lg:flex-1 min-w-0 overflow-y-auto card-scroll pr-1 overscroll-contain h-[calc(100dvh-10rem)] min-h-[320px] lg:h-[calc(100dvh-3rem)]"
             data-lenis-prevent
             @scroll.passive="handleListScroll"
         >
@@ -249,7 +249,8 @@
                 :enter="motionPreset(i).enter"
                 @contextmenu.prevent="showContextMenu($event, post)"
             >
-              <router-link :to="post.path" class="card-link flex flex-col sm:flex-row h-full">
+              <three-d-card>
+                <router-link :to="post.path" class="card-link flex flex-col sm:flex-row h-full">
                 <!-- 封面 -->
                 <div class="relative w-full sm:w-48 lg:w-56 sm:shrink-0 aspect-[16/9] sm:aspect-auto overflow-hidden bg-gray-100 dark:bg-gray-700">
                   <!-- 置顶标记 -->
@@ -318,6 +319,7 @@
                   </div>
                 </div>
               </router-link>
+              </three-d-card>
             </article>
 
             <!-- 滚动自动加载状态 -->
