@@ -44,13 +44,13 @@
     <ThemeToggle />
   </div>
 
-  <article class="min-h-screen dark:bg-[#16120f] transition-colors duration-300 lg:pb-0" style="padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));"
+  <article class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 lg:pb-0" style="padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));"
     @touchstart.passive="handleTouchStart"
     @touchend.passive="handleTouchEnd"
   >
     <!-- 封面：只做横幅，不承载文字。标题放到正文区，任何主题下都清晰可读 -->
     <!-- GitHub 的 OG 图是 1200×630 的卡片，直接裁切会只剩半截标题，因此改为「模糊底 + 完整卡片」 -->
-    <div v-if="cover && !coverBroken" class="relative overflow-hidden group bg-gray-100 dark:bg-[#1b1713]"
+    <div v-if="cover && !coverBroken" class="relative overflow-hidden group bg-gray-100 dark:bg-gray-800"
          :class="isOgCover ? 'h-[168px] md:h-[210px]' : 'h-[26vh] md:h-[34vh] min-h-[150px] md:min-h-[210px] max-h-[340px]'">
       <template v-if="isOgCover">
         <img :src="cover" class="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-70" alt="" aria-hidden="true" @error="coverBroken = true">
@@ -68,7 +68,7 @@
       <div class="flex flex-col lg:flex-row gap-5 relative">
 
         <div class="hidden lg:flex flex-col gap-4 sticky top-32 h-fit items-end w-16 shrink-0 order-first">
-          <div class="flex flex-col gap-4 p-2 bg-white/80 dark:bg-[#1d1915]/80 backdrop-blur rounded-full border border-gray-200 dark:border-gray-700 shadow-sm">
+          <div class="flex flex-col gap-4 p-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur rounded-full border border-gray-200 dark:border-gray-700 shadow-sm">
             <div class="tooltip tooltip-right" :data-tip="t('backToHome')">
               <router-link
                   to="/"
@@ -393,7 +393,7 @@
   <Transition name="slide-fade">
     <div v-if="showMobileToc&&headings.length > 0" class="fixed inset-0 z-[60] lg:hidden">
       <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="showMobileToc = false"></div>
-      <div class="absolute right-0 top-0 bottom-0 w-3/4 max-w-sm bg-white dark:bg-[#1d1915] shadow-2xl flex flex-col">
+      <div class="absolute right-0 top-0 bottom-0 w-3/4 max-w-sm bg-white dark:bg-gray-800 shadow-2xl flex flex-col">
         <div class="flex-shrink-0 flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
           <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ t('articleDirectory') }}</h3>
           <button @click="showMobileToc = false" class="p-2 text-gray-500 hover:text-gray-900 dark:hover:text-white" :aria-label="t('close')">
@@ -402,7 +402,7 @@
             </svg>
           </button>
         </div>
-        <div v-if="headings.length === 0" class="flex-1 flex items-center justify-center text-[#000000ff]">
+        <div v-if="headings.length === 0" class="flex-1 flex items-center justify-center text-gray-500 dark:text-gray-400">
           {{ t('noExcerpt') }}
         </div>
         <div v-else class="flex-1 overflow-y-auto min-h-0 p-6 toc-scrollbar">
@@ -431,7 +431,7 @@
   <div class="fixed bottom-[60px] left-0 right-0 z-40 lg:hidden flex justify-center pointer-events-none transition-all duration-300"
        :class="hideFloatingChrome || scrollYValue < 200 ? 'translate-y-24 opacity-0' : 'opacity-100'"
        style="bottom: calc(60px + env(safe-area-inset-bottom, 0px));">
-    <div class="flex items-center gap-1 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg rounded-full shadow-xl border border-gray-200 dark:border-gray-700 px-3 py-2 pointer-events-auto transform transition-all duration-300">
+    <div class="flex items-center gap-1 bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg rounded-full shadow-xl border border-gray-200 dark:border-gray-700 px-3 py-2 pointer-events-auto transform transition-all duration-300">
       <button @click="handleBackToTop" class="icon-btn-sm" :aria-label="t('backToTop')">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
       </button>

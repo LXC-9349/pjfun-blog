@@ -1626,3 +1626,53 @@ html *::after {
   color: rgb(107 114 128 / 0.9);
   font-variant-numeric: tabular-nums;
 }
+
+/* ===== 暖色主题：正文与代码块统一色阶（亮 / 暗） =====
+   GitHub 原始令牌是冷色（亮 #ffffff / #f6f8fa，暗 #0d1117 / #161b22 / #1f2937），
+   与全站暖色（uno gray-50 = #faf7f2、gray-900 = #241e19）不搭，
+   会在正文区留下一块突兀的白底 / 偏蓝断层。这里把正文底直接对齐页面底色，
+   代码块、表格、分隔线改用暖色阶。 */
+html:not(.dark) .markdown-body {
+  --bgColor-default: #faf7f2;
+  --bgColor-muted: #f4eee5;
+  --bgColor-neutral-muted: rgb(216 200 182 / 0.4);
+  --borderColor-default: #e9dfd2;
+  --borderColor-muted: rgb(233 223 210 / 0.8);
+  --borderColor-neutral-muted: rgb(233 223 210 / 0.8);
+}
+
+/* 亮色代码块顶栏（原为偏冷的 #f3f4f6 / #e5e7eb） */
+html:not(.dark) .markdown-body pre::before {
+  background-color: #efe8dc;
+  border-bottom-color: #e9dfd2;
+}
+
+/* 亮色行内代码：暖色胶囊底（原为偏蓝的 rgba(175, 184, 193, .2)） */
+html:not(.dark) .markdown-body code:not(pre code) {
+  background: rgb(216 200 182 / 0.4);
+}
+
+.dark .markdown-body {
+  --bgColor-default: #241e19;
+  --bgColor-muted: #2b251f;
+  --bgColor-neutral-muted: rgb(74 64 56 / 0.55);
+  --borderColor-default: #4a4038;
+  --borderColor-muted: rgb(74 64 56 / 0.55);
+  --borderColor-neutral-muted: rgb(74 64 56 / 0.55);
+}
+
+/* 代码块：比页面略亮的暖色卡片，顶栏再亮一级，保留原本的凸起关系 */
+.dark .markdown-body pre {
+  background: #2b251f !important;
+  border-color: #3d352e;
+}
+
+.dark .markdown-body pre::before {
+  background-color: #332c26;
+  border-bottom-color: #3d352e;
+}
+
+/* 行内代码：暖色胶囊底（原为偏紫的冷色） */
+.dark .markdown-body code:not(pre code) {
+  background: rgb(74 64 56 / 0.55);
+}
