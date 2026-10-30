@@ -81,6 +81,7 @@
     "vite-plugin-svg-icons": "^2.0.1",
     "vitest": "^4.1.12",
     "vue-tsc": "^3.3.13",
+    "wrangler": "^4.156.0",
     "yaml": "^2.9.1"
   },
   "pnpm": {
