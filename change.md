@@ -4,6 +4,17 @@
 条目分类：新增 / 优化 / 修复 / 文档 / 依赖 / 验证。
 `README.md` 与 `README.en.md` 顶部均链接到本文件。
 
+## [2026-10-30] 文档：明确 Cloudflare Workers 的构建与部署命令
+
+背景：Cloudflare Workers 连接 Git 仓库后需要手动填写构建 / 部署命令，沿用面板默认值容易与本地 `wrangler` 版本不一致。
+
+### 文档
+
+- 规定构建命令为 `npm run build`、部署命令为 `pnpm exec wrangler deploy`（构建用 `npm`，部署用项目内 `devDependencies` 的 `wrangler`）
+- `README.md` / `README.en.md`：部署平台表补充两条命令，新增「Cloudflare Workers」小节（配置项表 + 四条说明），常见问题增加「Cloudflare Workers 构建失败」
+- `public/content/2025/blog.md`：12.2 平台一览补充命令表与说明，12.3 `wrangler.jsonc` 行补充命令，常见问题同步新增条目
+- `CLAUDE.md`：Notes 增加一行命令约束，供后续代理变更时对齐
+
 ## [2026-10-26] 优化文章详情页展示和增强阅读体验
 
 - 新增文章字数统计字段及多语言显示支持，提升阅读时间计算准确性

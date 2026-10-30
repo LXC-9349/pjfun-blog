@@ -430,7 +430,7 @@ The project is built for static hosting behind CDNs:
 | Vercel | [Deploy](https://vercel.com/new/clone?repository-url=https://github.com/LXC-9349/pjfun-blog) | Demo: <https://pjfun-blog.vercel.app/> |
 | EdgeOne Pages (China) | [Deploy](https://console.cloud.tencent.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog) | Demo: <https://blog.pjfun.top/> |
 | EdgeOne Pages (Global) | [Deploy](https://console.tencentcloud.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog) | `esa.jsonc` enables SPA fallback |
-| Cloudflare Workers | [Deploy](https://deploy.workers.cloudflare.com/?url=https://github.com/LXC-9349/pjfun-blog/tree/main) | `wrangler.jsonc` serves `dist` |
+| Cloudflare Workers | [Deploy](https://deploy.workers.cloudflare.com/?url=https://github.com/LXC-9349/pjfun-blog/tree/main) | Build `npm run build`, deploy `pnpm exec wrangler deploy` |
 | Netlify | [Deploy](https://app.netlify.com/start/deploy?repository=https://github.com/LXC-9349/pjfun-blog) | `netlify.toml` defines the build |
 | GitHub Pages | Push to `main` | `.github/workflows/deploy.yml`; set `VITE_BASE` |
 | Docker / Nginx | `docker build` + `deploy/nginx.conf` | See below |
@@ -438,6 +438,20 @@ The project is built for static hosting behind CDNs:
 ### GitHub Pages
 
 The workflow sets `VITE_BASE: /pjfun-blog/`. If you rename the repository, update this value too — otherwise assets 404 and the page stays blank. Set Settings → Pages → Source to **GitHub Actions**.
+
+### Cloudflare Workers
+
+In the Cloudflare dashboard (Workers & Pages → Create → import a Git repository), fill in the table below — **do not keep the default deploy command**:
+
+| Setting | Value |
+| --- | --- |
+| Build command | `npm run build` |
+| Deploy command | `pnpm exec wrangler deploy` |
+
+- Build with `npm`: it matches how the build environment installs dependencies, avoiding failures from `pnpm` not being ready or version drift
+- Deploy with `pnpm exec wrangler`: it runs the `wrangler` from `devDependencies`, so the version matches your local one instead of a throwaway install
+- `wrangler.jsonc` already sets `scripts/worker.js` as the entry and `dist` as the asset directory — no output directory needed
+- Configure environment variables under the Worker's “Variables and Secrets”; keep `VITE_BASE` at `/`
 
 ### Docker
 
@@ -535,6 +549,9 @@ Versioned file names, the `version.json` guard and the PWA strategy are designed
 
 **Password protection does not work.**
 Confirm the variable reaches the build (CI needs secrets/variables) and that no stale `VITE_BLOG_PASSWORD_HASH` remains. Use `BLOG_PASSWORD` (without the `VITE_` prefix) for plaintext passwords.
+
+**The Cloudflare Workers build fails.**
+Check that the build command is `npm run build` and the deploy command is `pnpm exec wrangler deploy`; using `pnpm` to build or `npx` to deploy tends to fail or pull a different `wrangler` version on CI.
 
 **Statistics are missing.**
 Busuanzi or ping0 may be unavailable; the UI degrades or hides those blocks without breaking anything. Override the endpoints with `VITE_BUSUANZI_ENDPOINT` and `VITE_PING0_IMAGE_URL`.

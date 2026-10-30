@@ -833,10 +833,21 @@ PJ Blog 针对「静态托管 + CDN + PWA」易出现的旧版本问题做了多
 | Vercel | [一键部署](https://vercel.com/new/clone?repository-url=https://github.com/LXC-9349/pjfun-blog) | 示例：<https://pjfun-blog.vercel.app/> |
 | EdgeOne Pages（国内） | [一键部署](https://console.cloud.tencent.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog) | 示例：<https://blog.pjfun.top/> |
 | EdgeOne Pages（国际） | [一键部署](https://console.tencentcloud.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog) | `esa.jsonc` 已配置 SPA 回退 |
-| Cloudflare Workers | [一键部署](https://deploy.workers.cloudflare.com/?url=https://github.com/LXC-9349/pjfun-blog/tree/main) | `wrangler.jsonc` 指向 `dist` |
+| Cloudflare Workers | [一键部署](https://deploy.workers.cloudflare.com/?url=https://github.com/LXC-9349/pjfun-blog/tree/main) | 构建 `npm run build`，部署 `pnpm exec wrangler deploy` |
 | Netlify | [一键部署](https://app.netlify.com/start/deploy?repository=https://github.com/LXC-9349/pjfun-blog) | `netlify.toml` 已配置构建命令 |
 | GitHub Pages | 推送 `main` 自动部署 | `.github/workflows/deploy.yml`，需设置 `VITE_BASE` |
 | Docker / Nginx | `docker build` + `deploy/nginx.conf` | 见 12.4 |
+
+Cloudflare Workers 连接 Git 仓库后，控制台需要手动填写命令，**不要沿用面板默认的部署命令**：
+
+| 配置项 | 值 |
+| --- | --- |
+| 构建命令 | `npm run build` |
+| 部署命令 | `pnpm exec wrangler deploy` |
+
+- 构建阶段用 `npm`，与构建环境的依赖安装方式一致；直接写 `pnpm build` 容易因 `pnpm` 未就绪或版本差异失败
+- 部署阶段用 `pnpm exec wrangler`，调用 `devDependencies` 里的 `wrangler`，版本与本地一致；`npx wrangler` 会临时拉取，版本不可控
+- 环境变量在 Workers 的「变量与机密」里配置，`VITE_BASE` 保持 `/`
 
 ### 12.3 平台配置文件
 
@@ -844,7 +855,7 @@ PJ Blog 针对「静态托管 + CDN + PWA」易出现的旧版本问题做了多
 | --- | --- |
 | `.github/workflows/deploy.yml` | GitHub Pages 自动部署，Node 20，设置 `VITE_BASE=/pjfun-blog/`，构建前安装 `libvips-dev` |
 | `netlify.toml` | `npm run build` → `dist`，Node 20，可选 Lighthouse 插件 |
-| `wrangler.jsonc` | Cloudflare Workers：入口 `scripts/worker.js`，静态目录 `./dist` |
+| `wrangler.jsonc` | Cloudflare Workers：入口 `scripts/worker.js`，静态目录 `./dist`；构建 `npm run build`，部署 `pnpm exec wrangler deploy` |
 | `esa.jsonc` | 腾讯云 EdgeOne Pages：`npm install` 安装，`dist` 输出，SPA 回退 |
 | `deploy/nginx.conf` | SPA 回退与静态资源缓存（由 Dockerfile 复制进镜像） |
 | `Dockerfile` / `docker-compose.yml` | Nginx 镜像，默认映射 `1022:80` |
@@ -992,6 +1003,9 @@ pjfun-blog/
 
 **密码不生效**
 确认构建时环境变量已传入（CI 中需配置 Secrets / Variables），且未同时残留旧的 `VITE_BLOG_PASSWORD_HASH`。明文密码请使用 `BLOG_PASSWORD`（不要加 `VITE_` 前缀）。
+
+**Cloudflare Workers 构建失败**
+检查构建命令是否为 `npm run build`、部署命令是否为 `pnpm exec wrangler deploy`；构建用 `pnpm`、部署用 `npx` 都容易在构建机上失败或拉到不同版本的 `wrangler`。
 
 **统计不显示**
 不蒜子或 ping0 不可用时对应区域会自动降级或隐藏，不影响其他功能；可通过 `VITE_BUSUANZI_ENDPOINT`、`VITE_PING0_IMAGE_URL` 更换地址。

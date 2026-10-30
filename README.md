@@ -434,7 +434,7 @@ VITE_BLOG_PASSWORD_HASH=your_hash
 | Vercel | [一键部署](https://vercel.com/new/clone?repository-url=https://github.com/LXC-9349/pjfun-blog) | 示例：<https://pjfun-blog.vercel.app/> |
 | EdgeOne Pages（国内） | [一键部署](https://console.cloud.tencent.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog) | 示例：<https://blog.pjfun.top/> |
 | EdgeOne Pages（国际） | [一键部署](https://console.tencentcloud.com/edgeone/pages/new?template=https://github.com/LXC-9349/pjfun-blog) | `esa.jsonc` 已配置 SPA 回退 |
-| Cloudflare Workers | [一键部署](https://deploy.workers.cloudflare.com/?url=https://github.com/LXC-9349/pjfun-blog/tree/main) | `wrangler.jsonc` 指向 `dist` |
+| Cloudflare Workers | [一键部署](https://deploy.workers.cloudflare.com/?url=https://github.com/LXC-9349/pjfun-blog/tree/main) | 构建 `npm run build`，部署 `pnpm exec wrangler deploy` |
 | Netlify | [一键部署](https://app.netlify.com/start/deploy?repository=https://github.com/LXC-9349/pjfun-blog) | `netlify.toml` 已配置构建命令 |
 | GitHub Pages | 推送 `main` 自动部署 | `.github/workflows/deploy.yml`，需设置 `VITE_BASE` |
 | Docker / Nginx | `docker build` + `deploy/nginx.conf` | 见下 |
@@ -442,6 +442,20 @@ VITE_BLOG_PASSWORD_HASH=your_hash
 ### GitHub Pages
 
 工作流已设置 `VITE_BASE: /pjfun-blog/`。如果你把仓库改名为其他名称，需同步修改该值，否则会出现白屏或资源 404。仓库 Settings → Pages → Source 选择 **GitHub Actions** 即可。
+
+### Cloudflare Workers
+
+在 Cloudflare 控制台（Workers & Pages → 创建 → 导入 Git 仓库）按下表填写，**不要沿用面板默认的部署命令**：
+
+| 配置项 | 值 |
+| --- | --- |
+| 构建命令 | `npm run build` |
+| 部署命令 | `pnpm exec wrangler deploy` |
+
+- 构建阶段使用 `npm`：与构建环境的依赖安装方式保持一致，避免 `pnpm` 未就绪或版本差异导致构建失败
+- 部署阶段使用 `pnpm exec wrangler`：调用 `devDependencies` 中的 `wrangler`，版本与本地一致，不会装到临时目录
+- `wrangler.jsonc` 已把入口设为 `scripts/worker.js`、静态目录设为 `dist`，无需再填输出目录
+- 环境变量在 Workers 的「变量与机密」中配置，`VITE_BASE` 保持 `/`
 
 ### Docker
 
@@ -539,6 +553,9 @@ pjfun-blog/
 
 **密码不生效？**
 确认构建时环境变量已传入（CI 中需配置 Secrets / Variables），且未同时残留旧的 `VITE_BLOG_PASSWORD_HASH`。明文密码请使用 `BLOG_PASSWORD`（不要加 `VITE_` 前缀）。
+
+**Cloudflare Workers 构建失败？**
+检查构建命令是否为 `npm run build`、部署命令是否为 `pnpm exec wrangler deploy`；前者用 `pnpm` 或后者用 `npx` 都容易在构建机上失败或拉到不同版本的 `wrangler`。
 
 **统计不显示？**
 不蒜子或 ping0 不可用时对应区域会自动降级或隐藏，不影响其他功能；可通过 `VITE_BUSUANZI_ENDPOINT`、`VITE_PING0_IMAGE_URL` 更换地址。

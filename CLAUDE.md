@@ -209,4 +209,5 @@ vue@3.5, vue-router@4, vite@7, marked@17, mammoth, pdfjs-dist, crypto-js, dompur
 - Studio is registered only under `import.meta.env.DEV`; production `/studio` redirects to `/`, and the production bundle contains no studio code
 - Studio UI scroll containers must keep `data-lenis-prevent` because Lenis owns the wheel globally
 - Static RSS feed and sitemap are generated in `dist/` on build
+- Cloudflare Workers builds must use build command `npm run build` and deploy command `pnpm exec wrangler deploy`; `wrangler.jsonc` points the entry to `scripts/worker.js` and assets to `./dist`
 - Every notable change is recorded in the root `change.md` (newest entry on top, sections: 新增 / 优化 / 修复 / 文档 / 依赖 / 验证)
