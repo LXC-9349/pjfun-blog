@@ -187,7 +187,7 @@
 import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { getFavorites, removeFavorite as removeFavoriteUtil } from '@/utils/favorites'
 import { t, getLanguage } from '@/utils/i18n'
-import { SITE_CONFIG, STORAGE_KEYS } from '@/constants'
+import { STORAGE_KEYS } from '@/constants'
 import {confirmDialog, formatDate} from "@/utils/tool";
 import { lenis } from '@/main';
 import {useRouter} from "vue-router";
