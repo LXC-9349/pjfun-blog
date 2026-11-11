@@ -22,6 +22,7 @@ import {VitePWA} from 'vite-plugin-pwa'
 import {createSiteConfig} from "./src/constants/site";
 import {createSvgIconsPlugin} from "vite-plugin-svg-icons";
 import {autoPasswordHashPlugin} from './tooling/vite-plugin-auto-password-hash';
+import {shortLinkPagesPlugin} from './tooling/vite-plugin-shortlink-pages'
 
 export default defineConfig((config) => {
 
@@ -43,7 +44,7 @@ export default defineConfig((config) => {
     const openCdn = isProduction;
     const cdnConfig = getCDN(!isProduction)
     const externalsKey = [
-        'vue-router',
+        'vue-router'
     ]
 
     // 文章页专用的解析类依赖：单独成块，首屏不加载
@@ -81,16 +82,16 @@ export default defineConfig((config) => {
             genBackgroundsPlugin(),
             AutoImport({
                 imports: ['vue', 'vue-router'],
-                dts: 'src/auto-imports.d.ts',
+                dts: 'src/auto-imports.d.ts'
             }),
             Components({
                 dirs: ['src/components'],
                 dts: 'src/components.d.ts',
                 resolvers: [
                     IconsResolver({
-                        prefix: 'Icon',
-                    }),
-                ],
+                        prefix: 'Icon'
+                    })
+                ]
             }),
             UnoCSS(),
             Icons({compiler: 'vue3', autoInstall: true}),  // 新增：自动按需加载所有 iconify-icon
@@ -197,15 +198,15 @@ export default defineConfig((config) => {
                         {
                             src: `${base}img/192x192.png`,
                             sizes: '192x192',
-                            type: 'image/png',
+                            type: 'image/png'
                         },
                         {
                             src: `${base}img/512x512.png`,
                             sizes: '512x512',
-                            type: 'image/png',
-                        },
-                    ],
-                },
+                            type: 'image/png'
+                        }
+                    ]
+                }
             }),
             ViteImageOptimizer({
                 // 配置图像优化选项
@@ -268,6 +269,7 @@ export default defineConfig((config) => {
             rssPlugin(site),
             sitemapPlugin(site),
             isProduction && inject404BasePlugin(base),
+            isProduction && shortLinkPagesPlugin()
         ].filter(Boolean),
         assetsInclude: ['**/*.pdf', '**/*.doc', '**/*.docx', '**/*.xls', '**/*.xlsx'],
         server: {
@@ -293,7 +295,7 @@ export default defineConfig((config) => {
         resolve: {
             alias: {
                 '@': path.join(__dirname, './src'),
-                '~': path.resolve(__dirname, './'),
+                '~': path.resolve(__dirname, './')
             },
             extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
         },
@@ -314,7 +316,7 @@ export default defineConfig((config) => {
                     pure_funcs: ['console.log', 'console.info'],
                     pure_getters: true,
                     keep_fargs: false,
-                    passes: 3,
+                    passes: 3
                 },
                 mangle: {
                     toplevel: true, // 混淆顶级作用域的变量名
@@ -323,7 +325,7 @@ export default defineConfig((config) => {
                 },
                 format: {
                     comments: false, // 移除注释
-                },
+                }
             } : {},
             dynamicImportVarsOptions: {
                 // 动态导入变量优化
@@ -370,7 +372,7 @@ export default defineConfig((config) => {
                                 return `pjt.tool`
                             }
                         }
-                    },
+                    }
                 }
             }
         },

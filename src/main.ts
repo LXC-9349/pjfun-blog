@@ -15,6 +15,7 @@ import { initAutoHideScrollbar } from '@/utils/auto-hide-scrollbar'
 // 引入 SVG 图标
 import 'virtual:svg-icons-register'
 import {passwordApi} from "@/utils/password";
+import {matchShortLink, resolveShortLink} from '@/utils/shortlink'
 
 // 初始化平滑滚动
 // autoRaf 已由 Lenis 内部接管动画帧，无需再手写 requestAnimationFrame 循环（否则每帧会被驱动两次）
@@ -161,6 +162,23 @@ async function mountApp() {
     const router = createRouter({
         history: createWebHistory(base),
         routes
+    })
+
+    // 短链 /s/<code> 解析：在通配的文章路由之前先把短码还原成真实文章路径。
+    // 用 replace 而不是 push，避免历史栈里留下一个「中转页」导致后退体验变差。
+    router.beforeEach(async (to, _from, next) => {
+        const code = matchShortLink(to.path, to.hash)
+        if (code) {
+            const target = await resolveShortLink(code)
+            if (target) {
+                next({path: target, replace: true})
+                return
+            }
+            // 码表里没有：回首页，避免落到文章页的 Not Found
+            next({path: '/', replace: true})
+            return
+        }
+        next()
     })
 
     // 添加路由守卫以处理SEO和密码保护

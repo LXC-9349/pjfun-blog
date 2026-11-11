@@ -454,7 +454,7 @@
   <ShareModal 
     :is-open="showShareModal"
     :title="articleMeta.title"
-    :url="windowLocation"
+    :url="shareUrl || windowLocation"
     @close="closeShareModal"
   />
   </div>
@@ -475,6 +475,7 @@ import {addRecentArticle, getReadingProgress, saveReadingProgress} from '@/utils
 import {setupSEO, updateArticleSEO, updateArticleJsonLd} from '@/plugins/seo';
 import {lenis} from '@/main';
 import {ensureCdnLib} from '@/utils/cdn';
+import {shortLinkOf} from '@/utils/shortlink'
 
 // 文档预览器只在 pdf/doc/xls 文章下使用，改为异步组件避免拖进普通文章的加载链路
 const DocumentViewer = defineAsyncComponent(() => import('@/components/DocumentViewer.vue'))
@@ -1141,6 +1142,31 @@ const handlePrint = () => {
 }
 
 const artPath=ref<string>('')
+
+// 分享用的短链：优先展示 /s/<code>，中文路径复制起来更友好。
+// 码表没命中（例如刚发布的文章还没重建索引）时回落到完整地址，保证分享永远可用。
+// 注意：必须放在 artPath 声明之后 —— watch 的 immediate 会立刻读取它。
+const shareUrl = ref('')
+const refreshShareUrl = async () => {
+  const p = artPath.value
+  if (!p) {
+    shareUrl.value = windowLocation.value
+    return
+  }
+  try {
+    const code = await shortLinkOf(p)
+    if (code) {
+      const origin = `${window.location.protocol}//${window.location.host}`
+      const base = (getEnvVariable('VITE_BASE') || '/').replace(/\/+$/, '')
+      shareUrl.value = `${origin}${base}/s/${code}`
+      return
+    }
+  } catch {
+    // 忽略，回落到长链接
+  }
+  shareUrl.value = windowLocation.value
+}
+watch([artPath, windowLocation], () => { void refreshShareUrl() }, {immediate: true})
 
 // 文章所属栏目：取路由路径去掉最后一段（/新闻轴/2026-10-26-新闻轴 → 新闻轴）
 const articleCategory = computed(() =>

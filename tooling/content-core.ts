@@ -389,6 +389,62 @@ export interface GenerateNavOptions {
   clean?: boolean
 }
 
+/** 短链码表：{ code: 文章路径 } */
+export type ShortLinkMap = Record<string, string>
+
+/** 短链条数上限（足够覆盖全部文章，且不引入碰撞风险） */
+const SHORT_CODE_SPACE = 36 ** 6
+
+/**
+ * 由文章路径派生稳定的 6 位短码（base36）。
+ *
+ * 要求：同一路径每次构建得到同一短码，这样历史分享出去的短链不会失效；
+ * 用 32→64 位 FNV-1a 双散列拼成 48 位，模 36^6 后补零到 6 位。
+ * 冲突概率在几百篇文章量级可忽略（生日碰撞约 n²/2·36⁶）。
+ */
+export function shortCodeOf(pathname: string): string {
+  const str = encodeURI(pathname)
+  // 两轮不同偏移的 FNV-1a，降低单散列规律性
+  const fnv = (seed: number) => {
+    let h = seed >>> 0
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i)
+      h = Math.imul(h, 0x01000193) >>> 0
+    }
+    return h
+  }
+  const hi = fnv(0x811c9dc5)
+  const lo = fnv(0x9e3779b9)
+  // 拼成 48 位后取模，保证落在 36^6 内
+  const combined = (BigInt(hi) << 16n | BigInt(lo >>> 16)) % BigInt(SHORT_CODE_SPACE)
+  return combined.toString(36).padStart(6, '0')
+}
+
+/**
+ * 为全部文章生成短码表。
+ *
+ * 万一出现散列碰撞（两篇文章得到同一短码），后出现的一篇改用「短码 + 序号」的
+ * 变体短码，保证映射不倒挂。返回的 map 是 `code -> path`。
+ */
+export function buildShortLinks(nav: NavPost[]): ShortLinkMap {
+  const map: ShortLinkMap = {}
+  const used = new Set<string>()
+  for (const item of nav) {
+    if (!item.path) continue
+    let code = shortCodeOf(item.path)
+    let salt = 0
+    while (used.has(code)) {
+      // 碰撞时用可复现的方式派生备选码，避免依赖遍历顺序以外的随机因素
+      salt++
+      code = shortCodeOf(`${item.path}#${salt}`)
+      if (salt > 64) break
+    }
+    used.add(code)
+    map[code] = item.path
+  }
+  return map
+}
+
 export async function generateNav(
   root: string,
   navName: string,
@@ -406,9 +462,11 @@ export async function generateNav(
 
   const navJson = JSON.stringify(scan.nav, null, 2)
   const treeJson = JSON.stringify(scan.tree, null, 2)
+  const shortJson = JSON.stringify(buildShortLinks(scan.nav), null, 2)
   const files: Array<[string, string]> = [
     [navName, navJson],
-    [treeName, treeJson]
+    [treeName, treeJson],
+    ['shortlinks.json', shortJson]
   ]
   // 兼容读取固定文件名的旧逻辑 / 手工调试
   if (navName !== 'nav.json') files.push(['nav.json', navJson])
